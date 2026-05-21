@@ -1,0 +1,12 @@
+Learnt from Handson
+String name=sc.nextLine().trim();
+double height=sc.nextDouble();
+System.out.println("Hello " + name +  ", Your BMI is " + String.format("%.2f" , BMI));
+
+if we put 3/4 * volume it prints 0 s0
+alarm=(3.0*volume)/4;
+alarm=0.75*volume;
+
+Formatting
+System.out.printf("Total capacity is %.2f litres\n",volume);
+System.out.printf("Capacity for alarm is %.2f litres",alarm);

@@ -1,0 +1,698 @@
+1. Introduction to Collections
+
+✔ What is Java Collections Framework?
+A framework of classes and interfaces used to store and manipulate groups of objects.
+✔ Why Collections?
+Because arrays have limitations:
+
+Fixed size
+Only store same type
+No built‑in methods like sorting, searching, etc.
+
+✔ Collections provide:
+
+Resizable storage
+Powerful utility methods
+Ready‑made data structures
+Better performance
+
+Main Interfaces of Collections Framework:
+Collection (root)
+   |-- List
+   |-- Set
+   |-- Queue
+
+Map (separate hierarchy, not child of Collection)
+
+
+Collection vs Collections
+
+
+Collection → interface (root of the collection hierarchy except Map).
+Examples that extend it: List, Set, Queue.
+
+Collections → utility class (in java.util) with static methods to operate on collections.
+Examples: sort, reverse, fill, copy, unmodifiableList, synchronizedList.
+
+synchronized
+	when multiple threads type to access/modify, then they are allowed one by one.
+
+Quick demo
+
+import java.util.*;
+
+public class CollectionVsCollections {
+    public static void main(String[] args) {
+        Collection<Integer> c = new ArrayList<>(); // interface type
+        c.add(3); c.add(1); c.add(2);
+
+        List<Integer> list = new ArrayList<>(c);
+        Collections.sort(list);                    // utility class method
+        System.out.println(list);                  // [1, 2, 3]
+    }
+}
+
+
+2. List Interface and Implementations
+✔ List Features:
+
+Ordered
+Allows duplicates
+Index-based access
+
+Common Implementations:
+
+1. ArrayList
+
+Dynamic array
+Fast for read operations
+Slower for insert/delete in the middle
+Allows duplicates
+Maintains insertion order
+List<String> list = new ArrayList<>();
+
+2. LinkedList
+
+Doubly linked list
+Fast for insert/delete
+Slow for access by index
+Can act as List and Queue
+List<Integer> list = new LinkedList<>();
+
+3. Vector (Legacy)
+
+Synchronized (thread-safe)
+Slower than ArrayList
+Rarely used today
+Vector<String> v = new Vector<>();
+
+4. Stack (Legacy)
+
+Stack<Integer> s = new Stack<>()
+LIFO (Last-In First-Out)
+Use push() & pop() , isEmpty() , peek()
+
+3. Set Interface and Implementations
+
+✔ Set Features:
+
+No duplicates
+No index
+Mostly used for unique elements
+rejects duplicates - not overrides like in hashmap
+what about the order?
+Each Set class has an algorithm 
+
+
+1. HashSet
+
+Uses hashing.
+No order
+Fastest set
+Uses hashing
+Allows null
+the order is based on the hashCode() and equals()
+
+Set<Integer> set = new HashSet<>();
+
+2. LinkedHashSet
+
+Maintains insertion order
+Slower than HashSet
+
+Set<String> set = new LinkedHashSet<>();
+
+3. TreeSet
+
+Sorted set (ascending order)
+Slowest but sorted
+Does not allow null
+order is based on 
+Comparable / Comparator
+
+Set<Integer> set = new TreeSet<>();
+
+Custom comparator with TreeSet
+
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
+
+public class DemoTreeSetComparator {
+    public static void main(String[] args) {
+        Set<String> ts = new TreeSet<>(Comparator.comparingInt(String::length)
+                                                 .thenComparing(Comparator.naturalOrder()));
+        ts.add("spring");
+        ts.add("java");
+        ts.add("react");
+        ts.add("go");
+        System.out.println(ts); // sorted by length, then alphabetical: [go, java, react, spring]
+    }
+}
+
+4. Map Interface and Implementations
+
+✔ Map Features:
+
+Key → Value
+Stores data in key-value pairs
+Keys are unique
+Values can duplicate
+Entry set (key-value pairs)
+
+1. HashMap
+
+Fastest map
+No order
+Allows null key & null values
+Map<Integer, String> map = new HashMap<>();
+
+2. LinkedHashMap
+
+Maintains insertion order
+Moderate performance
+Good for LRU Cache implementations
+Map<Integer, String> map = new LinkedHashMap<>();
+
+
+3. TreeMap
+
+Sorted by keys
+Does NOT allow null keys
+Implements Red‑Black Tree
+Map<String, Integer> map = new TreeMap<>();
+
+4. Hashtable (Legacy)
+
+Thread-safe
+No null keys/values
+Slower
+
+
+5. Queue Interface and Implementations
+✔ Queue Features:
+
+Follows FIFO (First In, First Out)
+Used for scheduling tasks, messaging, etc.
+
+
+1. PriorityQueue
+
+Ordered based on priority(natural/comparator)
+Not FIFO always
+No null allowed
+Uses a heap internally
+(min-heap by default)
+
+Queue<Integer> q = new PriorityQueue<>();
+
+PriorityQueue (min-heap by default)
+
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+public class DemoPriorityQueue {
+    public static void main(String[] args) {
+        Queue<Integer> pq = new PriorityQueue<>();
+        pq.offer(30); pq.offer(10); pq.offer(20);
+        System.out.println(pq.peek()); // 10 (smallest first)
+        while (!pq.isEmpty()) System.out.print(pq.poll() + " "); // 10 20 30
+    }
+}
+
+👉 Max-heap using comparator
+
+import java.util.Collections;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+public class DemoPriorityQueueMax {
+    public static void main(String[] args) {
+        Queue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        maxHeap.offer(5); maxHeap.offer(2); maxHeap.offer(9);
+        while (!maxHeap.isEmpty()) System.out.print(maxHeap.poll() + " "); // 9 5 2
+    }
+}
+
+
+2. LinkedList (also implements Queue)
+
+Can be used as FIFO queue
+Implements both List + Queue
+Supports FIFO operations: add(), poll()
+
+LinkedList as Queue
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class DemoLinkedListQueue {
+    public static void main(String[] args) {
+        Queue<String> q = new LinkedList<>();
+        q.offer("task1");
+        q.offer("task2");
+        System.out.println(q.poll()); // task1 (FIFO)
+        System.out.println(q.peek()); // task2
+    }
+}
+
+
+3. ArrayDeque
+
+Faster than LinkedList
+Used as queue or stack
+No null allowed
+Deque<String> dq = new ArrayDeque<>();
+
+ArrayDeque (fast deque/stack/queue)
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+public class DemoArrayDeque {
+    public static void main(String[] args) {
+        Deque<String> dq = new ArrayDeque<>();
+        // queue behavior
+        dq.offerLast("A"); dq.offerLast("B");
+        System.out.println(dq.pollFirst()); // A
+
+        // stack behavior
+        dq.push("X"); dq.push("Y");
+        System.out.println(dq.pop()); // Y
+    }
+}
+
+6. Stream API (Java 8+)
+✔ What is Stream API?
+A functional programming model used to process data from collections
+A functional programming feature used to:
+
+Process collections
+Apply filters
+Transform data
+Perform aggregations
+
+Streams allow:
+
+Filtering
+Mapping
+Sorting
+Reducing
+Aggregation
+
+✔ Operations:
+Intermediate:
+
+filter()
+map()
+sorted()
+distinct()
+limit(), skip()
+
+Terminal: Terminal Operations (end of pipeline)
+
+forEach()
+collect()
+reduce()
+max(), min(), count()
+
+Example:
+
+List<Integer> nums = List.of(1, 2, 3, 4, 5);
+
+nums.stream()
+    .filter(n -> n % 2 == 0)
+    .forEach(System.out::println);
+
+
+Output:
+2
+4
+
+🎯 FINAL SUMMARY (Easy to Remember)
+Interface - Common Classes - Key Feature
+List - ArrayList, LinkedList - Ordered, duplicates
+Set - HashSet, LinkedHashSet, TreeSet - Unique elements
+Map - HashMap, LinkedHashMap, TreeMap - Key-value pairs
+Queue - PriorityQueue, LinkedList, ArrayDeque- FIFO
+Stream API - --– - Powerful data processing
+
+
+Commonly Used Methods (cheat‑sheet)
+On Collection (available to List/Set/Queue)
+
+add(e), addAll(c)
+remove(e), removeIf(pred), clear()
+contains(e), isEmpty(), size()
+stream(), parallelStream()
+forEach(consumer)
+
+On List
+
+get(i), set(i, e), add(i, e), remove(i)
+indexOf(e), lastIndexOf(e)
+sort(comp), replaceAll(unaryOperator)
+subList(from, to)
+
+On Set
+
+same as Collection; uniqueness guaranteed
+
+On Map
+
+put(k, v), putIfAbsent(k, v), get(k), getOrDefault(k, def)
+remove(k), replace(k, v), merge(k, v, remappingFunc)
+Views: keySet(), values(), entrySet()
+Bulk ops: compute, computeIfAbsent, computeIfPresent, forEach
+
+Collections utility class
+
+sort(list), sort(list, comp), reverse(list), shuffle(list)
+binarySearch(list, key)
+unmodifiableList, synchronizedList, similarly for Set/Map
+min, max, fill, copy
+
+Examples
+
+List<Integer> a = new ArrayList<>(List.of(3,1,2));
+Collections.sort(a);                  // [1,2,3]
+Collections.reverse(a);               // [3,2,1]
+int pos = Collections.binarySearch(a, 2); // index of 2
+System.out.println(pos);
+
+Map<String, Integer> freq = new HashMap<>();
+freq.merge("java", 1, Integer::sum);  // java=1
+freq.merge("java", 1, Integer::sum);  // java=2
+System.out.println(freq);             // {java=2}
+
+Iteration: Iterable, Iterator, ListIterator, for-each, forEach
+
+Iterable<T>: root interface that enables enhanced for‑loop & provides iterator().
+Iterator<T>: forward iteration; hasNext(), next(), remove().
+ListIterator<T>: bidirectional; hasPrevious(), previous(), can add/set.
+Enhanced for loop: for (T item : collection) { ... }
+forEach (Java 8): functional style iteration with lambda.
+
+Examples
+
+List<String> names = List.of("Sriram", "Kumar", "Raj");
+
+// 1) Iterator
+next()
+hasNext()
+remove()	
+Iterator<String> it = names.iterator();
+while (it.hasNext()) {
+    System.out.println(it.next());
+}
+
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+// 2) Enhanced for
+for (String n : names) { // names is Iterable
+    System.out.println(n);
+}
+
+// 3) forEach with lambda / method reference
+names.forEach(System.out::println);
+
+// 4) ListIterator (bidirectional)
+works only for List
+next()
+hasNext()
+remove()
+previous()
+hasPrevious()
+List<String> modifiable = new ArrayList<>(names);
+ListIterator<String> li = modifiable.listIterator();
+while (li.hasNext()) {
+    if (li.next().startsWith("K")) li.set("Mr. Kumar"); // modify safely
+}
+System.out.println(modifiable);
+
+last to first
+
+it=list.listIterator(list.size());
+while(it.hasNext()){
+	it.next();
+}
+while(it.hasPrevious())
+{
+	it.previous();
+	print here...
+}
+
+Note: Modifying a collection while iterating with enhanced for/iterator (without using iterator’s remove/set) can cause ConcurrentModificationException.
+
+
+Comparable vs Comparator
+Comparable<T> (natural order)
+
+Implemented by the class itself.
+Override compareTo(T other).
+Only one natural order.
+
+class Employee implements Comparable<Employee> {
+    int id; String name;
+    public int compareTo(Employee o) {
+        return Integer.compare(this.id, o.id); // sort by id
+    }
+}
+
+Comparator<T> (custom strategies)
+
+External comparator object; multiple sort orders.
+Pass to Collections.sort(list, comparator) or list.sort(comparator).
+
+Comparator<Employee> byName = Comparator.comparing(e -> e.name);
+Comparator<Employee> byNameThenId = byName.thenComparing(e -> e.id);
+
+List<Employee> emps = new ArrayList<>();
+// ... add data
+emps.sort(byNameThenId);
+
+When to use which?
+
+If there’s a single, default sorting → Comparable.
+If you need multiple different orderings → Comparator.
+
+
+////
+
+
+Stream API (More Examples)
+
+filter + map + collect
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class DemoStreamsBasic {
+    public static void main(String[] args) {
+        List<String> names = List.of("sriram", "kumar", "raj", "arun");
+        List<String> result = names.stream()
+                .filter(n -> n.length() >= 5)
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+        System.out.println(result); // [KUMAR, SRIRAM]
+    }
+}
+
+reduce (sum/product)
+
+import java.util.List;
+
+public class DemoStreamsReduce {
+    public static void main(String[] args) {
+        int sum = List.of(1,2,3,4,5).stream().reduce(0, Integer::sum);
+        int product = List.of(1,2,3,4).stream().reduce(1, (a,b) -> a*b);
+        System.out.println("Sum=" + sum + ", Product=" + product); // Sum=15, Product=24
+    }
+}
+
+
+groupingBy + counting
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class DemoStreamsGrouping {
+    public static void main(String[] args) {
+        List<String> words = List.of("java", "react", "java", "spring", "react");
+        Map<String, Long> freq = words.stream()
+            .collect(Collectors.groupingBy(w -> w, Collectors.counting()));
+        System.out.println(freq); // {spring=1, react=2, java=2}
+    }
+}
+
+distinct + sorted (custom comparator)
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class DemoStreamsDistinct {
+    public static void main(String[] args) {
+        List<String> data = List.of("aa", "bbb", "c", "aa", "bbbb");
+        List<String> out = data.stream()
+                .distinct()
+                .sorted(Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder()))
+                .collect(Collectors.toList());
+        System.out.println(out); // [c, aa, bbb, bbbb]
+    }
+}
+
+flatMap (list of lists → single list)
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class DemoStreamsFlatMap {
+    public static void main(String[] args) {
+        List<List<Integer>> nested = List.of(List.of(1,2), List.of(3,4), List.of(5));
+        List<Integer> flat = nested.stream().flatMap(List::stream).collect(Collectors.toList());
+        System.out.println(flat); // [1, 2, 3, 4, 5]
+    }
+}
+
+Optional + streams (null-safe)
+
+import java.util.List;
+import java.util.Optional;
+
+public class DemoOptionalWithStreams {
+    public static void main(String[] args) {
+        List<Integer> nums = List.of(10, 20, 30);
+        Optional<Integer> max = nums.stream().max(Integer::compareTo);
+        System.out.println(max.orElse(-1)); // 30
+    }
+}
+
+
+
+SQL‑like operations using Stream API
+
+Think of Stream as a way to do SQL‑style operations (SELECT, WHERE, ORDER BY, GROUP BY, HAVING, LIMIT) on in‑memory collections, functionally.
+Given:
+import java.util.*;
+import java.util.stream.*;
+record Emp(int id, String dept, double salary, String name) {}
+
+List<Emp> emps = List.of(
+    new Emp(1, "IT",     80_000, "Sriram"),
+    new Emp(2, "HR",     50_000, "Kumar"),
+    new Emp(3, "IT",     95_000, "Anu"),
+    new Emp(4, "SALES",  60_000, "Rahul"),
+    new Emp(5, "IT",     75_000, "Arun")
+);
+
+A) SELECT columns → map
+
+// SQL: SELECT name FROM emps;
+List<String> names = emps.stream()
+        .map(Emp::name)
+        .toList();
+
+B) WHERE → filter
+
+// SQL: SELECT * FROM emps WHERE dept='IT' AND salary > 80000;
+List<Emp> result = emps.stream()
+        .filter(e -> e.dept().equals("IT") && e.salary() > 80_000)
+        .toList();
+
+C) ORDER BY → sorted
+
+// SQL: SELECT * FROM emps ORDER BY salary DESC, name ASC;
+List<Emp> sorted = emps.stream()
+        .sorted(Comparator.comparingDouble(Emp::salary).reversed()
+                .thenComparing(Emp::name))
+        .toList();
+
+
+D) GROUP BY → groupingBy
+
+// SQL: SELECT dept, COUNT(*) FROM emps GROUP BY dept;
+Map<String, Long> deptCount = emps.stream()
+        .collect(Collectors.groupingBy(Emp::dept, Collectors.counting()));
+
+E) GROUP BY with aggregation (SUM/AVG/MAX/MIN) → collectors
+
+// SQL: SELECT dept, AVG(salary) FROM emps GROUP BY dept;
+Map<String, Double> avgSalary = emps.stream()
+        .collect(Collectors.groupingBy(Emp::dept, Collectors.averagingDouble(Emp::salary)));
+
+F) HAVING → groupingBy + filtering (Java 9+) or filter after aggregation
+
+// SQL: SELECT dept, COUNT(*) FROM emps GROUP BY dept HAVING COUNT(*) >= 2;
+Map<String, Long> having = emps.stream()
+        .collect(Collectors.groupingBy(Emp::dept, Collectors.counting()))
+        .entrySet().stream()
+        .filter(e -> e.getValue() >= 2)
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+
+G) DISTINCT → distinct
+
+// SQL: SELECT DISTINCT dept FROM emps;
+List<String> depts = emps.stream().map(Emp::dept).distinct().toList();
+
+H) LIMIT / TOP N → limit, OFFSET → skip
+
+// SQL: SELECT * FROM emps ORDER BY salary DESC LIMIT 3;
+List<Emp> top3 = emps.stream()
+        .sorted(Comparator.comparingDouble(Emp::salary).reversed())
+        .limit(3)
+        .toList();
+
+I) IN clause → contains
+
+// SQL: SELECT * FROM emps WHERE dept IN ('IT','HR');
+Set<String> allowed = Set.of("IT", "HR");
+List<Emp> filtered = emps.stream()
+        .filter(e -> allowed.contains(e.dept()))
+        .toList();
+
+J) JOIN (conceptual)
+
+Streams don’t have direct joins; you usually use maps to index one side and then look up.
+
+// Suppose dept meta map: dept -> head
+Map<String, String> deptHead = Map.of("IT","Priya", "HR","Manoj", "SALES","Meera");
+
+record EmpWithHead(Emp emp, String head) {}
+List<EmpWithHead> joined = emps.stream()
+        .map(e -> new EmpWithHead(e, deptHead.get(e.dept())))
+        .toList();
+
+
+For real DB joins, use SQL/JPQL or frameworks like JPA/Streams over database result sets.
+
+Mini Interview Nuggets
+
+Collection vs Collections? → interface vs utility class with static helpers.
+Why HashSet doesn’t maintain order? → hashing buckets; no ordering guarantee.
+Why TreeSet/TreeMap need Comparable/Comparator? → sorted structure (Red‑Black Tree).
+Difference HashMap vs Hashtable? → not synchronized vs synchronized; allows null vs doesn’t.
+Fail‑fast iterators? → Most java.util iterators throw ConcurrentModificationException if the collection is structurally modified during iteration (except via iterator’s own methods).
+When to use ArrayDeque? → Faster than Stack/LinkedList for stack/queue use cases; no capacity restrictions other than memory.
+Stream terminal ops are single‑use; once consumed, the stream can’t be reused.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

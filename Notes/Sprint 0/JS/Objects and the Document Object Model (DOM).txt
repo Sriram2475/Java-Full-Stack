@@ -1,0 +1,475 @@
+Objects and the Document Object Model (DOM) 
+
+1. Objects in JavaScript
+
+An object is a collection of key–value pairs (properties + methods).
+✓ Creating an Object
+const person = {
+  name: "Sriram",
+  age: 22,
+  greet: function () {
+    console.log("Hello!");
+  }
+};
+
+name, age → properties
+greet() → method
+
+✓ Accessing Values
+console.log(person.name);     // dot notation
+console.log(person["age"]);   // bracket notation
+
+✓ Adding & Updating
+person.city = "Chennai";   // add
+person.age = 23;           // update
+
+✓ Deleting
+delete person.city;
+
+2. JavaScript Prototypes (Very Important!)
+
+JavaScript uses prototype-based inheritance.
+Every object has a hidden property called [[Prototype]], which is a link to another object.
+This creates a prototype chain.
+
+A. Example
+
+const person = {
+  greet() {
+    console.log("Hello");
+  }
+};
+
+Here, person.__proto__ gives access to built-in methods like:
+
+toString()
+hasOwnProperty()
+
+These come from Object.prototype.
+
+B. Constructor Functions & Prototypes
+
+function Student(name) {
+  this.name = name;
+}
+
+Student.prototype.sayHi = function () {
+  console.log("Hi, I am " + this.name);
+};
+
+const s1 = new Student("Sriram");
+
+s1.sayHi();  // uses prototype method
+
+✔ Methods go inside prototype, not inside the constructor
+✔ Saves memory
+✔ Used internally in classes (class is syntactic sugar)
+
+C. ES6 Classes (modern way)
+class Student {
+  constructor(name) {
+    this.name = name;
+  }
+
+  sayHi() {
+    console.log("Hi, " + this.name);
+  }
+}
+
+const s1 = new Student("Sriram");
+s1.sayHi();
+Internally, JavaScript still uses prototypes.
+
+3. The DOM (Document Object Model)
+
+DOM is a tree structure created by the browser that represents HTML elements.
+Example HTML:
+<h1 id="title">Hello</h1>
+<p class="info">Welcome!</p>
+Browser converts it to:
+Document
+ └── html
+     └── body
+         ├── h1#title
+         └── p.info
+
+A. Selecting Elements
+
+1. By ID
+const title = document.getElementById("title");
+
+2. By Class
+const info = document.getElementsByClassName("info");
+
+3. Query Selector
+const para = document.querySelector(".info");   // first match
+const allPara = document.querySelectorAll("p"); // all matches
+
+B. Changing Content
+
+title.textContent = "Updated Title";
+
+C. Changing Styles
+title.style.color = "blue";
+
+D. Creating & Adding Elements
+const newDiv = document.createElement("div");
+newDiv.textContent = "Hello DOM";
+
+document.body.appendChild(newDiv);
+
+4. Event Handling -Function executed when an event occurs
+
+Events are actions like:
+
+click
+mouseover
+keypress
+submit
+scroll
+load
+change
+
+
+A. Inline (not recommended)
+<button onclick="alert('Clicked!')">Click Me</button>
+``
+
+B. DOM .addEventListener() (best practice)
+const btn = document.getElementById("myBtn");
+
+btn.addEventListener("click", function () {
+  console.log("Button clicked!");
+});
+
+C. Event Object
+btn.addEventListener("click", function (event) {
+  console.log(event.target);
+});
+
+D. Removing Event Listeners
+function hello() {
+  console.log("Hi");
+}
+
+btn.addEventListener("click", hello);
+
+btn.removeEventListener("click", hello);
+
+
+✅ 1. What is a DOM Property?
+When the browser loads an HTML page, it creates a DOM object for every element.
+Each DOM object has:
+✔ Properties
+Live values that you read or write in JavaScript.
+Examples:
+
+input.value
+checkbox.checked
+img.src
+element.id
+element.innerHTML
+element.textContent
+element.style.color
+
+✔ Methods
+Actions the element can perform.
+Examples:
+
+element.appendChild()
+element.addEventListener()
+element.remove()
+
+✔ Events
+Things that happen to an element.
+Examples:
+
+click
+input
+keyup
+
+✅ 2. .value → Form Value Property
+Used for:
+
+<input>
+<textarea>
+<select>
+
+Example:
+<input id="name" type="text">
+document.getElementById("name").value;
+This is the current text inside the input.
+
+✅ 3. .checked → Boolean Property
+Used for:
+
+Checkbox (<input type="checkbox">)
+Radio button (<input type="radio">)
+
+Example:
+<input id="agree" type="checkbox">
+agree.checked;  // true or false
+
+✅ 1. innerHTML — reads/writes HTML markup
+Example HTML:
+<div id="box">Hello <b>world</b></div>
+JavaScript:
+const el = document.getElementById("box");
+
+console.log(el.innerHTML);
+// Output: "Hello <b>world</b>"
+
+el.innerHTML = "New <i>content</i>";
+// The <i> tag will be parsed as HTML.
+
+Key behavior:
+
+Reads HTML code inside the element
+Writes HTML and parses it (tags become real elements)
+
+✅ 2. textContent — reads/writes plain text only
+Example HTML:
+<div id="box">Hello <b>world</b></div>
+JavaScript:
+const el = document.getElementById("box");
+
+console.log(el.textContent);
+// Output: "Hello world"
+
+el.textContent = "New <i>content</i>";
+// Displays literally as: New <i>content</i>
+
+Key behavior:
+
+No HTML is interpreted
+Returns raw text exactly as in the DOM
+Includes text even from hidden elements
+
+✅ 3. innerText — reads visible text only (CSS-sensitive)
+Example HTML:
+<div id="box">
+  Visible text
+  <span style="display:none">Hidden text</span>
+</div>
+
+JavaScript:
+const el = document.getElementById("box");
+
+console.log(el.innerText);
+// Output: "Visible text"   (hidden content ignored)
+
+el.innerText = "New <i>content</i>";
+// Shows: New <i>content</i> (as text, no HTML)
+
+Key behavior:
+
+Returns only what is visually rendered
+Ignores hidden elements (display:none, etc.)
+Applies layout-based line breaks
+
+Goal - Use - Example result
+Insert HTML - innerHTML - <b>Hello</b> renders bold
+Insert plain text - textContent - <b>Hello</b> shows as text
+Get visible on-screen text - innerText - Hidden parts excluded
+
+
+createElement(tag) is used to create a new HTML element dynamically.
+appendChild(node) method adds a child node to an existing element.
+remove() method is called to remove an element from the DOM.
+
+Property - Meaning
+.value - Input/textarea value property
+.checked - Boolean property for checkboxes/radios
+.innerHTML - HTML content property
+.textContent - Plain text content property
+.classList - Property for modifying CSS classes
+.style - Inline style property
+.dataset - Property for data-* attributes
+
+
+
+// Extra content
+
+1) DOM Traversal (Parent/Child/Sibling Navigation)
+DOM traversal lets you move around the DOM tree relative to an element.
+A. Parent
+const item = document.querySelector(".item");
+
+item.parentElement          // nearest element parent
+item.closest(".list")       // nearest ancestor matching selector (element or self)
+
+Use closest(selector) when you need to find a specific ancestor that matches a CSS selector (great in event delegation).
+
+B. Children
+const list = document.querySelector("ul");
+
+list.children               // HTMLCollection (elements only)
+list.firstElementChild      // first child element
+list.lastElementChild       // last child element
+
+C. Siblings
+const current = document.querySelector(".active");
+
+current.previousElementSibling
+current.nextElementSibling
+
+D. Nodes (including text/comments) vs Elements
+list.childNodes             // NodeList (may include text nodes)
+list.firstChild             // could be a text node
+Prefer element versions (children, firstElementChild) when you only want elements, not text nodes.
+
+
+
+2) Attributes API (Get/Set/Remove/Check)
+Use attribute methods when you want to work with raw HTML attributes or custom attributes.
+
+<a id="link" href="/home" data-id="7">Home</a>
+const link = document.getElementById("link");
+
+// Read/Write attributes
+link.getAttribute("href");         // "/home"
+link.setAttribute("target", "_blank");
+
+// Remove & Check
+link.removeAttribute("target");
+link.hasAttribute("href");         // true
+
+// Data attributes (data-*)
+link.dataset.id;                   // "7"
+link.dataset.role = "intern";      // adds data-role="intern"
+
+
+Attributes vs Properties
+
+Attributes: initial values written in HTML (get/set/remove/hasAttribute).
+Properties: live JS view (link.href → absolute URL).
+For custom attributes or reading initial HTML, use the attribute API.
+
+3) classList (Full Operations)
+classList is the clean way to add/remove/toggle CSS classes from elements.
+
+const box = document.querySelector(".box");
+
+box.classList.add("active", "rounded");
+box.classList.remove("hidden");
+box.classList.toggle("dark");          // flips the presence
+box.classList.toggle("dark", true);    // force add
+box.classList.toggle("dark", false);   // force remove
+box.classList.contains("active");      // boolean
+
+Best practice: Drive UI via classes and CSS, not inline styles.
+
+
+4) The Event Object (Useful Properties & Methods)
+Whenever an event fires, your handler receives an event object that describes what happened.
+button.addEventListener("click", (e) => {
+  e.type;             // "click"
+  e.target;           // original element that triggered the event
+  e.currentTarget;    // the element handling the listener
+  e.timeStamp;        // ms since page navigation start
+  // Common methods:
+  // e.preventDefault(), e.stopPropagation(), e.stopImmediatePropagation()
+});
+
+Keyboard example
+document.addEventListener("keydown", (e) => {
+  console.log(e.key);      // "a", "Enter", "Escape"
+  console.log(e.ctrlKey);  // modifier pressed?
+});
+
+
+Pointer/Mouse example
+document.addEventListener("click", (e) => {
+  console.log(e.clientX, e.clientY);  // position in viewport
+  console.log(e.button);              // 0: left, 1: middle, 2: right
+});
+
+5) Event Flow: Capturing, Target, Bubbling
+Events travel in three phases:
+
+Capturing: window → document → ... → target (downwards)
+Target: event runs on the target element
+Bubbling: target → ... → document → window (upwards)
+
+By default, listeners run in the bubbling phase.
+
+parent.addEventListener("click", () => console.log("parent bubble")); // default
+child.addEventListener("click", () => console.log("child bubble"));
+
+parent.addEventListener("click", () => console.log("parent capture"), { capture: true });
+
+Clicking the child logs:
+parent capture   // capture phase
+child bubble     // target/bubble
+parent bubble    // bubble phase
+
+6) Prevent Default & Stop Propagation
+A. preventDefault() — stop the browser’s default action
+
+Prevent form submission navigation
+Prevent link navigation
+Prevent checkbox toggle (rarely)
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  // validate + do AJAX
+});
+``
+B. stopPropagation() — stop the event from traveling further up/down
+
+child.addEventListener("click", (e) => {
+  e.stopPropagation(); // parent listeners won't run
+});
+
+C. stopImmediatePropagation() — also stops other handlers on the same element
+btn.addEventListener("click", (e) => {
+  e.stopImmediatePropagation();
+});
+btn.addEventListener("click", () => console.log("will NOT run"));
+
+7) Event Delegation (Must‑Know Pattern)
+Handle events for many child elements with one listener on a common ancestor. Great for dynamic content.
+<ul id="todos">
+  <li data-id="1"><button class="remove">Remove</button></li>
+  <li data-id="2"><button class="remove">Remove</button></li>
+</ul>
+const list = document.getElementById("todos");
+
+list.addEventListener("click", (e) => {
+  const btn = e.target.closest(".remove");
+  if (!btn) return;                    // click not on a remove button
+  const li = btn.closest("li");
+  console.log("Remove item id:", li.dataset.id);
+  li.remove();
+});
+
+Why delegation?
+
+Fewer listeners → better performance
+Works for items added later (after page load)
+Cleaner code structure
+
+
+8) Bonus: Useful DOM Utilities
+A. DOMContentLoaded vs load
+
+document.addEventListener("DOMContentLoaded", () => {
+  // DOM is parsed and ready (preferred to start JS)
+});
+window.addEventListener("load", () => {
+  // Everything loaded (images, stylesheets)
+});
+
+
+B. Build lists efficiently with fragments
+const ul = document.querySelector("#items");
+const frag = document.createDocumentFragment();
+
+["Apple", "Banana", "Mango"].forEach(text => {
+  const li = document.createElement("li");
+  li.textContent = text;
+  frag.appendChild(li);
+});
+
+ul.appendChild(frag); // one reflow/repaint
+
+

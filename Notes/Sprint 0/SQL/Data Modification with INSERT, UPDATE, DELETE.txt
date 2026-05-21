@@ -1,0 +1,54 @@
+Data Modification with INSERT, UPDATE, DELETE
+
+⭐ 1. INSERT – Adding New Records
+✔ Purpose
+To add new rows into a table.
+
+✔ Syntax (Standard)
+INSERT INTO table_name (column1, column2, ...)
+VALUES (value1, value2, ...);
+
+✔ Example: Add a new employee
+Table: employees (emp_id, name, dept_id, salary)
+INSERT INTO employees (emp_id, name, dept_id, salary)
+VALUES (101, 'Sriram', 10, 60000);
+
+✔ Insert multiple rows
+INSERT INTO employees (emp_id, name, dept_id, salary)
+VALUES 
+(102, 'Priya', 20, 55000),
+(103, 'John', 10, 50000);
+
+✔ Insert without specifying column names
+(Only allowed if inserting in same order as table structure)
+INSERT INTO employees
+VALUES (104, 'David', 30, 70000);
+
+⭐ 2. UPDATE – Modify Existing Records
+✔ Purpose
+To change values of existing rows.
+
+✔ Syntax
+UPDATE table_name
+SET column1 = value1, column2 = value2
+WHERE condition;
+
+⚠ Very Important:
+Always use WHERE
+Otherwise, all rows will be updated.
+
+✔ Example: Increase salary of employee 101
+UPDATE employees
+SET salary = 65000
+WHERE emp_id = 101;
+
+⭐ 3. DELETE – Removing Records
+✔ Purpose
+To delete rows from a table.
+✔ Syntax
+DELETE FROM table_name
+WHERE condition;
+
+⚠ Never write DELETE without WHERE unless you want to remove all data!
+
+

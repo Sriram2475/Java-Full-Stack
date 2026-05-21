@@ -1,0 +1,440 @@
+1. Elements & Attributes
+
+HTML Element
+An element is the basic building block of an HTML page.
+
+It usually has:
+Opening tag
+Content
+Closing tag
+
+Example:
+<p>This is a paragraph.</p>
+Here, <p> is the element.
+
+HTML Attribute
+Attributes provide extra information about an element.
+They are written inside the opening tag.
+Example:
+<img src="img_girl.jpg" alt="Girl with a jacket">
+Here, src and alt are attributes.
+
+2. Formatting Tags
+These are tags used to format text.
+
+Tag - Description
+<b> - Bold text
+<strong> - Important (bold + semantic meaning)
+<i> - Italic text
+<em> - Emphasized text (semantic)
+<u> - Underline
+<mark> - Highlight text
+<small> - Smaller text
+<sup> - Superscript
+<sub> - Subscript
+<blockquote> - Long quotation
+<code> - Code formatting
+
+3. Lists
+
+HTML supports ordered, unordered, and description lists.
+
+✔ Unordered List (<ul>)
+<ul>
+  <li>Apple</li>
+  <li>Banana</li>
+</ul>
+
+✔ Ordered List (<ol>)
+<ol>
+  <li>First step</li>
+  <li>Second step</li>
+</ol>
+
+✔ Description List (<dl>)
+<dl>
+  <dt>HTML</dt> // data term
+  <dd>Hypertext Markup Language</dd> data description
+</dl>
+
+4. Table
+
+Tables are created using <table>, <tr>, <th>, and <td>.
+Example:
+<table border="1">
+  <tr>
+    <th>Name</th>
+    <th>Age</th>
+  </tr>
+  <tr>
+    <td>Ram</td>
+    <td>20</td>
+  </tr>
+</table>
+
+5. Forms & Input Tags
+
+Forms collect user input.
+Basic Structure:
+<form action="/submit" method="post">
+  <input type="text" name="username">
+  <input type="email" placeholder="Enter your email">
+  <input type="submit" value="Submit">
+</form>
+
+--action (Form attribute)
+What it means
+action tells the browser where to send the form data after you click submit.
+/submit is a URL path (usually a backend route).
+The browser will send the data to https://yourdomain.com/submit (if your site is https://yourdomain.com).
+If action is missing
+If you don’t write action, the form submits to the same page URL by default.
+
+-- method (Form attribute)
+What it means
+method tells the browser how to send the data (the HTTP method).
+Common methods
+✅ GET
+
+Sends data in the URL
+Used for search forms (non-sensitive)
+Data visible in browser address bar
+
+Example result:
+If user types html
+The browser will go to:
+/search?query=html
+code:
+<form action="/search" method="get">
+  <label>Search:</label>
+  <input type="text" name="query" placeholder="Search here">
+  <input type="submit" value="Search">
+</form>
+``
+
+✅ POST
+
+Sends data in the request body
+Better for login/register forms
+Data not shown in URL
+
+Your example:
+<form action="/submit" method="post">
+URL stays clean:
+When submitting, the URL stays:
+/submit
+Data sent internally:
+username=Sriram
+password=yourpassword
+
+When to use what?
+Use GET → search/filter, bookmarking results
+Use POST → login, signup, payment, file upload, sensitive data
+
+--type (Input attribute)
+What it means
+type tells the browser what kind of input field it is.
+In your example
+<input type="text">
+Creates a normal text box.
+
+--name (Input attribute)
+What it means
+name is the key/field name used when sending data to the server.
+Think of it like:
+✅ label for the data
+In your example
+<input type="text" name="username">
+If the user types: Sriram
+Then the form submits:
+
+GET → /submit?username=Sriram
+POST → body data: username=Sriram
+
+Important note
+If an input has no name, its value is NOT sent to the server.
+✅ name is crucial for backend processing.
+
+value (Input attribute)
+What it means
+value sets the default value of the input OR the text shown on buttons.
+In your submit button
+<input type="submit" value="Submit">
+The button displays Submit.
+
+For text inputs
+<input type="text" name="username" value="Ram">
+This will prefill the input box with Ram.
+Key difference: placeholder vs value
+
+placeholder → hint text (not submitted)
+value → actual value (submitted)
+
+
+Common Input Types:
+
+text → normal text
+number → numeric input
+email → validates email format
+password → hides characters
+checkbox → tick box
+radio → option selection
+date → date picker
+file → file upload
+submit → submits the form
+button → Creates a submit button.
+range
+
+--label
+Method 1: Using for and id attributes (most recommended)
+This links the label to the input using:
+id → on the input
+for → on the label
+Example:
+<label for="username">Username:</label>
+<input type="text" id="username" name="username">
+
+Method 2: Wrapping the input inside the label
+No need for for or id.
+Example:
+<label>
+  <input type="radio" name="gender" value="male">
+  Male
+</label>
+
+<label for="namebox">Name:</label>
+<input type="radio" name="" id="namebox">
+
+
+✔ Use Method 1 (for + id) when:
+
+Inputs and labels are separate visually
+You need a clean layout
+Accessibility is important
+
+✔ Use Method 2 (wrapping) when:
+
+You want a compact clickable area
+For checkboxes and radio buttons in lists
+
+
+6. Images
+
+Images are added using <img>.
+Example:
+<img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600">
+src → file path
+alt → text shown when image fails to load
+width, height → size
+
+7. Styles
+
+Styles define how elements look.
+You can apply CSS in 3 ways:
+✔ Inline CSS
+<p style="color:red;">Red text</p>
+✔ Internal CSS
+<style>
+  p { color: blue; }
+</style>
+✔ External CSS
+<link rel="stylesheet" href="mystyle.css">
+
+8. Placeholder
+
+Used in input fields to show hint text.
+Example:
+<input type="text" placeholder="Enter your name">
+
+9. Inline vs Block Elements
+
+Block Elements
+
+Start on a new line
+Take up full width
+
+Examples:
+<div>
+<p>
+<h1> to <h6>
+<table>
+<ul>, <ol>
+
+Example:
+<p>This is a block element.</p>
+
+Inline Elements
+
+Do not start on a new line
+Take only required width
+
+Examples:
+<span>
+<a>
+<img>
+<strong>
+<em>
+
+Example:
+<span>This is inline.</span>
+
+10. ID vs Class Attributes
+
+ID
+
+Used to uniquely identify one element
+Should not be duplicated
+Used commonly for JavaScript and CSS targeting
+
+Example:
+<p id="header">Welcome</p>
+
+Class
+
+Can be applied to multiple elements
+Used to style groups of elements
+
+Example:
+<p class="highlight">Text 1</p>
+<p class="highlight">Text 2</p>
+
+
+
+// Extra
+
+
+SECTION VS ARTICLE VS DIV
+
+SECTION
+✔ Semantic element
+✔ Represents a specific section of the page
+✔ Usually has a heading
+Use a <section> when the content has a theme or topic.
+Example:
+<section>
+  <h2>About Us</h2>
+  <p>We are a company that...</p>
+</section>
+
+ARTICLE
+✔ Semantic element
+✔ Represents self-contained content
+✔ Can stand alone even if removed from the page
+Use an <article> for content like:
+
+Blog posts
+News articles
+Comments
+Forum posts
+Example:
+<article>
+  <h2>How to Learn HTML</h2>
+  <p>Step 1: Start with basics...</p>
+</article>
+
+DIV
+✔ Non-semantic (generic)
+✔ Used purely for layout and styling
+✔ Has no meaning by itself
+Use a <div> when:
+
+No semantic tag is appropriate
+You need a container for CSS or layout
+
+<article>       <-- Independent content (blog post)
+   <section>    <-- Part of the article
+      <div>     <-- Layout or grouping
+         <span> <-- Inline styling/text
+
+
+
+🌟 1. What is a Wrapper?
+A wrapper is a <div> (or another container) used to wrap or hold multiple elements together.
+✔ Purpose:
+
+Creates a central container for the webpage
+Controls page width (e.g., max-width: 1200px)
+Adds margins/padding around the layout
+
+Example:
+<div class="wrapper">
+  <h1>Welcome</h1>
+  <p>This is a website.</p>
+</div>
+
+<style>
+.wrapper {
+  max-width: 1200px;
+  margin: 0 auto; /* centers the page horizontally */
+  padding: 20px;
+  background: #f5f5f5;
+}
+</style>
+📌 Why use a wrapper?
+To prevent your content from stretching across very large screens and to bring everything into a clean centered layout.
+
+🌟 2. What is a Layout Grid?(2D layout, Rows and columns, Page layout, galleries, Complete multi‑column layout)
+A CSS Grid layout is a powerful system used to create rows and columns, similar to designing a table—but more flexible.
+Used for:
+
+Creating modern page layouts
+Row/column designs
+Responsive layouts (desktop → mobile)
+
+Example:
+<div class="grid-container">
+  <div class="box">1</div>
+  <div class="box">2</div>
+  <div class="box">3</div>
+</div>
+
+<style>
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+  gap: 10px;
+}
+.box {
+  background: lightblue;
+  padding: 20px;
+}
+</style>
+📌 Result:
+Three equal columns side-by-side (like a 3-column layout).
+
+.
+
+🌟 3. What is a Flexbox Container? (1D layout, Row or column,Navbars, buttons, cards, Aligning items in one row)
+A flexbox container is a container with display: flex.
+It allows items to align horizontally or vertically, flexibly.
+Used for:
+
+Centering items easily
+Creating navbars
+Side‑by‑side boxes
+Equal-height elements
+Mobile responsive layouts
+
+Example:
+<div class="flex-container">
+  <div class="item">Home</div>
+  <div class="item">About</div>
+  <div class="item">Contact</div>
+</div>
+
+<style>
+.flex-container {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  align-items: center;
+}
+.item {
+  background: lightgreen;
+  padding: 10px;
+}
+</style>
+📌 Result:
+All items appear next to each other horizontally.
+
+

@@ -1,0 +1,202 @@
+✅ 1. Overview of ANSI SQL
+
+What is SQL?
+SQL (Structured Query Language) is a programming language used to interact with relational databases.
+Examples of relational databases: MySQL, PostgreSQL, Oracle, SQL Server, MariaDB, etc.
+What is ANSI SQL?
+ANSI SQL refers to the SQL standard defined by the American National Standards Institute (ANSI).
+It ensures that SQL language has a uniform, standard structure across all database systems.
+
+Think of ANSI SQL as official rulebook for SQL.
+Why ANSI SQL Exists
+Different database systems used to have their own SQL syntax.
+ANSI created a standard so developers can write SQL that works across systems.
+Examples of ANSI-standard commands:
+
+SELECT
+INSERT
+UPDATE
+DELETE
+CREATE TABLE
+WHERE, GROUP BY, ORDER BY etc.
+
+Key Idea
+ANSI SQL = common SQL syntax used by all databases, even though databases may also add their own features (called vendor extensions).
+
+✅ 2. Introduction to MySQL
+What is MySQL?
+MySQL is one of the most popular open‑source relational database management systems (RDBMS).
+Features of MySQL
+
+Open-source
+Highly scalable and fast
+Cross-platform (works on Windows, Linux, macOS)
+Widely used in full‑stack applications
+Supports large-scale databases
+
+Common Use Cases
+
+Backend for web applications
+E-commerce platforms (e.g., Magento)
+Content Management Systems (e.g., WordPress)
+Large enterprise systems
+
+MySQL SQL Dialect
+MySQL follows ANSI SQL, but also includes some MySQL‑specific features like:
+
+LIMIT clause (instead of FETCH FIRST)
+Custom functions like NOW(), CURDATE()
+Extra data types like TINYINT, MEDIUMTEXT
+
+
+✅ 3. Importance of Standard SQL (Why ANSI SQL Matters)
+
+1. Portability Across Databases
+If you write standard SQL, you can run it on:
+
+MySQL
+PostgreSQL
+Oracle
+SQL Server
+
+This avoids being "locked" into one database system.
+
+2. Easier Learning Curve
+Learning ANSI SQL gives you one universal foundation that applies to all DBMS.
+Once you know ANSI SQL keywords (SELECT, JOIN, GROUP BY), you can adapt to any database easily.
+3. Consistency and Reliability
+Standards ensure:
+
+Code behaves predictably
+Developers follow a uniform style
+Queries are easier to maintain
+
+4. Industry Requirement
+Companies prefer developers who understand standard SQL because:
+
+It reduces migration cost
+Simplifies onboarding
+Ensures clean, maintainable code
+
+📌 Simple Example Showing ANSI SQL vs MySQL-Specific SQL
+ANSI SQL:
+SELECT name, salary
+FROM employees
+FETCH FIRST 10 ROWS ONLY;
+
+MySQL equivalent:
+SELECT name, salary
+FROM employees
+LIMIT 10;
+
+Both do the same thing, but MySQL uses a vendor-specific extension.
+
+⭐ 1. What Is a Database?
+
+A database is an organized collection of data stored in a structured way so it can be easily accessed, managed, and updated.
+Example:
+
+Saving employee details
+Banking transactions
+E-commerce orders
+Social media user data
+
+
+⭐ 2. Types of Databases
+
+Databases come in many forms depending on how they store and manage data.
+(A) Relational Databases (RDBMS)
+
+Store data in tables (rows & columns)
+Use SQL for data operations
+Enforce relationships between tables
+
+Examples:
+
+MySQL
+Oracle
+PostgreSQL
+SQL Server
+
+Best for: Banking, finance, enterprise apps.
+
+(B) NoSQL Databases
+Store data in non-tabular formats.
+Types of NoSQL:
+Document Databases - MongoDB (stores JSON-like documents)
+Key-Value Stores - Redis
+Column-Oriented Databases - Cassandra
+Graph Databases - Neo4j
+Best for: Real-time apps, unstructured data, big data.
+
+(C) Cloud Databases
+Hosted on cloud platforms:
+Examples:
+Amazon RDS
+Google Cloud SQL
+Azure SQL Database
+
+(D) In‑Memory Databases
+Store data in RAM for ultra-fast performance.
+Example:
+Redis
+Memcached
+
+⭐ 3. What Is SQL?
+
+SQL (Structured Query Language) is the standard language used to interact with relational databases.
+SQL is used to:
+
+Create tables
+Insert data
+Retrieve data
+Update data
+Delete data
+
+All RDBMS (MySQL, Oracle, PostgreSQL, SQL Server) support SQL.
+
+⭐ 4. Categories of SQL Commands
+
+SQL commands are classified into five main categories:
+
+✔ 1. DDL – Data Definition Language
+Used to define or modify database structures.
+Commands:
+
+Command - Meaning
+CREATE - Create table/database
+ALTER - Modify a table’s structure
+DROP - Delete a table or database
+TRUNCATE - Remove all rows (keeps structure)
+RENAME - Rename table
+
+✔ 2. DML – Data Manipulation Language
+Used to insert, modify, delete data.
+Commands:
+
+Command - Meaning
+INSERT - Add new records
+UPDATE - Modify existing records
+DELETE - Remove records
+
+✔ 3. DQL – Data Query Language
+Used ONLY for retrieving data.
+
+Command - Meaning
+SELECT - Fetch data from tables
+
+✔ 4. TCL – Transaction Control Language
+Used to manage transactions.
+Command - Meaning
+COMMIT - Save changes
+ROLLBACK - Undo changes
+SAVEPOINT - Create a temporary point to rollback
+
+✔ 5. DCL – Data Control Language
+Used to control access to data.
+Command - Meaning
+GRANT - Give permissions
+REVOKE - Remove permissions
+Example:
+GRANT SELECT ON employees TO user1;
+

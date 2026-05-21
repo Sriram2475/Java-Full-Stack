@@ -1,0 +1,145 @@
+Debugging and Testing JavaScript
+
+⭐ 1) Debugging Tools in JavaScript
+Debugging means finding and fixing errors in your JS code.
+Modern browsers give powerful debugging tools inside Developer Tools.
+Open DevTools:
+→ Chrome / Edge: Press F12 or Ctrl + Shift + I
+
+✔ A. console for Debugging
+1) console.log()
+Prints values to the console.
+console.log("Value:", x);
+
+2) console.error()
+Prints errors in red.
+console.error("Something went wrong");
+
+3) console.table()
+Displays objects/arrays as tables.
+console.table([{name:"Sriram", age:22}, {name:"Abi", age:20}]);
+
+4) console.warn()
+Yellow warning messages.
+
+
+✔ B. Breakpoints (Most Important Debugging Feature)
+Breakpoints allow you to pause code execution line-by-line.
+How to set one
+
+Open DevTools
+Go to Sources tab
+Click on your JS file
+Click on the line number → blue marker appears
+Reload page → JS pauses at that line
+
+Now you can:
+
+Inspect variable values
+Step through code (step over / step into / step out)
+Watch expressions
+See call stack
+Resume execution
+
+Breakpoints are essential for real-world debugging.
+
+✔ C. debugger; Statement
+You can force a breakpoint using code.
+function calculate(x, y) {
+  debugger;        // DevTools will pause here
+  return x + y;
+}
+calculate(2, 3);
+
+✔ D. Network Panel (Useful for Fetch/AJAX debugging)
+Shows API request details:
+
+URL
+Method (GET, POST, etc.)
+Headers
+Response
+Status code
+Time taken
+
+Good for fixing Fetch API issues.
+
+✔ E. Console Live Editing
+In the Console, you can:
+
+Run JS instantly
+Test functions
+Print variables
+Try fixes before editing real files
+
+✔ F. Device Toolbar
+Useful for mobile responsive debugging:
+
+Toggle device mode
+Simulate different screens
+Debug mobile-specific issues
+
+⭐ 2) Testing JavaScript Code
+Testing ensures your code works correctly.
+There are two simple types you need for a refresher module:
+
+✔ A. Manual Testing (Beginner Level)
+Run code and manually test with DevTools:
+
+Try different inputs
+Click buttons
+Submit forms
+Check console output
+Check network calls
+
+This is good for small scripts or quick checks.
+
+✔ B. Unit Testing (Basic Introduction)
+Unit testing = Testing small pieces of code (functions).
+JavaScript uses libraries like:
+
+Jest (most popular)
+Mocha
+Jasmine
+
+But your refresher module only needs basic understanding, NOT full implementation.
+Example: Simple function
+function add(a, b) {
+  return a + b;
+}
+
+Example Test (using Jest format)
+
+test("adds numbers", () => {
+  expect(add(2, 3)).toBe(5);
+});
+
+What this means:
+
+test() → describes test
+expect() → checks a value
+toBe() → expected result
+
+✔ C. Why Testing Is Important
+
+Prevents bugs
+Ensures features continue working
+Helps in large applications
+Makes refactoring safe
+
+
+✔ D. Testing in Browser (Simple Way)
+If you don’t use Jest, you can still test functions in the browser console:
+
+console.log(add(2, 2) === 4 ? "PASS" : "FAIL");
+console.log(add(-1, 1) === 0 ? "PASS" : "FAIL");
+
+A simple manual testing technique.
+
+Topic - What You Need to Know
+Debugging Tools - console, breakpoints, debugger, DevTools
+Network Debugging - Inspect API calls, responses, errors
+Manual Testing - Running code, checking outputs
+Unit Testing Basics - test(), expect(), toBe() (conceptual)Importance - Prevent bugs, ensure correctness
+
+
+

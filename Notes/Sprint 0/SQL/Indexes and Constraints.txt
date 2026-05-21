@@ -1,0 +1,177 @@
+Indexes and Constraints
+
+⭐ 1. Indexes in SQL
+✔ What is an Index?
+An index is like a book’s index — it speeds up searching.
+Without an index:
+SQL scans every row → slow (FULL TABLE SCAN)
+With an index:
+SQL directly jumps to the matching rows → fast (INDEX SEEK)
+
+✔ Why do we need indexes?
+
+Speed up SELECT, WHERE, JOIN, ORDER BY
+Faster search on frequently queried columns
+Improve performance in large tables
+
+
+✔ Create an Index
+CREATE INDEX idx_emp_name
+ON employees(name);
+
+This improves queries like:
+SELECT * FROM employees WHERE name = 'Sriram';
+
+✔ Drop an Index
+DROP INDEX idx_emp_name ON employees;
+
+✔ When to use Indexes?
+Use indexes on:
+
+Columns used in WHERE
+Columns used in JOINs
+Columns used in ORDER BY
+Columns frequently searched
+
+⭐ 2. Constraints in SQL
+Constraints ensure data accuracy and consistency.
+Types:
+
+Primary Key
+Foreign Key
+Unique
+Check
+Not Null
+Default
+
+⭐ 3. PRIMARY KEY Constraint
+✔ Definition
+A PRIMARY KEY is a column that uniquely identifies each row + cannot be NULL.
+
+✔ Create table with primary key
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    salary DECIMAL(10,2)
+);
+
+✔ Add primary key to existing table
+ALTER TABLE employees
+ADD CONSTRAINT pk_emp
+PRIMARY KEY (emp_id);
+
+⭐ 4. FOREIGN KEY Constraint
+✔ Purpose
+To create relationship between two tables and ensure valid references.
+
+✔ Example
+ALTER TABLE employees
+ADD CONSTRAINT fk_dept
+FOREIGN KEY (dept_id)
+REFERENCES departments(dept_id);
+
+⭐ 5. UNIQUE Constraint
+✔ Purpose
+Ensures that values must be unique.
+(Unlike PRIMARY KEY, it can be NULL in MySQL.)
+
+✔ Example: Email must be unique
+ALTER TABLE employees
+ADD CONSTRAINT unique_email
+UNIQUE (email);
+
+⭐ 6. CHECK Constraint
+✔ Purpose
+To ensure column values satisfy a specific condition.
+
+✔ Example: Salary must be positive
+ALTER TABLE employees
+ADD CONSTRAINT chk_salary
+CHECK (salary > 0);
+
+⭐ 7. NOT NULL Constraint
+✔ Purpose
+Prevents a column from having NULL values.
+ALTER TABLE employees
+MODIFY name VARCHAR(50) NOT NULL;
+
+⭐ 8. DEFAULT Constraint
+✔ Purpose
+Assigns a default value when no value is provided.
+ALTER TABLE employees
+ADD CONSTRAINT default_salary
+DEFAULT 30000 FOR salary;
+
+
+⭐ 1. Clustered Index
+✔ Definition
+A clustered index physically stores the table rows in sorted order based on the index key.
+👉 The table itself becomes the index.
+✔ Only ONE clustered index allowed per table
+Because the table's physical order can be only one way.
+✔ Example
+If a clustered index is on:
+PRIMARY KEY (emp_id)
+The table rows are stored physically sorted by emp_id.
+
+ MySQL (Clustered = Primary Key)
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,     -- automatically clustered
+    name VARCHAR(50)
+);
+
+✔ SQL Server (Explicit Clustered Index)
+CREATE CLUSTERED INDEX idx_emp_id
+ON employees(emp_id);
+
+⭐ 2. Non‑Clustered Index
+✔ Definition
+A non-clustered index is a separate structure that stores:
+
+The indexed column
+A pointer to the actual row
+
+👉 Like a book index pointing to page numbers.
+✔ Many non-clustered indexes allowed
+✔ Example
+CREATE INDEX idx_name ON employees(name);
+
+✔ MySQL / PostgreSQL / SQL Server
+CREATE INDEX idx_emp_name
+ON employees(name);
+✔ SQL Server explicitly:
+CREATE NONCLUSTERED INDEX idx_emp_name
+ON employees(name);
+
+⭐ 3. Unique Index
+✔ Definition
+Ensures no two rows have the same value in this column.
+Also speeds up search.
+✔ Example
+CREATE UNIQUE INDEX idx_email ON users(email);
+
+⭐ 4. Composite Index (Multi-column Index)
+✔ Definition
+An index on two or more columns.
+✔ Example
+CREATE INDEX idx_dept_salary
+ON employees(dept_id, salary);
+
+⭐ 5. Hash Index
+✔ Definition
+Uses hashing internally. Very fast for equality (=).
+✔ Example usage
+
+WHERE id = 100 → very fast
+Range queries (>, <) → ❌ slow
+
+✔ Used In
+MySQL MEMORY tables
+PostgreSQL (Hash index type)
+
+
+CREATE INDEX idx_hash_name
+ON employees(name)
+USING HASH;
+
+

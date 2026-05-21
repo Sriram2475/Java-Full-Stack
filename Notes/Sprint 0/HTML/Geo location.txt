@@ -1,0 +1,112 @@
+Geo location
+
+1️⃣  Geolocation Methods
+
+The Geolocation API provides three main methods:
+
+1. getCurrentPosition()
+Retrieves the user’s current location once.
+Example:
+navigator.geolocation.getCurrentPosition(successCallback, errorCallback, options);
+Useful for apps that need the location only one time, e.g., a weather app.
+
+2. watchPosition()
+Continuously monitors the user's location and returns updates whenever the device moves.
+Example:
+navigator.geolocation.watchPosition(successCallback, errorCallback, options);
+Useful for navigation, fitness trackers, delivery tracking.
+
+3. clearWatch()
+Stops watching the user's location.
+Example:
+navigator.geolocation.clearWatch(watchId);
+Used to stop tracking when no longer needed.
+
+2️⃣ Location Properties (Inside the Position Object)
+
+When geolocation succeeds, the browser returns a Position object containing:
+
+position.coords.latitude
+position.coords.longitude
+position.coords.altitude
+position.coords.accuracy
+position.coords.altitudeAccuracy 
+position.coords.heading( Direction of movement in degrees (0-360) )
+position.coords.speed
+position.timestamp
+
+3️⃣ Handling Errors
+
+If geolocation fails, the API returns an error object with codes.
+
+function errorHandler(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            console.log("User denied location request");
+            break;
+
+        case error.POSITION_UNAVAILABLE:
+            console.log("Location information unavailable");
+            break;
+
+        case error.TIMEOUT:
+            console.log("Request timed out");
+            break;
+
+        case error.UNKNOWN_ERROR:
+            console.log("An unknown error occurred");
+            break;
+    }
+}
+
+4️⃣ Position Options
+
+You can customize location retrieval using the options object.
+
+var options = {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 0
+};
+
+✔ 1. enableHighAccuracy
+
+true: Uses GPS → more accurate, but slower + battery-heavy
+false: Uses Wi‑Fi or network → faster but less accurate
+
+✔ 2. timeout
+
+Maximum time (in milliseconds) to wait for a location.
+If exceeded → TIMEOUT error.
+
+✔ 3. maximumAge
+
+Accept cached locations.
+0 = always get a fresh location.
+Higher value = faster response but may be outdated.
+
+📌 Complete Example
+
+<script>
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPos, showErr, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        });
+    } else {
+        alert("Geolocation not supported by this browser.");
+    }
+}
+
+function showPos(position) {
+    console.log("Latitude: " + position.coords.latitude);
+    console.log("Longitude: " + position.coords.longitude);
+    console.log("Accuracy: " + position.coords.accuracy + " meters");
+}
+
+function showErr(error) {
+    console.error("Error: " + error.message);
+}
+</script>

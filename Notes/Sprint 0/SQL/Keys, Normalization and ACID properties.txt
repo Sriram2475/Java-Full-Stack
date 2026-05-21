@@ -1,0 +1,288 @@
+Keys, Normalization and ACID properties
+
+1. KEYS in DBMS
+Keys are used to uniquely identify records and to create relationships between tables.
+Below are the main keys, explained simply:
+
+⭐ 1. Primary Key
+A column (or combination of columns) that uniquely identifies each row and cannot be NULL.
+Example:
+emp_id INT PRIMARY KEY
+📌 Rules:
+
+Must be unique
+Cannot be NULL
+Only one primary key per table
+
+⭐ 2. Foreign Key
+A column in one table that refers to the primary key of another table.
+Example:
+FOREIGN KEY (dept_id) REFERENCES departments(dept_id)
+
+📌 Ensures referential integrity:
+
+Prevents invalid department IDs
+Maintains relationship between tables
+
+⭐ 3. Candidate Key
+Columns that are eligible to become primary keys because they are unique.
+Example:
+In a users table:
+
+email → unique
+phone → unique
+username → unique
+
+All these are candidate keys, but only one becomes primary key.
+
+
+⭐ 4. Alternate Key
+Candidate keys other than the primary key.
+Example:
+Primary key → emp_id
+Alternate keys → email, mobile
+
+⭐ 5. Composite Key
+A primary key made up of multiple columns.
+Example:
+PRIMARY KEY (order_id, product_id)
+Used when no single column uniquely identifies the row.
+
+⭐ 6. Super Key
+Any combination of attributes that uniquely identifies a record.
+Example:
+emp_id + name is still unique → super key
+But unnecessary extra columns → not minimal.
+Candidate keys are minimal super keys.
+
+⭐ 7. Unique Key
+Ensures all values are unique, but allows NULL (in MySQL).
+Example:
+UNIQUE(email)
+
+⭐ 8. Surrogate Key
+A system-generated key, usually auto-increment.
+Example:
+id INT AUTO_INCREMENT
+Used when natural keys (email, username) are not enough.
+
+ 2. NORMALIZATION in DBMS
+Normalization is the process of organizing data to reduce:
+
+redundancy (duplicate data)
+anomalies (insert/update/delete problems)
+
+There are many normal forms, but you mainly need 1NF, 2NF, 3NF.
+
+⭐ 1NF — First Normal Form
+Rules:
+
+Each cell must hold a single value
+No repeating groups
+No arrays, no multiple values
+
+❌ Wrong:
+skills: "Java, SQL, React"
+
+✔ Correct:
+skill: Java  
+skill: SQL  
+skill: React
+
+
+⭐ 2NF — Second Normal Form
+Table must be:
+
+In 1NF
+No partial dependency
+Meaning:
+No non-key column should depend on only part of a composite primary key.
+
+Applies only when primary key is composite.
+
+⭐ 3NF — Third Normal Form
+Table must be:
+
+In 2NF
+No transitive dependency
+Meaning:
+Non-key columns should NOT depend on other non-key columns.
+
+Example:
+employee → dept_id → dept_name  ❌
+
+Dept name should be in departments table, not employee table.
+
+Normal Form - Meaning
+1NF - No repeating values; atomic columns
+2NF - No partial dependency on composite key
+3NF - No transitive dependency; remove derived data
+
+3. ACID Properties in DBMS
+ACID ensures reliable, safe, and consistent transactions in a database.
+
+⭐ A — Atomicity
+A transaction is all or nothing.
+If any part fails → the whole transaction rolls back.
+Example:
+
+Deduct money from account A
+Add money to account B
+If B fails, A must rollback.
+
+⭐ C — Consistency
+After a transaction, data must be in a valid state, following rules and constraints.
+Example:
+If salary must be > 0
+A transaction cannot leave salary = -1000.
+
+⭐ I — Isolation
+Multiple transactions should not affect each other.
+Each transaction works as if it’s running alone.
+Example:
+Two users booking the same seat at the same time → isolation prevents double booking.
+
+⭐ D — Durability
+Once a transaction is committed:
+
+Data is permanently saved
+Even if server crashes, power goes out, system restarts
+Database will recover committed data
+
+
+Atomicity - All or nothing
+Consistency - Valid data state
+Isolation - Transactions don’t interfere
+Durability - Data saved permanently
+
+⭐ First — Understand the Scenario
+We have a table storing which student enrolled in which course, and the department of that course.
+❌ Unnormalized Table (Bad Design)
+student_id - course_id - course_name - dept_name
+1 - C101 - DBMS - Computer Science
+2 - C102 - Networks - Computer Science
+3 - C103 - Accounting - Commerce
+
+Composite primary key:
+(student_id, course_id)
+(because one student can enroll in multiple courses)
+
+⭐ 2NF (Second Normal Form)
+✔ No Partial Dependency
+A partial dependency means:
+
+A non-key column depends on part of a composite primary key.
+
+In the example:
+Primary key = student_id + course_id
+Non-key columns = course_name, dept_name
+Let’s check dependencies:
+
+course_name depends on course_id only → partial dependency ❌
+dept_name depends on course_id only → partial dependency ❌
+Student details depend on student_id only
+
+So the table violates 2NF.
+
+⭐ Fixing the table to achieve 2NF
+We break the table into two tables:
+✔ Table 1: Student_Enrollment
+(Composite key: student_id + course_id)
+
+student_id - course_id
+1 - C101
+2 - C102
+3 - C103
+
+✔ Table 2: Courses
+(Primary key: course_id)
+course_id - course_name - dept_name
+C101 - DBMS - Computer Science
+C102 - Networks - Computer Science
+C103 - Accounting - Commerce
+
+Now:
+No non-key column depends on only part of the key → 2NF achieved 🎉
+
+⭐ 3NF (Third Normal Form)
+✔ No Transitive Dependency
+A transitive dependency means:
+
+A non-key column depends on another non-key column.
+
+Let’s look at the Courses table again:
+
+course_id - course_name - dept_name
+C101 - DBMS - Computer Science
+C102 - Networks - Computer Science
+C103 - Accounting - Commerce
+
+🔎 Is there a transitive dependency?
+
+course_id → determines course_name
+course_id → determines dept_name
+BUT dept_name depends on course_name (indirect dependency)
+
+For example:
+Course “DBMS” always belongs to “Computer Science”.
+Thus:
+course_id → course_name → dept_name
+This is a transitive dependency ❌
+
+⭐ Fixing the table to achieve 3NF
+Split the Courses table into two tables:
+✔ Table 2: Courses
+course_id - course_name - dept_id
+C101 - DBMS - D01
+C102 - Networks - D01
+C103 - Accounting - D02
+
+✔ Table 3: Departments
+dept_id - dept_name
+D01 - Computer Science
+D02 - Commerce
+
+Now:
+
+course_id → course_name
+dept_id → dept_name
+No non-key column depends on another non-key column → 3NF achieved 🎉
+
+⭐ Final Summary (Very Easy to Remember)
+
+Normal Form - What to Remove? - Example Problem - Fix
+2NF - Partial dependency - course_name depends only on course_id - Split into course table
+3NF - Transitive dependency - dept_name depends on course_name - Create department table
+
+⭐ Ultra Simple Definitions
+✔ Partial Dependency
+Non-key column depends on part of a composite primary key.
+Example:
+course_name depends only on course_id → violate 2NF
+
+✔ Transitive Dependency
+Non-key column depends on another non-key column.
+Example:
+dept_name depends on course_name → violate 3NF
+
+UNNORMALIZED (all in one table)
+      ↓
+1NF (atomic columns)
+      ↓
+2NF (remove partial dependency)
+  → Split course table
+      ↓
+3NF (remove transitive dependency)
+  → Split department table
+
+ SQL uses:
+
+What acts “similar” to NULL? (Conceptually)
+
+NULL → missing/unknown
+DEFAULT → if no value provided
+'' empty string → NOT NULL
+0 → NOT NULL
+FALSE → NOT NULL
+
+These are NOT equivalent to NULL.

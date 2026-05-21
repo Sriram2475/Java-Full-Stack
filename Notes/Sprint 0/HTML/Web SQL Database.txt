@@ -1,0 +1,131 @@
+Web SQL Database
+
+1. What is Web SQL Database?
+
+Web SQL Database is a browser API that allows web apps to store structured data locally using a relational database model and query it with SQL (SQLite dialect).
+
+It lets you create tables, insert/update data, and run SQL queries inside the browser.
+Works only on browsers that historically implemented SQLite-backed Web SQL (Chrome, Safari, older Opera).
+It is not part of HTML5 spec, only a legacy separate spec.
+
+2. openDatabase() — The Entry Point
+
+openDatabase() creates or opens a client-side SQL database.
+📌 Syntax
+var db = openDatabase(name, version, displayName, estimatedSize, creationCallback);
+
+📌 What each argument means
+According to Tizen Docs & multiple tutorials:
+
+name — database name (string)
+version — expected version (string; empty string allows any version)
+displayName — human-readable description
+estimatedSize — suggested DB size in bytes (browsers may ask permission if large)
+creationCallback (optional) — called only once when DB is created 
+
+Example
+const db = openDatabase("mydb", "1.0", "Test DB", 2 * 1024 * 1024);
+
+3. transaction() — The Core of Web SQL
+
+Web SQL requires that all SQL statements run inside a transaction.
+
+You cannot run executeSql() outside a transaction.
+
+📌 Why transactions?
+Transactions in Web SQL ensure:
+
+Atomicity → All queries succeed or none do
+Consistency → Rollback on errors
+Isolation → Avoid race conditions
+Durability → Results persist locally
+
+This mirrors classic RDBMS behavior.
+
+📌 Syntax
+db.transaction(transactionCallback, errorCallback, successCallback);
+
+Where:
+
+transactionCallback(tx) — required; receives a tx object
+errorCallback(err) — optional; triggers if transaction fails
+successCallback() — optional; triggers after commit
+
+Example:
+
+db.transaction(function(tx) {
+  tx.executeSql("CREATE TABLE IF NOT EXISTS LOGS (id unique, log)");
+  tx.executeSql("INSERT INTO LOGS (id, log) VALUES (?, ?)", [1, "hello"]);
+});
+
+Callback Order Confusion
+
+transaction() uses: (transactionCallback, errorCallback, successCallback)
+But executeSql() uses: (sql, params, successCallback, errorCallback)
+This mismatch is documented in StackOverflow discussions.
+
+4. readTransaction() vs transaction()
+
+Web SQL supports two kinds of transactions:
+Method - Permissions - Use Case
+readTransaction() - READ ONLY - SELECT queries only
+transaction() - READ + WRITE - CREATE/INSERT/UPDATE/DELETE
+
+5. executeSql() — Running Queries Inside Transactions
+📌 Syntax
+tx.executeSql(sqlStatement, parametersArray, successCallback, errorCallback);
+
+Source-backed explanation:
+
+sqlStatement — the SQL query (required)
+parametersArray — values for ? placeholders (optional)
+successCallback(tx, result) — receives rows, rowsAffected, etc.
+errorCallback(tx, error) — receives SQL error objects
+
+Example (SELECT)
+db.readTransaction(function(tx) {
+  tx.executeSql(
+    "SELECT * FROM LOGS",
+    [],
+    function(tx, results) {
+      for (let i = 0; i < results.rows.length; i++) {
+        console.log(results.rows.item(i));
+      }
+    }
+  );
+});
+
+6. How These Concepts Matter in React (Java FSE Perspective)
+
+Although Web SQL is deprecated, understanding it helps you reason about state, persistence, and async programming.
+🔹 How React interacts with Web SQL (if you maintain legacy apps)
+
+Open DB in a useEffect()
+useEffect(() => {
+  const db = openDatabase("appdb", "1.0", "App DB", 2 * 1024 * 1024);
+  setDb(db);  
+}, []);
+Initialize tables in another useEffect() that depends on the DB
+Wrap transactions in JavaScript Promises for cleaner React usage
+Trigger CRUD operations from UI events
+
+🔹 Skills this teaches you as a Java FSE
+
+Client-side persistence models
+Async callbacks vs Promises (good React mental model)
+SQL thinking (aligns with JDBC/JPA mental model)
+Understanding why modern apps moved to IndexedDB
+
+7. Modern Replacement: IndexedDB (Industry Standard)
+
+MDN notes that IndexedDB is now the recommended browser-based database:
+
+Works offline
+Stores structured data
+Supports transactions
+Supported across all browsers
+
+Chrome Developers explicitly recommend:
+
+IndexedDB, or
+SQLite compiled to WASM + OPFS for SQL needs

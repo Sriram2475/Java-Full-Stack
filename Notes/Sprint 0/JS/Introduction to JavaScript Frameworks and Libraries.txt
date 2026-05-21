@@ -1,0 +1,251 @@
+Introduction to JavaScript Frameworks and Libraries
+
+⭐ 1) Overview of Popular JavaScript Frameworks and Libraries
+JavaScript frameworks and libraries help you build interactive web applications faster, with less code, and with better structure.
+Here’s a quick overview of the most commonly used ones today.
+
+✔ 1. React (Library)
+
+Created by Facebook.
+Used for building UI components.
+Fast because of Virtual DOM.
+Basis for modern frontend development.
+Used in real projects (your training: React FSE).
+
+Why React is popular:
+
+Component‑based
+Fast rendering
+Huge ecosystem (hooks, Redux, React Router)
+
+✔ 2. Angular (Full Framework)
+
+Created by Google.
+Complete MVC framework (routing, services, dependency injection).
+Uses TypeScript heavily.
+
+Used for:
+
+Large enterprise applications (complex dashboards, portals)
+
+✔ 3. Vue.js (Framework)
+
+Lightweight, beginner‑friendly
+Combines best features of Angular + React
+Reactive data binding
+
+Used for:
+
+Small to medium-sized apps
+Easy learning curve
+
+✔ 4. jQuery (Library)
+
+One of the first popular JS libraries
+Used for:
+
+Easy DOM manipulation
+Selecting elements
+Adding events
+Animations
+AJAX calls (before Fetch existed)
+
+Note: Modern JS and frameworks have replaced jQuery in most projects, but learning basics is useful for legacy codebases.
+
+✔ 5. Node.js (Runtime environment)
+(Not a framework, but important)
+
+Allows JavaScript to run on the server.
+Used for backend APIs, real-time apps, etc.
+
+Why Frameworks/Libraries Are Used?
+
+To speed up development
+Provide structure for apps
+Handle complexity (routing, state, rendering)
+Write less code for common tasks
+Create scalable, maintainable projects
+
+Core Difference (In One Line)
+
+A library gives you tools you call.
+A framework calls your code and controls the flow.
+
+This is the popular explanation using Inversion of Control.
+
+1. What is a Library?
+A library is a collection of reusable functions you can call whenever you need them.
+✔ You are in control
+You decide:
+
+When to call it
+Where to use it
+How to combine it
+
+Example (library usage)
+_.map([1, 2, 3], n => n * 2);  // Lodash library
+``
+You call Lodash.
+You control the flow.
+Popular JavaScript libraries
+
+Lodash
+jQuery
+Axios
+Mongoose
+Chart.js
+
+
+2. What is a Framework?
+A framework provides a complete structure for your application.
+✔ The framework is in control
+It decides:
+
+App structure
+When your code runs
+Rules you must follow
+
+This is called Inversion of Control (IoC).
+The framework “calls you,” not the other way around.
+
+Example (framework usage – Express.js)
+
+app.get('/user', (req, res) => {
+  res.send("Hello");
+});
+
+You don’t call Express.
+Express calls your function when a request arrives.
+Popular JavaScript frameworks
+
+Express.js
+Next.js
+NestJS
+Angular
+React (often called a library, but behaves like a framework in many ways)
+
+Item - Meaning
+Library - Like buying tools. You decide what to build.
+Framework - Like entering a fully built house and customizing rooms. The structure is predefined.
+
+--Why React is considered a library (officially)
+React’s own documentation calls it:
+
+“a JavaScript library for building user interfaces.”
+
+This is because React focuses on just one thing:
+
+Rendering UI components
+
+It does not include:
+
+Routing
+State management (externally handled by Redux, Zustand, MobX, etc.)
+Form handling
+Data fetching (React Query, SWR, Axios)
+Build tools (Vite, Webpack, etc.)
+Side-effect handling
+Application structure
+
+So React by itself is small and focused → library.
+
+🔥 Why many developers call React a framework in practice
+When you build a real React app, you don’t use React alone.
+You use the React ecosystem, which becomes:
+
+Routing → React Router
+State → Redux / Zustand
+Data fetching → React Query
+Framework features → Next.js / Remix
+Build tool → Vite / CRA
+
+Together, this ecosystem behaves like a framework.
+So React often becomes “framework-like” once you add everything needed to build an application.
+
+Is React a library or a framework?
+
+Give this perfect answer:
+✔️ React is a library, because it only handles the UI layer.
+✔️ But it behaves like a framework in real-world use because the ecosystem provides routing, state, data management, etc.
+✔️ Tools like Next.js turn React into a full framework.
+
+⭐ 2) jQuery for DOM Manipulation
+Even though modern JavaScript can do most things jQuery does, many older projects still use it.
+The refresher module expects you to know basic jQuery syntax.
+
+✔ A. How to include jQuery
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+✔ B. jQuery Basics (Syntax)
+jQuery uses $ as its main function.
+Selecting Elements
+$("#title")        // select element with id="title"
+$(".item")         // select elements with class="item"
+$("p")             // select all <p> elements
+
+✔ C. Changing Text & HTML
+$("#title").text("New Text");          // sets text
+$("#title").html("<b>Bold Text</b>");  // sets HTML
+
+✔ D. Changing CSS
+$("#title").css("color", "blue");
+$("#box").css({
+  width: "200px",
+  backgroundColor: "yellow"
+});
+
+✔ E. Event Handling
+$("#btn").click(function () {
+  alert("Button clicked!");
+});
+
+Other events:
+
+hover()
+keyup()
+submit()
+change()
+
+✔ F. Hiding & Showing Elements
+$("#box").hide();
+$("#box").show();
+$("#box").toggle();
+Effects (animations):
+$("#box").fadeIn();
+$("#box").fadeOut();
+$("#box").slideDown();
+
+✔ G. Adding & Removing Elements
+$("ul").append("<li>New item</li>");   // add at end
+$("ul").prepend("<li>Start item</li>");// add at start
+$("#item1").remove();                  // remove element
+
+✔ H. AJAX with jQuery
+Before Fetch API, jQuery AJAX was the easiest way:
+$.ajax({
+  url: "https://jsonplaceholder.typicode.com/posts/1",
+  method: "GET",
+  success: function (data) {
+    console.log(data);
+  },
+  error: function (err) {
+    console.error(err);
+  }
+});
+
+Today, fetch() is preferred, but this is still used in legacy apps.
+
+⭐ Summary
+Overview of JS Frameworks
+
+React → UI components, virtual DOM
+Angular → full framework, TypeScript
+Vue → simple, reactive
+jQuery → DOM manipulation (older projects)
+Node.js → JS runtime for backend
+
+
+
+
+
+

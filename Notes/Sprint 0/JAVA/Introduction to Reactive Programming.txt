@@ -1,0 +1,253 @@
+Introduction to Reactive Programming
+
+1️⃣ Reactive Programming Fundamentals
+
+Reactive Programming is a new programming style for building fast, scalable, and non-blocking applications.
+Reactive Programming is a style where:
+✔ Your program reacts to events, data, or changes
+✔ Everything is based on asynchronous, non‑blocking flows
+✔ You work with streams of data, not single values
+✔ You use operators to transform/handle data
+Traditional programming → request → wait → response
+Reactive programming → request → don’t wait → react when result arrives
+
+✔ Traditional Programming (Blocking)
+Imagine you go to a restaurant:
+
+You order food
+You WAIT at the counter
+Only after you get the food, you leave
+
+🛑 This is BLOCKING
+Other customers behind you also wait.
+✔ Reactive Programming (Non-blocking)
+Reactive approach is like placing an order and sitting at your table:
+
+You place order
+You don’t wait
+You do something else (talk, scroll phone)
+They react by bringing your food when ready
+
+🟢 This is NON-BLOCKING
+
+⭐ Simple Example
+Traditional (blocking)
+String data = fetchData();   // waits
+System.out.println(data);
+
+Reactive (non-blocking)
+fetchReactiveData()
+    .subscribe(data -> System.out.println(data));
+
+The function returns immediately → code continues → when data arrives, it reacts.
+
+✔ What makes Reactive Programming special?
+1️⃣ Asynchronous
+The code does not wait.
+It continues and reacts when data is ready.
+2️⃣ Non-blocking
+Threads are not blocked (no waiting).
+3️⃣ Event-driven
+Everything works like events:
+
+Data arrived event
+Error event
+Completed event
+4️⃣ Stream-based
+Work with streams of data, not single values.
+5️⃣ Backpressure
+Subscriber controls how fast data comes
+6️⃣ Highly scalable
+Because threads are never stuck waiting.
+
+⭐ Why Reactive?
+Reactive is useful when you have:
+✔ High‑traffic apps
+✔ Real-time streaming
+✔ Microservices
+✔ APIs that call other APIs
+✔ Systems needing scalability
+✔ Load handling
+Reactive handles 10x or 100x more requests because it is non-blocking.
+
+
+2️⃣ Reactive Streams & Backpressure
+
+What is a Reactive Stream?
+A Reactive Stream is simply a flow of data over time, like:
+1 ---- 2 ---- 3 ---- 4 ---- 5
+
+A subscriber watches this stream and reacts to values as they come.
+Reactive Streams define 4 main parts:
+
+Publisher → produces data
+Subscriber → consumes data
+Subscription → manages relationship Connects publisher & subscriber
+Processor → acts as both (optional)
+
+✔ Example: Simple Data Stream
+Publisher: 1 → 2 → 3 → 4 → 5
+Subscriber receives: 1, 2, 3, 4, 5
+
+⭐ What is Backpressure?
+Backpressure = the subscriber tells the publisher how much data it can handle.
+Without Backpressure
+Publisher sends data too fast → subscriber crashes.
+With Backpressure
+Subscriber: “I can handle 2 items now.”
+Publisher: “Okay, I will send only 2.”
+→ This prevents overloads.
+
+✔ Real-world analogy
+Imagine a water tank:
+
+Publisher = water pipe
+Subscriber = tank
+Backpressure = valve controlling speed
+
+If water comes too fast, tank overflows.
+The valve (backpressure) controls flow rate.
+
+⭐ Simple Backpressure Example (concept)
+Publisher produces: 100 items/sec  
+Subscriber can process: 10 items/sec  
+
+Backpressure prevents subscriber crash by slowing the publisher.
+
+3️⃣ Project Reactor Basics (used in Spring WebFlux)
+
+Project Reactor is the most popular Reactive library in Java (used in Spring Boot).
+Project Reactor = Reactive library created by Pivotal, used by Spring WebFlux.
+It is the most popular reactive library in Java.
+It provides two main types:
+
+⭐ 1. Mono
+Represents 0 or 1 value.
+Example:
+Mono<String> mono = Mono.just("Hello");
+mono.subscribe(System.out::println);
+
+Output:
+Hello
+
+Empty Mono
+Mono.empty();
+
+Mono with error
+Mono.error(new RuntimeException("Error!"));
+
+⭐ 2. Flux
+Represents a stream of 0 to many values.
+Example:
+Flux<Integer> flux = Flux.just(1, 2, 3, 4);
+flux.subscribe(System.out::println);
+
+
+Output:
+1  
+2  
+3  
+4
+
+Range
+Flux.range(1, 5);
+
+Flux with delay (asynchronous data)
+Flux.interval(Duration.ofSeconds(1))
+    .take(5)
+    .subscribe(System.out::println);
+
+
+⭐ Basic Operators (very important)
+Map – transform data
+Flux.just(1,2,3)
+    .map(n -> n * 10)
+    .subscribe(System.out::println);
+
+Filter – keep only matching values
+Flux.range(1,10)
+    .filter(n -> n % 2 == 0)
+    .subscribe(System.out::println);
+
+FlatMap (async mapping)
+Flux.just("A", "B")
+    .flatMap(letter -> Mono.just(letter.toLowerCase()))
+    .subscribe(System.out::println);
+
+doOnNext() – debugging/logging
+Flux.range(1,5)
+    .doOnNext(i -> System.out.println("Received: " + i))
+    .subscribe();
+
+Delay
+Flux.range(1,5)
+    .delayElements(Duration.ofSeconds(1))
+    .subscribe(System.out::println);
+
+4️⃣ Concurrency in Reactive Programming
+
+Reactive programming automatically handles concurrency for you.
+No threads, no thread pools, no synchronization needed.
+
+Reactor uses Schedulers to decide WHERE the code runs.
+Reactive programming handles concurrency automatically, without you creating threads manually.
+
+⭐ Schedulers in Reactor
+Schedulers decide where your code runs.
+Common Schedulers:
+
+Scheduler - Use Case
+Schedulers.parallel() - CPU intensive tasks
+Schedulers.boundedElastic() - Blocking tasks (I/O, DB)
+Schedulers.single() - Run on a single thread
+Schedulers.immediate() - Run on the current thread
+
+⭐ Example: Let a Flux run on a different thread
+Flux.range(1,5)
+    .publishOn(Schedulers.parallel())
+    .subscribe(n -> {
+        System.out.println(n + " on " + Thread.currentThread().getName());
+    });
+
+You will see output like:
+1 on parallel-1
+2 on parallel-1
+3 on parallel-2
+4 on parallel-2
+5 on parallel-3
+
+Different threads = automatic concurrency.
+
+⭐ What makes Reactive Concurrency powerful?
+✔ You don’t create threads
+✔ No blocking
+✔ Concurrency is handled by Schedulers
+✔ Handles thousands of requests elegantly
+✔ Threads are reused (not created again and again)
+
+⭐ Why Reactive is better than Threads?
+
+Traditional Threads - Reactive
+Many threads needed - Few threads reused
+Blocking - Non-blocking
+Hard to scale - Highly scalable
+Difficult code - Simple pipeline
+Manual sync - Automatically thread-safe
+
+Reactive can handle thousands of requests with just a few threads.
+
+
+
+📌 FINAL SUMMARY (Super Simple)
+
+Concept - Meaning
+Reactive Programming - Async, non-blocking, event-driven
+Reactive Streams - Publisher → Subscriber data flow Specification with Publisher, Subscriber, Backpressure
+Backpressure - Subscriber controls publisher speed (how fast data comes)
+Project Reactor - Java reactive library (Mono + Flux)
+Mono - 1 value
+Flux - Many values
+Schedulers - Manage concurrency (parallel, elastic, single)
+Schedulers - Control threads & concurrency
+
+

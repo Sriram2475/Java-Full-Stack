@@ -1,0 +1,172 @@
+🌟 CSS Styling
+
+1️⃣ CSS Color
+Color in CSS is used to set the color of text, borders, backgrounds, shadows, and more.
+
+✔ Ways to define color
+Method - Example - Notes
+Named Colors - red, blue, green - Simple but limited
+Hexadecimal - #ff0000, #00ff00 - Most common
+RGB - rgb(255,0,0) - Red–Green–Blue values
+RGBA - rgba(255,0,0,0.5) - Includes transparency
+HSL - hsl(360, 50%, 50%) - Hue–Saturation–Lightness
+HSLA - hsla(360, 50%, 50%, 0.5) - Includes transparency
+
+✔ Example:
+h1 {
+  color: #4CAF50;
+}
+
+2️⃣ CSS Background
+CSS background properties are used to control the appearance of background colors and images.
+
+✔ Common background properties
+Property - Description
+background-color - Sets background color
+background-image - Applies an image
+background-repeat - Repeat behavior (repeat, no-repeat)
+background-size - Controls image size (cover, contain)
+background-position - Sets starting position (center, top)
+background-attachment - scrolling or fixed background
+
+✔ Example:
+body {
+  background-color: #f0f0f0;
+  background-image: url("bg.jpg");
+  background-size: cover;
+}
+
+3️⃣ CSS Fonts
+Controls how text appears: typeface, style, size, etc.
+
+✔ Common font properties
+Property - Description
+font-family - Sets the typeface
+font-size - Sets text size
+font-style - italic, normal
+font-weight - boldness
+font-variant - small-caps
+font - shorthand property
+
+✔ Example:
+p {
+  font-family: "Arial", sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+4️⃣ CSS Text
+Text properties define alignment, spacing, decoration, shadow, and behavior.
+
+✔ Important text properties
+Property - Description
+text-align - left, right, center, justify
+text-decoration - underline, line-through
+text-transform - uppercase, lowercase, capitalize
+letter-spacing - spacing between letters
+line-height - spacing between lines
+text-shadow - adds shadow
+
+✔ Example
+h2 {
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 6px gray;
+}
+
+5️⃣ CSS Links
+Links can have different styles depending on their state:
+
+✔ Link states
+State - Description
+a:link - Unvisited link
+a:visited - Link already clicked
+a:hover - Mouse pointer over link
+a:active - When link is clicked
+
+✔ Example
+a:link {
+  color: blue;
+}
+a:hover {
+  color: red;
+  text-decoration: underline;
+}
+
+6️⃣ CSS Lists
+Lists (<ul>, <ol>) can have customized bullets, numbering, spacing, and indentation.
+
+✔ Important list properties
+Property - Description
+list-style-type - circle, square, decimal, roman
+list-style-position - inside or outside
+list-style-image - custom bullet image
+list-style - shorthand property
+
+✔ Example
+ul {
+  list-style-type: square;
+  padding-left: 25px;
+}
+
+7️⃣ CSS Tables
+Allows styling of table structure, borders, spacing, layout, and alternating row colors.
+
+✔ Important table properties
+Property - Description
+border - border thickness and color
+border-collapse - collapses table borders
+padding - spacing in cells
+text-align - alignment within cells
+width/height - table dimensions
+background-color - cell/row color
+
+✔ Example:
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #333;
+  padding: 10px;
+}
+
+
+🌟 1. CSS Shorthand Properties 
+
+Shorthand properties in CSS allow you to write multiple related CSS properties in a single line, making your code cleaner and faster.
+
+1. margin shorthand
+Instead of writing:
+margin-top: 10px;
+margin-right: 20px;
+margin-bottom: 10px;
+margin-left: 20px;
+Order (clockwise):
+margin: top right bottom left;
+
+similarly for  
+2. padding shorthand (padding: 10px 15px 20px 15px;)
+3. border shorthand (width + style + color)(border: 2px solid black;)
+4. font shorthand(font: italic bold 18px/1.5 "Arial", sans-serif;)
+Breakdown:
+font-style: italic
+font-weight: bold
+font-size: 18px
+line-height: 1.5
+font-family: Arial
+5. background shorthand(background: url("image.jpg") no-repeat center/cover #f0f0f0;)
+Includes:
+background-color
+background-image
+background-repeat
+background-position
+background-size
+6. list-style shorthand(list-style: square inside;)
+7. animation shorthand(animation: fadeIn 2s ease-in-out 1s infinite alternate;)
+8. transition shorthand(transition: all 0.3s ease-in-out;)
+
+
+ 
+

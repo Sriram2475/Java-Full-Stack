@@ -1,0 +1,782 @@
+Multithreading and Concurrency
+
+"Sleeping" -- usually means that the thread is in an explicit sleep(...) call.
+
+"Suspended" -- sometimes is used in a generic way, meaning that the thread is waiting for ...something. Other times, "Suspended" means that some other thread or process explicitly suspended it (e.g., for debugging purposes), and the process/thread will not be able to run again until it is explicitly resumed.
+
+"Blocked" -- is the most generic of the three. Often it merely means that the process/thread is waiting for something. Sometimes it implies that what the thread/process is waiting for is an I/O operation.
+
+
+1) Introduction to Multithreading
+What is a thread?
+A thread is a small worker running inside your program (process).
+A program can have one thread (single‑threaded) or many (multi‑threaded).
+A thread is a lightweight unit of execution inside a process (your Java program).
+Multithreading = running multiple threads concurrently to do more work at the same time (e.g., handling multiple requests, background tasks, I/O, CPU tasks).
+Why use threads?
+
+Keep apps responsive (UI/server doesn’t freeze)
+Utilize multi-core CPUs for performance
+Perform I/O and compute in parallel (e.g., read file while calculating)
+
+Two common ways to create a thread
+
+A) Extend Thread
+class MyThread extends Thread {
+    @Override public void run() {
+        System.out.println("Work on " + Thread.currentThread().getName());
+    }
+}
+public class Demo1 {
+    public static void main(String[] args) {
+        new MyThread().start(); // start() creates a new thread, calls run()
+    }
+}
+
+B) Implement Runnable (recommended)
+
+class MyTask implements Runnable {
+    @Override public void run() {
+        System.out.println("Task on " + Thread.currentThread().getName());
+    }
+}
+public class Demo2 {
+    public static void main(String[] args) {
+        Thread t = new Thread(new MyTask(), "Worker-1");
+        t.start();
+    }
+}
+
+✅ Prefer Runnable (or Callable) because Java doesn’t support multiple class inheritance and it separates task from thread.
+
+
+2) Thread Lifecycle & Thread Control
+Thread states (simplified)
+NEW -> RUNNABLE -> (BLOCKED / WAITING / TIMED_WAITING) -> TERMINATED
+
+
+NEW: you created the thread object, but haven’t started it
+RUNNABLE: eligible to run on CPU (scheduler decides when)
+BLOCKED: waiting for a lock (synchronized) held by another thread
+WAITING: waiting for another thread (wait(), join() w/o timeout)
+TIMED_WAITING: waiting with a timeout (sleep(1000), wait(1000), join(1000))
+TERMINATED: finished or crashed
+
+Important thread control methods
+
+start() → start a new thread (internally calls run())
+run() → the code the thread executes (don’t call directly to start a thread)
+sleep(ms) → pause current thread for time (goes to TIMED_WAITING; does not release locks)
+join() → make current thread wait until another thread finishes
+interrupt() → politely request a thread to stop (sets interrupt flag; sleeping/waiting threads get InterruptedException)
+isAlive() → is thread still running?
+setName(), getName() → name your threads (super helpful for logs)
+setDaemon(true) → background/helper thread that ends when all user threads end
+Avoid: stop(), suspend(), resume() — unsafe/deprecated
+Example: join + sleep + interrupt
+
+public class ControlDemo {
+    public static void main(String[] args) throws InterruptedException {
+        Thread worker = new Thread(() -> {
+            try {
+                for (int i = 1; i <= 5; i++) {
+                    System.out.println("Working " + i);
+                    Thread.sleep(500);
+                }
+            } catch (InterruptedException e) {
+                System.out.println("I was interrupted; cleaning up...");
+            }
+        }, "Worker");
+
+        worker.start();
+        Thread.sleep(900);           // let it work a bit
+        worker.interrupt();          // request it to stop early
+        worker.join();               // wait for worker to finish
+        System.out.println("Main finished.");
+    }
+}
+
+🧠 Rule: Interruption is a request, not a force stop. Always handle InterruptedException and exit gracefully.
+
+
+3) Synchronization (Race Conditions & Locks)
+The problem: Race condition
+Multiple threads access and modify shared data → results become unpredictable.
+Example (incorrect counter):
+
+class Counter {
+    int value = 0;
+    void increment() { value++; } // not atomic!
+}
+public class RaceDemo {
+    public static void main(String[] args) throws Exception {
+        Counter c = new Counter();
+        Thread t1 = new Thread(() -> { for (int i=0;i<100_000;i++) c.increment(); });
+        Thread t2 = new Thread(() -> { for (int i=0;i<100_000;i++) c.increment(); });
+        t1.start(); t2.start(); t1.join(); t2.join();
+        System.out.println("Value = " + c.value); // often < 200000
+    }
+}
+
+Fix 1: synchronized (intrinsic lock / monitor)
+
+class SyncCounter {
+    private int value = 0;
+    public synchronized void increment() { value++; }
+    public synchronized int get() { return value; }
+}
+
+Only one thread at a time can enter a synchronized method/block on the same object.
+Block form (narrower lock):
+
+void inc() {
+    // do non-shared work...
+    synchronized (this) { // lock only the critical section
+        value++;
+    }
+}
+
+
+Fix 2: Lock API (more control)
+
+Use ReentrantLock for tryLock, timed lock, multiple conditions, fair locks.
+import java.util.concurrent.locks.*;
+
+class LockCounter {
+    private int value = 0;
+    private final Lock lock = new ReentrantLock();
+    void increment() {
+        lock.lock();
+        try { value++; }
+        finally { lock.unlock(); }
+    }
+    int get() {
+        lock.lock();
+        try { return value; }
+        finally { lock.unlock(); }
+    }
+}
+
+Fix 3: Atomic variables (lock-free for simple cases)
+
+import java.util.concurrent.atomic.AtomicInteger;
+class AtomicCounter {
+    private final AtomicInteger value = new AtomicInteger();
+    void increment() { value.incrementAndGet(); }
+    int get() { return value.get(); }
+}
+
+✅ Use atomic types for simple counters/flags; synchronized/locks for compound actions.
+
+volatile (what it is & isn’t)
+
+Ensures visibility of updates across threads (flushes reads/writes to main memory).
+Does not make compound actions atomic (e.g., x++ still unsafe).
+Use for status flags / “stop” signals:
+
+
+class Flag {
+    private volatile boolean running = true;
+    void stop() { running = false; }
+    void work() { while (running) { /* do stuff */ } }
+}
+
+Beginners’ rule:
+
+Atomicity (no interleaving) → use synchronized/Lock/Atomic*
+Visibility only → volatile
+
+Wait/Notify (low-level coordination)
+
+wait() → releases monitor and waits
+notify() / notifyAll() → wakes waiting thread(s)
+
+
+For beginners, prefer higher-level utilities (BlockingQueue, CountDownLatch, etc.) instead of manual wait/notify.
+
+
+4) Concurrency Utilities (java.util.concurrent)
+
+Java Concurrency package covers concurrency, multithreading, and parallelism on the Java platform. Concurrency is the ability to run several or multi programs or applications in parallel.
+This package gives you ready‑made tools to avoid low‑level mistakes.
+This package gives you battle‑tested tools to avoid low-level pitfalls.
+
+
+Main Components/Utilities of Concurrent Package
+Executor
+ExecutorService
+ScheduledExecutorService
+Future
+CountDownLatch
+CyclicBarrier
+Semaphore
+ThreadFactory
+BlockingQueue
+DelayQueue
+Lock
+Phaser     
+
+4.1 Executors (thread pools)
+Don’t create a new Thread for every task. Submit tasks to a pool.
+Avoid creating threads manually for each task. Use pools:
+
+import java.util.concurrent.*;
+
+public class ExecutorDemo {
+    public static void main(String[] args) throws Exception {
+        ExecutorService pool = Executors.newFixedThreadPool(4);
+        Future<Integer> f1 = pool.submit(() -> { Thread.sleep(300); return 10; });
+        Future<Integer> f2 = pool.submit(() -> 20);
+        System.out.println(f1.get() + f2.get()); // waits and prints 30
+        pool.shutdown(); // always shut down
+    }
+}
+
+When to use which pool
+
+newFixedThreadPool(n) → CPU-bound or bounded workloads
+newCachedThreadPool() → many short-lived tasks (I/O)
+newSingleThreadExecutor() → serialize tasks (one thread)
+newScheduledThreadPool(n) → delayed/repeated tasks
+
+
+Modern alternative: Executors.newVirtualThreadPerTaskExecutor() (Java 21) if using virtual threads.
+
+4.2 Callable and Future
+
+Callable<V> returns a value and can throw checked exceptions.
+Future<V>.get()  waits for result (or times out with get(timeout, unit))
+
+4.3 Synchronizers
+A) CountDownLatch – wait until N signals/steps complete
+CountDownLatch latch = new CountDownLatch(3);
+for (int i=0;i<3;i++) new Thread(() -> { /* work */ latch.countDown(); }).start();
+latch.await(); // wait until all 3 have counted down
+System.out.println("All done");
+
+B) CyclicBarrier – multiple threads meet at a barrier then proceed together
+CyclicBarrier barrier = new CyclicBarrier(3, () -> System.out.println("All reached barrier"));
+for (int i=0;i<3;i++) new Thread(() -> {
+    // phase 1
+    await(barrier);
+    // phase 2
+}).start();
+
+C) Semaphore – allow only N permits at a time (like parking slots)
+Semaphore sem = new Semaphore(2);
+Runnable r = () -> {
+    try {
+        sem.acquire();
+        System.out.println(Thread.currentThread().getName() + " entered");
+        Thread.sleep(500);
+    } catch (InterruptedException ignored) {
+    } finally {
+        sem.release();
+    }
+};
+new Thread(r, "A").start();
+new Thread(r, "B").start();
+new Thread(r, "C").start(); // waits until a permit is released
+
+4.4 Concurrent Collections
+
+ConcurrentHashMap – thread-safe, high throughput map
+CopyOnWriteArrayList – great for many reads, few writes
+BlockingQueue (e.g., LinkedBlockingQueue, ArrayBlockingQueue) – producer/consumer
+ConcurrentLinkedQueue – non‑blocking queue
+BlockingDeque – double-ended blocking queue
+
+Producer/Consumer with BlockingQueue:
+
+import java.util.concurrent.*;
+
+public class PCDemo {
+    public static void main(String[] args) {
+        BlockingQueue<Integer> q = new ArrayBlockingQueue<>(2);
+
+        Thread producer = new Thread(() -> {
+            for (int i = 1; i <= 5; i++) {
+                try { q.put(i); System.out.println("Produced " + i); }
+                catch (InterruptedException ignored) {}
+            }
+        });
+
+        Thread consumer = new Thread(() -> {
+            for (int i = 1; i <= 5; i++) {
+                try { int val = q.take(); System.out.println("Consumed " + val); }
+                catch (InterruptedException ignored) {}
+            }
+        });
+
+        producer.start(); consumer.start();
+    }
+}
+
+
+4.5 Atomics & Adders
+
+AtomicInteger, AtomicLong, AtomicReference – lock‑free updates
+LongAdder, DoubleAdder – faster under high contention for summing
+
+import java.util.concurrent.atomic.LongAdder;
+LongAdder adder = new LongAdder();
+Runnable r = () -> { for (int i=0;i<100_000;i++) adder.increment(); };
+new Thread(r).start(); new Thread(r).start();
+// after join:
+System.out.println(adder.sum()); // 200000
+
+Debugging & Best Practices
+
+Share as little state as possible. Prefer immutable data when you can.
+Don’t block unnecessarily. Use non‑blocking or higher-level constructs.
+Always shut down executor services (shutdown() / shutdownNow()).
+Handle interrupts properly: catch InterruptedException, restore the flag Thread.currentThread().interrupt() when rethrowing or exiting.
+Avoid synchronizing on public objects or String literals (risk of deadlock).
+Keep synchronized sections small; prefer atomic variables for counters.
+Use ConcurrentHashMap instead of Collections.synchronizedMap for scalability.
+Beware of deadlocks (two threads waiting for each other’s locks). Order locks consistently.
+Calling run() directly (doesn’t start a new thread) → use start().
+Forcing stop (stop/suspend/resume) → don’t; use interrupt() + check flags.
+Modifying shared data with no locks → use synchronized/Lock/Atomic*.
+Long synchronized blocks → keep them small to reduce contention.
+Forgetting shutdown() on executors → can keep JVM alive; always shut down.
+Relying on thread priority → OS may ignore it; design for correctness, not priority.
+
+
+Quick Interview Nuggets
+
+Difference: Runnable vs Callable? → Runnable returns no result; Callable<V> returns V and can throw checked exceptions.
+What does volatile guarantee? → visibility & ordering (no caching), but not atomicity.
+How to stop a thread? → cooperative interrupt & check flags; never stop().
+Fixed vs Cached thread pool? → Fixed has bounded size; Cached expands/shrinks as needed (unbounded).
+Why ConcurrentHashMap is fast? → reduces contention via internal striping & non‑blocking reads (implementation evolved across Java versions).
+What’s a race condition? → outcome depends on timing of threads modifying shared state.
+
+
+1) Process vs Thread
+Think of a process as a program and a thread as a small worker inside that program.
+
+🟦 PROCESS (Bigger + Heavy)
+✔ What is a process?
+A process is an independent program running in memory.
+Examples:
+
+Chrome browser
+VS Code
+Java application
+Calculator app
+
+✔ Characteristics
+
+Has its own memory (heap + stack + code + data)
+One process cannot access another process's memory
+Heavyweight (takes more resources)
+Switching between processes is slower
+
+✔ Example analogy:
+A process is like a separate house → it has its own rooms, its own electricity.
+
+🟩 THREAD (Smaller + Light)
+✔ What is a thread?
+A thread is a lightweight, independent path of execution inside a process.
+A process can have one thread or many threads.
+✔ Characteristics
+
+Shares memory of the process
+(threads inside same process can access same variables)
+Much lighter than processes
+Switching between threads is faster
+Used for parallel work (background tasks, I/O, computation)
+
+✔ Example analogy:
+Threads are people inside a house →
+They share same kitchen, same living room (shared memory).
+
+Example: Java program with 2 threads
+Process → Java program
+    ├── Thread-1 → downloading file
+    └── Thread-2 → updating progress bar
+
+Both threads share same memory → can access same variables.
+
+1) start()
+Starts a new thread and calls its run() method in a separate thread.
+t.start();
+❗ Never call run() directly.
+run() = normal function call
+start() = creates new thread
+
+2) run()
+Contains the code executed by the thread.
+public void run() {
+    System.out.println("Thread running...");
+}
+
+3) sleep(milliseconds)
+Pauses the current thread for given time.
+Thread.sleep(1000); // sleep 1 second
+
+Used to slow down execution or simulate work.
+
+4) join()
+Waits for a thread to finish.
+t.join(); // wait for t to complete
+
+Example:
+Main thread waits → Worker thread finishes → Main continues
+
+5) interrupt()
+Sends a request to stop the thread (NOT force stop).
+
+t.interrupt();
+Inside thread:
+if (Thread.interrupted()) break;
+Used for clean shutdown.
+
+6) isAlive()
+Checks if thread is still running.
+if (t.isAlive()) { ... }
+
+7) setName() / getName()
+Assign or get thread name.
+t.setName("Worker-1");
+System.out.println(t.getName());
+
+8) setPriority()
+Sets thread priority (1 to 10).
+
+t.setPriority(Thread.MAX_PRIORITY);
+The OS may ignore priority — not reliable.
+
+EASY DIAGRAM OF THREAD STATES
+NEW → RUNNABLE → RUNNING
+           ↓
+     BLOCKED        WAITING        TIMED_WAITING
+           ↑          ↑                ↑
+           ↓          │                │
+       TERMINATED  ←--┘                └← sleep(), 
+
+
+1. sleep() — Thread goes to Timed Waiting
+✔ Meaning:
+Makes the current thread pause for a fixed time.
+Thread.sleep(1000); // sleeps 1 second
+✔ Important:
+
+Does NOT release locks
+Thread becomes TIMED_WAITING
+Can be interrupted (InterruptedException)
+
+Example use:
+Delays, polling, retries.
+
+2. Blocked State (BLOCKED) — Waiting to acquire a lock
+✔ When does a thread get BLOCKED?
+Thread A holds a lock  
+Thread B tries to enter synchronized block → becomes BLOCKED
+
+Example:
+synchronized(obj) {
+    // Thread A uses this
+}
+
+
+If Thread A is inside, Thread B becomes BLOCKED until lock is released.
+✔ BLOCKED means:
+
+Waiting for monitor lock
+Automatically resolved when lock becomes available
+
+3. Waiting State (WAITING) — waiting for another thread
+✔ Thread enters WAITING when it calls:
+
+wait()
+join() (in some cases)
+park()
+
+✔ Features:
+
+Releases lock (only wait() does)
+Waits until notified or joined thread finishes
+
+Example:
+obj.wait(); // releases lock on obj
+
+WAITING = “I am waiting for some other thread to do something.”
+
+4. Timed Waiting (TIMED_WAITING) — waiting with timeout
+Thread remains waiting only for specific time.
+Happens when:
+
+sleep(500)
+wait(2000)
+join(3000)
+parkNanos
+
+Example:
+obj.wait(2000); // wait for max 2 seconds
+
+
+5. interrupt() — politely ask a thread to stop
+✔ interrupt() DOES NOT force stop the thread.
+It sets an interrupted flag.
+If thread is sleeping or waiting → it gets InterruptedException.
+Example:
+thread.interrupt();
+
+6. wait(), notify(), notifyAll() — communication between threads
+These methods belong to Object, not Thread.
+
+wait() — releases lock + goes to WAITING
+notify() — wakes ONE waiting thread
+notifyAll() — wakes ALL waiting threads
+
+Example:
+synchronized(obj) {
+    obj.wait();
+}
+Used in producer–consumer.
+
+Deadlock — two threads waiting for each other forever
+Example (simple):
+Thread A holds lock1 → wants lock2  
+Thread B holds lock2 → wants lock1  
+
+Both wait forever. Program freezes.
+
+
+1. What does volatile mean?
+✔ volatile ensures the latest value of a variable is always visible to ALL threads.
+Without volatile, one thread may read an old cached value.
+✔ volatile does NOT make operations atomic
+Meaning:
+x++ is still unsafe, even if x is volatile.
+✔ volatile is only for:
+
+Visibility
+Ordering
+
+❗ volatile does NOT provide locks.
+
+✔ Example (simple and clear)
+Without volatile:
+
+class Worker {
+    boolean running = true;
+
+    void work() {
+        while (running) {}   // Thread may NEVER see updated value!
+    }
+}
+
+Thread may keep looping forever because it sees old cached running = true.
+With volatile:
+class Worker {
+    volatile boolean running = true;
+
+    void work() {
+        while (running) {}   // thread sees updated value immediately
+    }
+}
+Now if another thread does:
+worker.running = false;
+The first thread stops immediately because it sees the new value.
+
+ 2. What does start() do?
+✔ start() creates a new thread in the OS/JVM.
+✔ JVM calls run() inside a new thread.
+✔ This gives true multithreading.
+Example:
+Thread t = new Thread(() -> {
+    System.out.println("Running in new thread!");
+});
+
+t.start(); // creates new thread + calls run() inside it
+
+Output prints from a NEW thread.
+
+3. What does run() do?
+✔ run() is just a normal method.
+If you call run() directly → it runs in same thread, not a new one.
+Example:
+
+Thread t = new Thread(() -> {
+    System.out.println("Inside run");
+});
+
+t.run();   // NOT multithreading, runs in main thread
+
+4. Should we call them separately?
+❌ We NEVER call run() ourselves.
+Because it won’t create a new thread.
+✔ We call only start(), and JVM will call run() automatically.
+
+⭐ SUPER SIMPLE SUMMARY
+
+Method - Who Calls It? - Creates New Thread? - Runs run() where?
+start() - YOU - ✔ Yes - New thread
+run() - JVM (after start) OR you (by mistake) - ❌ No - Same thread
+
+olden Rule
+
+Always call start() → NEVER call run() manually for threading.
+
+
+⭐ Example Demonstrating Difference
+
+public class Demo {
+    public static void main(String[] args) {
+        Thread t = new Thread(() -> {
+            System.out.println("Thread name: " + Thread.currentThread().getName());
+        });
+
+        System.out.println("Calling run():");
+        t.run();  // runs in main thread
+
+        System.out.println("Calling start():");
+        t.start(); // runs in separate thread
+    }
+}
+
+Output:
+Calling run():
+Thread name: main
+Calling start():
+Thread name: Thread-0
+
+✔ run() → prints "main"
+✔ start() → prints "Thread-0"
+Now you understand the difference perfectly.
+
+
+Final Summary (Super Easy Memory Trick)
+
+volatile → updates seen instantly by all threads
+start() → creates NEW thread (real multithreading)
+run() → normal function (NO new thread)
+Call ONLY start() → never run() yourself
+
+Final Answer (easy to remember)
+
+Calling start() twice on the same Thread object throws IllegalThreadStateException.
+A Thread can be started only once.
+If you want to run it again, create a new Thread or use an Executor.
+
+
+public class Demo {
+    public static void main(String[] args) {
+        Thread t = new Thread(() -> System.out.println("Thread Running"));
+
+        t.start();  // works
+        t.start();  // ERROR ❌
+    }
+}
+
+Output:
+Thread Running
+Exception in thread "main" java.lang.IllegalThreadStateException
+
+Why can’t a thread be started twice?
+Because internally:
+
+start() creates a new OS thread
+That OS thread is tied to the Thread object
+Once finished, that thread is dead
+You cannot “restart” a dead OS thread
+
+This is a JVM safety rule.
+
+How to correctly run a task again?
+Option 1: Create a new Thread object
+Thread t1 = new Thread(task);
+t1.start();
+
+Thread t2 = new Thread(task);
+t2.start();  // OK
+
+Option 2: Use Executors (recommended for real projects)
+ExecutorService service = Executors.newFixedThreadPool(2);
+
+service.submit(task);
+service.submit(task);
+
+Executors handle thread reuse properly.
+
+
+⭐ Simple Example of Multiple Threads Running
+
+public class MultiThreadDemo {
+    public static void main(String[] args) {
+
+        // Thread 1 task
+        Thread t1 = new Thread(() -> {
+            for (int i = 1; i <= 5; i++) {
+                System.out.println("Thread 1: " + i);
+            }
+        });
+
+        // Thread 2 task
+        Thread t2 = new Thread(() -> {
+            for (int i = 1; i <= 5; i++) {
+                System.out.println("Thread 2: " + i);
+            }
+        });
+
+        // Start both threads
+        t1.start();
+        t2.start();
+
+        System.out.println("Main thread finished");
+    }
+}
+
+
+What You Will See in Output
+Thread 1: 1
+Thread 2: 1
+Thread 2: 2
+Thread 1: 2
+Thread 1: 3
+Thread 2: 3
+Thread 1: 4
+Thread 2: 4
+Main thread finished
+Thread 1: 5
+Thread 2: 5
+
+👉 The order may change EVERY time you run the program.
+👉 That’s because Thread 1 and Thread 2 run in parallel, independently.
+
+⭐ What This Example Shows
+
+Two threads run at the same time
+CPU switches between them quickly
+This switching creates interleaved output
+The main thread also runs alongside them
+
+
+⭐ Super Simple Explanation
+
+You created two workers (t1 and t2)
+Each worker runs its own loop
+When you do t1.start() and t2.start()
+
+Java creates two separate threads
+They run at the same time
+Output becomes mixed/random order
+
+
+
+
+⭐ Even Simpler (Visual)
+Main Thread: starts → prints → ends
+
+Thread 1: 1   2        3   4     5
+                 ↘   ↗
+Thread 2:     1    2     3     4   5
+
+CPU jumps between them → mixed output
+
+
+
+

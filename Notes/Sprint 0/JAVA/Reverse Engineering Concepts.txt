@@ -1,0 +1,215 @@
+Reverse Engineering Concepts
+
+
+1. Introduction to Reverse Engineering
+Reverse Engineering = understanding how a program works without having the original source code.
+Why do we reverse engineer?
+
+To understand legacy code
+To recover lost source code
+To debug production issues
+To inspect malware
+To audit code for security issues
+To understand 3rd‑party APIs
+
+In Java, reverse engineering is easy, because Java compiles to bytecode, which can be converted back to readable Java.
+
+2. Decompilation in Java (Very Important)
+✔ What is decompilation?
+Decompilation = converting .class (bytecode) back to .java (source code).
+Java decompilers:
+
+JD‑GUI
+JADX
+CFR
+Procyon
+IntelliJ built‑in decompiler
+
+Example:
+You have:
+MyClass.class
+
+A decompiler can generate:
+public class MyClass {
+    public int add(int a, int b) { return a + b; }
+}
+
+✔ Why Java is easy to decompile?
+Because Java bytecode still contains:
+
+Method names
+Class names
+Type information
+Control structures
+
+So reverse engineering is easier compared to C/C++.
+
+3. Java Bytecode Analysis
+Java code → compiled → produces bytecode (instructions for JVM).
+You can analyze bytecode using:
+✔ javap (Java’s bytecode viewer)
+✔ ASM (bytecode manipulation library)
+✔ BCEL (Byte Code Engineering Library)
+Example:
+Command:
+
+javap -c MyClass
+
+Output (bytecode example):
+0: iload_1
+1: iload_2
+2: iadd
+3: ireturn
+
+This is JVM assembly-like instructions.
+Why bytecode analysis is useful?
+
+Understand how compiler optimizes code
+Debug low-level issues
+Detect malicious injections
+Verify class structure
+Understand performance
+
+4. Reflection and Introspection in Java
+What is Reflection?
+Reflection = the ability of a program to examine or modify itself at runtime.
+Examples you can do using reflection:
+✔ Get class name
+✔ Get fields & methods
+✔ Invoke private methods
+✔ Create objects dynamically
+✔ Load classes at runtime
+Example:
+Class<?> cls = Class.forName("com.example.User");
+Method m = cls.getMethod("getName");
+Why Reflection = Reverse Engineering tool?
+Because it allows you to:
+
+Inspect private internals
+Modify private fields
+Bypass encapsulation
+Analyze code dynamically
+
+Frameworks like Spring, Hibernate, Jackson, JUnit use reflection.
+
+5. Debugging and Code Analysis Techniques
+Debugging is part of reverse engineering.
+Tools:
+
+IntelliJ Debugger
+Java Flight Recorder
+JDK Mission Control
+JVisualVM
+JProfiler
+
+What you can do:
+
+Inspect variable values
+Set breakpoints
+Follow code execution
+Analyze memory usage
+Trace method calls
+Detect exceptions
+
+These techniques help understand unfamiliar or complex code.
+
+6. Code Obfuscation and Deobfuscation
+✔ What is Obfuscation?
+Obfuscation = intentionally making code hard to understand to prevent reverse engineering.
+Tools:
+
+ProGuard
+DexGuard
+Allatori
+Zelix KlassMaster
+
+Obfuscation transforms:
+public class Employee { int salary; }
+
+into:
+public class A { int a; }
+
+✔ Why Obfuscation?
+To protect:
+
+Business Logic
+Pricing algorithms
+Proprietary algorithms
+Banking/finance apps
+
+✔ Deobfuscation
+Reverse of obfuscation:
+
+Recover readable code from obfuscated code
+Needed for debugging malware or legacy JARs
+
+Tools:
+
+CFR decompiler
+FernFlower
+JADX
+
+
+7. Working with Legacy Code and APIs
+Legacy code = old codebases with:
+
+No documentation
+No comments
+No maintainers
+Old Java versions
+
+Reverse engineering helps:
+
+Understand old systems
+Add new features
+Remove bugs
+Migrate to newer Java/Spring versions
+Refactor messy code
+
+Techniques used:
+
+Static analysis
+Debugging
+Reverse engineering JARs
+Bytecode inspection
+Using UML generators
+
+8. Software Security through Reverse Engineering
+Reverse Engineering helps in:
+✔ Security Testing
+
+Find vulnerabilities
+Understand how attackers may exploit code
+Validate encryption logic
+Detect insecure API usage
+
+✔ Malware Analysis
+
+Reverse engineer Java malware (.jar, .class)
+Identify harmful code
+
+✔ DRM/License enforcement
+
+Check if code is easily crackable
+Strengthen obfuscation
+
+✔ Pen-testing
+
+Understand how third-party closed source APIs behave
+
+
+Final Summary (Easy to Remember)
+
+Topic - Meaning
+Reverse Engineering - Understand code without source
+Decompilation - Convert .class → .java
+Bytecode Analysis - View JVM instructions
+Reflection - Inspect/modify code at runtime
+Debugging - Step-by-step code analysis
+Obfuscation - Make code unreadable for protection
+Deobfuscation - Make code readable again
+Legacy Code - Old systems without docs
+Security - Detect vulnerabilities via code analysis
+
+
+

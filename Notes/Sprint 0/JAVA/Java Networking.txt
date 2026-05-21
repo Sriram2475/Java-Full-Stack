@@ -1,0 +1,321 @@
+Java Networking
+
+1️⃣ Basics of Networking in Java (In-Depth)
+Networking means communication between two or more computers over a network (LAN, WAN, Internet).
+Java provides a full networking API in the package:
+java.net
+
+This includes classes like:
+
+Socket
+ServerSocket
+DatagramSocket
+DatagramPacket
+InetAddress
+URL, HttpURLConnection
+HttpClient (Java 11+)
+
+
+⭐ Key Concepts in Networking
+✔ IP Address
+A unique address of a device on the network.
+Example:
+192.168.1.5
+
+✔ Port Number
+A logical number to identify a specific process/service.
+Examples:
+
+HTTP → port 80 / 443
+MySQL → port 3306
+SMTP → port 25
+
+✔ Socket
+A communication endpoint between two machines.
+In Java:
+
+TCP: Socket and ServerSocket
+UDP: DatagramSocket
+
+✔ Protocols
+Rules for communication.
+Important protocols:
+
+TCP (Transmission Control Protocol)
+UDP (User Datagram Protocol)
+HTTP (HyperText Transfer Protocol)
+
+
+2️⃣ TCP Communication (In-Depth)
+⭐ What is TCP?
+TCP is:
+
+Connection-oriented → connection must be established
+Reliable → no data loss
+Ordered → data arrives in correct order
+Slow but accurate
+
+Used for:
+
+Messaging apps
+File transfers
+HTTP web browsing
+Banking apps
+
+
+⭐ TCP Communication in Java
+TCP uses two main classes:
+
+Role - Class
+Server - ServerSocket
+Client - Socket
+
+✔ TCP SERVER Example (simple understanding)
+Server waits for client → accepts connection.
+
+ServerSocket server = new ServerSocket(5000);
+Socket socket = server.accept(); // wait for client
+
+
+Then server reads & writes:
+
+BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+String msg = in.readLine();
+out.println("Received: " + msg);
+
+✔ TCP CLIENT Example
+Client connects to server:
+
+Socket socket = new Socket("localhost", 5000);
+
+Send message:
+PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+out.println("Hello Server");
+
+Read response:
+BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+String response = in.readLine();
+
+⭐ TCP Flow (Visual)
+Client                 Server
+------                 ------
+connect()  -------->   accept()
+send data  -------->   read data
+read data  <--------   send data
+close()    -------->   close()
+
+3️⃣ UDP Communication (In-Depth)
+⭐ What is UDP?
+UDP is:
+
+Connectionless → no connection setup
+Fast
+Not reliable → packets may be lost
+No ordering
+Lightweight
+
+Used for:
+
+Video streaming
+Online gaming
+Voice calls
+Sensors / IoT
+
+
+⭐ UDP Communication in Java
+Java uses:
+
+Role - Class
+Both sender & receiver - DatagramSocket
+Packet - DatagramPacket
+
+✔ UDP Sender Example (simple)
+DatagramSocket socket = new DatagramSocket();
+byte[] data = "Hello".getBytes();
+
+DatagramPacket packet = new DatagramPacket(
+    data, data.length,
+    InetAddress.getByName("localhost"),
+    5000
+);
+
+socket.send(packet);
+
+✔ UDP Receiver Example
+DatagramSocket socket = new DatagramSocket(5000);
+
+byte[] buffer = new byte[1024];
+DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+
+socket.receive(packet);
+
+String msg = new String(packet.getData(), 0, packet.getLength());
+System.out.println("Received: " + msg);
+``
+
+TCP vs UDP (Simple Table)
+
+Feature - TCP - UDP
+Connection - Yes - No
+Reliability - High - Low
+Speed - Slower - Faster
+Ordering - Guaranteed - Not guaranteed
+Use Case - Web, banking - Gaming, streaming
+
+4️⃣ HTTP Client (Java 11+) — In-Depth
+Java 11 introduced a modern HttpClient API for making web requests.
+Package:
+java.net.http
+
+
+⭐ Why use HttpClient?
+
+Asynchronous support
+HTTP/2
+Cleaner API
+Replace old HttpURLConnection
+
+
+⭐ Creating an HTTP Client
+HttpClient client = HttpClient.newHttpClient();
+
+✔ 1. Synchronous GET Request
+HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://api.github.com"))
+        .GET()
+        .build();
+
+HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+System.out.println(response.body());
+
+
+✔ 2. Asynchronous GET Request
+client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+      .thenApply(HttpResponse::body)
+      .thenAccept(System.out::println);
+``
+
+This is non-blocking, using CompletableFuture.
+
+✔ 3. POST Request
+HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://example.com/api"))
+        .POST(HttpRequest.BodyPublishers.ofString("{\"name\":\"Sriram\"}"))
+        .header("Content-Type", "application/json")
+        .build();
+
+
+Topic - Meaning
+Networking Basics - IP, ports, sockets
+TCP - Reliable, connection-based communication
+UDP - Fast, no-connection, unreliable
+HTTP Client - Java 11 tool for calling REST APIs
+
+
+ What is a Packet? (Simple Definition)
+A packet is a small chunk of data sent over a network.
+Instead of sending a big file or message all at once, the data is broken into small pieces called packets, and each packet travels across the network separately.
+
+⭐ What does a Packet contain?
+Every packet has two parts:
+1️⃣ Header (Meta information)
+
+Source IP
+Destination IP
+Packet number
+Total packet count
+Protocol (TCP/UDP)
+Error checking info
+
+2️⃣ Data
+
+Actual piece of message you want to send
+(text, file chunk, image bytes, etc.)
+
+Visual Representation of a Packet
++---------------------------------------------+
+| HEADER (IP, Port, Packet Number, Checksum)  |
++---------------------------------------------+
+|                   DATA                      |
+|    "Hello this is part 1 of the message"    |
++---------------------------------------------+
+
+
+Packets in Java Networking
+When you use:
+
+TCP Socket
+UDP DatagramPacket
+HttpClient
+
+…Java internally breaks your data into packets before sending it over the network.
+You don’t manually create packets in TCP — the OS handles it.
+In UDP, you create packets using:
+
+DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
+
+This packet is sent as ONE unit (no splitting).
+
+
+An IP address is the unique digital address of a device on a network, used for sending and receiving data.
+Visual Representation
+Device: Laptop  
+IP Address: 192.168.1.10  
+Port: 8080  
+Now any server can send data to your laptop through this address.
+
+
+How does Java use IP Address?
+Java gives class:
+InetAddress
+Which can show your IP or check other servers.
+Example:
+InetAddress ip = InetAddress.getLocalHost();
+System.out.println(ip.getHostAddress());
+Find Google’s IP:
+InetAddress.getByName("google.com");
+
+
+Types of IP Addresses (Conceptually)
+✔ Public IP
+Given by your ISP → visible on the internet
+(Example: 103.14.24.56)
+✔ Private IP
+Used inside homes/offices
+(Examples: 192.168.x.x, 10.x.x.x)
+✔ Static IP (fixed)
+Stays the same always (servers)
+✔ Dynamic IP (changes)
+Given automatically (most home users)
+
+Types of IP Addresses
+There are 2 main versions:
+
+IPv4 (Most commonly used)
+Form: four numbers separated by dots:
+Example:
+192.168.1.10
+172.16.0.3
+8.8.8.8
+
+Range:
+
+0.0.0.0 → 255.255.255.255
+
+Total possible addresses: ~4.3 billion
+(But now not enough → so IPv6 was created)
+
+IPv6 (New version)
+Form: eight groups of hexadecimal numbers:
+Example:
+2001:0db8:85a3:0000:0000:8a2e:0370:7334
+
+Massive number of addresses → for modern internet.
+
+
+``
+
+

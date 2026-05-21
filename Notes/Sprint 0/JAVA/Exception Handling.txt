@@ -1,0 +1,104 @@
+Exception Handling
+
+1. Introduction to Exceptions
+An exception is an unexpected event that occurs during program execution and disrupts the normal program flow.
+✔ Examples of exceptions:
+
+Dividing by zero → ArithmeticException
+Accessing an invalid array index → ArrayIndexOutOfBoundsException
+Using a null object → NullPointerException
+Opening a missing file → FileNotFoundException
+
+⭐ Why exceptions occur?
+Because something goes wrong during runtime.
+⭐ Why do we need exception handling?
+To prevent program crash and handle errors gracefully.
+
+2. Exception Hierarchy (VERY IMPORTANT)
+
+Throwable
+   |
+   +---- Error  (not recoverable)
+   |
+   +---- Exception
+           |
+           +---- RuntimeException (unchecked)
+           |
+           +---- Checked Exceptions
+
+
+Errors → Like OutOfMemoryError, cannot be handled
+Checked Exceptions → Must handle (compile-time)
+Unchecked Exceptions → Runtime errors (optional to handle)
+
+3. Handling Exceptions in Java
+Java provides keywords to handle exceptions:
+✔ try → Code that may produce exception
+✔ catch → Handle the exception
+✔ finally → Always runs (closing resources)
+✔ throw → To throw an exception manually
+✔ throws → Declares exceptions in method signature
+
+Basic try-catch Example
+try {
+    int x = 10 / 0; // will cause error
+} catch (ArithmeticException e) {
+    System.out.println("Cannot divide by zero");
+}
+``
+Output:
+Cannot divide by zero
+
+Program continues instead of crashing.
+
+Multiple Catch Blocks
+try {
+    int[] arr = new int[3];
+    arr[5] = 10;  
+} catch(ArrayIndexOutOfBoundsException e) {
+    System.out.println("Invalid index!");
+} catch(Exception e) {
+    System.out.println("Some error occurred!");
+}
+
+finally Block
+try {
+    System.out.println("Inside try block");
+} finally {
+    System.out.println("This will always execute");
+}
+Use: closing DB connection, files, etc.
+
+throws Keyword
+Used in method signature to indicate the method may throw an exception.
+void readFile() throws IOException {
+    // code that may throw exception
+}
+
+throw Keyword
+Used to throw exception manually.
+
+4. Custom Exceptions (User-Defined Exceptions)
+You can create your own exception by extending Exception class.
+⭐ Example:
+class AgeException extends Exception {
+    public AgeException(String message) {
+        super(message);
+    }
+}
+
+Usage:
+void checkAge(int age) throws AgeException {
+    if (age < 18) {
+        throw new AgeException("Age must be >= 18");
+    }
+}
+
+Concept - Meaning
+Exception - Runtime problem that disrupts program flow
+try - Code that might produce error
+catch - Handle the error
+finally - Always executed
+throw - Manually throw exception
+throws - Declare exception in method
+Custom Exception - User-defined exception class

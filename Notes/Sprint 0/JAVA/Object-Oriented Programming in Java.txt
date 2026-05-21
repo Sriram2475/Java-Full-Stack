@@ -1,0 +1,296 @@
+Object-Oriented Programming in Java
+
+1. Classes and Objects
+✔ Class
+A class is a blueprint or template used to create objects.
+Example:
+class Car {
+    String color;
+    int speed;
+
+    void drive() {
+        System.out.println("Car is driving");
+    }
+}
+
+
+✔ Object
+An object is an instance created from a class.
+Car myCar = new Car();
+myCar.color = "Red";
+myCar.speed = 100;
+myCar.drive();
+
+Class: Car
+----------------------
+| color              |
+| speed              |
+| drive()            |
+----------------------
+
+Object: myCar
+----------------------
+| color = "Red"       |
+| speed = 100         |
+----------------------
+
+
+2. Encapsulation (Data Hiding)
+Encapsulation means binding data + methods together and hiding the internal details using private variables.
+You expose data using getters and setters.
+Example:
+class Student {
+    private String name;  // hidden data
+
+    public void setName(String name) {
+        this.name = name; // controlled access
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+Use:
+Student s = new Student();
+s.setName("Sriram");
+System.out.println(s.getName());
+
+⭐ Why Encapsulation?
+✔ Protects data
+✔ Provides controlled access
+✔ Increases security
+
+Data hiding doesn’t mean blocking all access. It means restricting direct access and giving controlled access.
+When a variable is private, code outside the class cannot access or modify it directly.
+Getters and setters allow only the behavior you choose, not full unrestricted access.
+
+Explain with a Simple Example
+❌ Without Encapsulation (No Control):
+public int age;  // direct access
+
+Someone can do:
+person.age = -100;   // meaningless value
+
+No control. No validation. No rules.
+
+With Encapsulation (Controlled Access)
+
+private int age;
+
+public void setAge(int age) {
+    if (age > 0 && age < 120) {
+        this.age = age;
+    }
+}
+
+Now the value cannot be misused:
+
+p.setAge(-100);  // setter REJECTS it
+
+This is data hiding and controlled access.
+
+✔ 1. We hide the data from direct access, not from all access.
+✔ 2. Getters and setters allow validation and business rules.
+✔ 3. We maintain control over how the variable is accessed.
+
+3. Inheritance (Reusability)
+Inheritance allows one class to acquire properties of another class.
+✔ Parent class → Child class
+Child class can use:
+
+Variables of parent
+Methods of parent
+
+Example:
+
+Types of Inheritance in Java
+
+Single - One child class inherits from one parent class.
+Multilevel - A class inherits from a child class which itself inherits from another parent (grandparent → parent → child).
+Hierarchical - Multiple child classes inherit from the same single parent class.
+❌ Multiple (not allowed with classes but allowed with interfaces)
+- A class cannot inherit from more than one parent class (to avoid ambiguity), but interfaces do support multiple inheritance.
+
+4. Polymorphism (Many Forms)
+Polymorphism means same method name, different behaviors.
+Two Types:
+
+✔ A. Compile-Time Polymorphism
+(Method Overloading)
+Same method name, different parameters.
+class MathUtil {
+    int add(int a, int b) { return a + b; }
+    int add(int a, int b, int c) { return a + b + c; }
+}
+✔ B. Runtime Polymorphism
+(Method Overriding)
+Child class modifies parent class method.
+class Animal {
+    void sound() {
+        System.out.println("Animal sound");
+    }
+}
+
+class Dog extends Animal {
+    void sound() {
+        System.out.println("Dog barks");
+    }
+}
+Use:
+Animal a = new Dog();
+a.sound(); // Dog barks
+``
+
+5. Abstraction (Hiding Implementation)
+Abstraction shows only essential details and hides the complexities.
+Achieved using:
+
+Abstract classes
+Interfaces
+
+
+✔ A. Abstract Class
+Can have:
+
+Abstract methods (no body)
+Non-abstract methods
+
+Example:
+abstract class Shape {
+    abstract void draw(); // abstract method
+
+    void show() {
+        System.out.println("Showing shape...");
+    }
+}
+
+class Circle extends Shape {
+    void draw() {
+        System.out.println("Drawing Circle");
+    }
+}
+
+
+6. Interfaces (100% Abstraction)
+An interface contains only abstract methods (before Java 8), now can have:
+
+abstract methods
+default methods
+static methods
+
+Example:
+interface Animal {
+    void sound();
+}
+
+class Cat implements Animal {
+    public void sound() {
+        System.out.println("Meow");
+    }
+}
+Use:
+Animal a = new Cat();
+a.sound();
+
+
+Additional OOP‑Related Concepts You Must Know in Java
+
+🟦 1. static Keyword
+Used to create class‑level variables and methods shared by all objects (no object needed to access them).
+
+🟩 2. this Keyword
+Refers to the current object inside a method or constructor.
+
+🟧 3. super Keyword
+Refers to the parent class, used to call parent methods or constructors.
+
+🟨 4. Constructors
+Special methods that initialize objects.
+
+🟫 5. Constructor Overloading
+Multiple constructors with different parameters in the same class.
+
+🟪 6. Method Overloading
+Same method name, different parameter lists (compile‑time polymorphism).
+
+🟥 7. Method Overriding
+Child class provides its own implementation of a parent class method (runtime polymorphism).
+
+🟦 8. Final Keyword
+Used to restrict:
+
+variable → cannot change
+method → cannot be overridden
+class → cannot be inherited
+
+🟩 9. Wrapper Classes
+Object representations of primitives (Integer, Double, Boolean, etc.). They have methods related to each data types
+
+🟧 10. Packages
+Used to group related classes and avoid naming conflicts (like folders for code).
+
+🟨 11. Access Modifiers
+Control visibility:
+
+public
+private
+protected
+default
+
+
+🟫 12. Association
+General relationship between two classes (HAS‑A relationship).
+
+🟪 13. Aggregation
+A weaker form of association (child can exist without parent).
+Example: Department has Students.
+
+🟥 14. Composition
+Stronger form of association (child cannot exist without parent).
+Example: House has Rooms.
+
+🟦 15. Inner Classes
+Classes defined inside another class.
+
+🟩 16. Anonymous Classes
+Class with no name, used for quick one‑time use (especially with interfaces).
+
+🟧 17. Abstract Classes
+Classes with abstract methods that force child classes to provide implementation.
+
+🟨 18. Objects Class Methods
+Every class in Java implicitly extends the Object class (toString, equals, hashCode).
+
+🟫 19. Cloning
+Creating a copy of an object using clone().
+
+🟪 20. Enum
+Special type representing fixed constants (like DAYS, LEVELS).
+
+🟥 21. Polymorphic References
+A parent reference can point to a child object.
+
+🟦 22. Interfaces with Default & Static Methods
+(After Java 8) Interfaces can contain:
+
+default method
+static method
+
+
+🟩 23. JavaBeans
+Classes following naming conventions with private fields + getters/setters.
+
+
+
+Access Modifiers in Java (4 Types + Explanation)
+Java has four levels of access:
+
+
+Modifier - Visible To - Usage
+public - Accessible everywhere - Maximum visibility
+private - Accessible only within the same class - Maximum restriction
+protected - Accessible within same class, same package, and subclasses - For inheritance
+default (Accessible within same package) - Package-level access
+
+If you don’t write any modifier → default is applied.

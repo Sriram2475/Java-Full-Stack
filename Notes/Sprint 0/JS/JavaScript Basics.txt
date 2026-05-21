@@ -1,0 +1,130 @@
+1. Syntax and Statements
+
+JavaScript syntax refers to the rules and conventions dictating how code is structured and arranged within the JavaScript programming language. This includes statements, expressions, variables, functions, operators, and control flow constructs.
+
+Syntax
+console.log("Basic Print method in JavaScript");
+// Variable declaration
+let c, d, e;
+
+// Assign value to the variable
+c = 5; 
+
+// Computer value of variables
+d = c;
+e = c / d;
+
+JavaScript Values
+There are two types of values defined in JavaScript Syntax:
+
+Fixed Values: These are known as the literals.
+Variable values: These are called variables
+
+What is Syntax?
+Syntax refers to rules that define how JavaScript code must be written so the JavaScript engine can understand it.
+Basic Rules
+✔ Case Sensitive
+let name = "Sriram";
+let Name = "Not same";  // Different variable
+
+✔ Semicolons
+Optional but recommended for clean code.
+let a = 10;
+
+Statements
+A statement is an instruction for the computer.
+Examples
+✔ Variable Statement
+let x = 5;
+✔ Conditional Statement
+if (x > 3) {
+    console.log("Greater than 3");
+}
+✔ Loop Statement
+for (let i = 0; i < 5; i++) {
+    console.log(i);
+}
+
+
+2. Data Types
+JavaScript has primitive and non‑primitive data types.
+
+Primitive Data Types
+These store single values.
+
+Type - Example - Description
+Number - 10, 3.14 - Integer or floating numbers
+String - "Hello" - Text enclosed in quotes
+Boolean - true, false - Logical values
+undefined - let x; - Declared but not assigned
+null - let x = null; - Intentionally empty value
+BigInt - 123n - Very large numbers
+Symbol - Symbol("id") - Unique values
+
+Primitive Examples
+let age = 22;               // number
+let name = "Sriram";        // string
+let isActive = true;        // boolean
+let x;                      // undefined
+let y = null;               // null
+let big = 900719925474099n; // bigint
+
+Non-Primitive Data Types
+
+Type - Description
+Object - Collection of key–value pairs
+Array - Ordered list
+Function - Reusable block of code
+
+Examples
+let person = { name: "Sriram", age: 22 };
+
+let fruits = ["Apple", "Banana", "Mango"];
+
+function greet() {
+    console.log("Hello!");
+}
+
+3. Operators
+
+Operators are symbols used to perform operations on values or variables.
+
+A. Arithmetic Operators
+let x = 10;
+let y = 3;
+
+x + y   // 13  (Addition)
+x - y   // 7   (Subtraction)
+x * y   // 30  (Multiplication)
+x / y   // 3.33 (Division)
+x % y   // 1   (Modulus)
+x ** y  // 1000 (Exponent)
+
+B. Assignment Operators
+let a = 5;
+a += 2; // a = 7
+a -= 2; // a = 5
+a *= 2; // a = 10
+``
+C. Comparison Operators
+Used in conditions.
+5 == "5"   // true  (loose equality)
+5 === "5"  // false (strict equality)
+5 != 3     // true
+10 > 5     // true
+4 <= 4     // true
+
+D. Logical Operators
+true && false   // AND → false
+true || false   // OR → true
+!true           // NOT → false
+
+E. String Operators
+let msg = "Hello " + "World!";
+
+F. Ternary Operator
+Short if‑else.
+let age = 20;
+let result = (age >= 18) ? "Adult" : "Minor";
+``
+

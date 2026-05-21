@@ -1,0 +1,86 @@
+Filtering and Sorting Data in SQL
+
+⭐ 1. Filtering Data Using the WHERE Clause
+The WHERE clause helps you filter rows based on conditions.
+It acts like a filter that retrieves only the rows that match your criteria.
+Basic syntax:
+SELECT column1, column2
+FROM table_name
+WHERE condition;
+
+⭐ 2. Logical Operators in WHERE Clause
+Logical operators allow you to combine multiple conditions.
+✔ (A) AND Operator
+Used when all conditions must be true.
+Example:
+Retrieve employees who work in IT and earn more than 40000:
+SELECT name, department, salary
+FROM employees
+WHERE department = 'IT'
+  AND salary > 40000;
+
+✔ (B) OR Operator
+Used when at least one condition must be true.
+Example:
+Get employees from IT or HR:
+SELECT name, department
+FROM employees
+WHERE department = 'IT'
+   OR department = 'HR';
+``
+
+✔ (C) Combining AND and OR Together
+You can combine them, but you must use parentheses () to control evaluation order.
+Example:
+Get employees who:
+
+Work in IT and salary > 40000
+OR
+Work in HR
+
+
+SELECT name, department, salary
+FROM employees
+WHERE (department = 'IT' AND salary > 40000)
+   OR department = 'HR';
+``
+
+✔ (D) NOT Operator
+Used to exclude values.
+Example:
+
+
+SELECT name
+FROM employees
+WHERE NOT department = 'Sales';
+
+⭐ 3. Sorting Data Using ORDER BY
+The ORDER BY clause sorts the result set.
+Syntax:
+SELECT column1, column2
+FROM table_name
+ORDER BY column1 ASC | DESC;
+``
+ASC → ascending (default)
+DESC → descending
+
+⭐ 4. Sorting Using Multiple Columns
+This is useful when two rows have the same value in one column.
+Example:
+Sort employees:
+
+First by department (A → Z)
+Then by salary (high → low) within each department
+
+SELECT name, department, salary
+FROM employees
+ORDER BY department ASC, salary DESC;
+
+How it works:
+
+All rows are grouped by department alphabetically
+Inside each department group, rows are sorted by salary descending
+
+
+
+

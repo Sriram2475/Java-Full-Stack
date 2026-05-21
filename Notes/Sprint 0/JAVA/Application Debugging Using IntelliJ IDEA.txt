@@ -1,0 +1,207 @@
+Application Debugging Using IntelliJ IDEA
+
+⭐ 1. What is Debugging?
+Debugging = finding and fixing errors in your code.
+When your program behaves incorrectly:
+❌ wrong output
+❌ crashes
+❌ exceptions
+❌ logical mistakes
+You use a debugger to see:
+
+what your code is doing
+what values variables have
+where it goes wrong
+
+
+⭐ 2. Importance of Debugging
+Debugging helps you:
+✔ Understand program flow
+✔ Catch errors before they become bugs
+✔ Fix problems faster
+✔ Improve quality of code
+✔ Learn how your program actually works internally
+Debugging is a must-have skill for real-world development.
+
+⭐ 3. Overview of Debugging Tools (General Idea)
+A debugger allows you to:
+
+Pause the program
+Go line by line
+Inspect variables
+Change variable values while running
+See all running threads
+Set breakpoints
+Catch exceptions
+
+IntelliJ IDEA has one of the best debuggers.
+
+⭐ 4. Setting Up IntelliJ IDEA (BASICS)
+Steps:
+
+Install IntelliJ IDEA (Community edition is enough)
+Create a Java project
+Add your .java files
+Build & run
+
+Debugging tools are already included.
+No extra setup required.
+
+⭐ 5. Debugging Environment Overview (What you see)
+When you click Debug, IntelliJ opens panels:
+Panels you will see:
+
+Debugger Console
+Variables window (shows variable values)
+Watches window (your custom expressions)
+Frames/Threads panel
+Breakpoints window
+
+Each of these helps you understand your program while it's running.
+
+⭐ 6. Setting Breakpoints
+A breakpoint tells the debugger:
+👉 “Pause the program when you reach this line.”
+How to set a breakpoint
+
+Go to left side of the code line
+Click next to the line number
+A red dot appears
+
+That’s it.
+Example
+int x = 10;    // ← set breakpoint here
+int y = x + 5;
+System.out.println(y);
+
+When you debug, program stops at the red dot.
+
+⭐ 7. Running the Debugger
+How to run:
+
+Click bug icon (🐞)
+or
+Right-click your file → Debug
+
+When program hits breakpoint:
+
+It pauses
+You get control to inspect values
+
+Debug controls:
+
+Button - Meaning
+▶ Resume - Continue running until next breakpoint
+➤ Step Over - Go to next line (don’t enter methods)
+↘ Step Into - Go inside method call
+⬆ Step Out - Finish current method & return
+
+⭐ 8. Inspecting Variables and Expressions
+When program is paused:
+
+Hover over variable → shows value
+Check "Variables" window
+See arrays, objects, fields
+Open them like a folder
+
+Example
+If you have:
+int a = 10;
+int b = 20;
+int c = a + b;
+
+You can see:
+
+a = 10
+b = 20
+c = 30
+
+in the debugger window.
+
+⭐ 9. Using Watches
+Watches let you monitor ANY expression continuously.
+Example:
+Add a watch:
+a + b
+
+Debugger will show:
+a + b = 30
+
+Helpful for:
+
+Calculations
+Method return values
+Object states
+
+
+⭐ 10. Exception Breakpoints
+This is VERY USEFUL.
+An exception breakpoint pauses the program exactly when an exception occurs, even if you didn't put a breakpoint.
+How to add:
+
+Go to Run → View Breakpoints
+Click “+”
+Select Exception Breakpoint
+Choose:
+
+All exceptions
+Only NullPointerException
+Only ArithmeticException
+etc.
+
+Example:
+If your code throws:
+java.lang.NullPointerException
+
+Debugger jumps to the exact line causing it.
+
+⭐ 11. Thread Debugging
+When you work with multithreading, IntelliJ shows:
+
+All running threads
+Which line each thread is executing
+Switch between threads
+Freeze individual threads
+Evaluate expressions inside any thread
+
+This is very useful for:
+
+Deadlocks
+Race conditions
+Thread timing issues
+
+
+⭐ 12. Memory and Performance Profiling (Simple Explanation)
+Profiling helps you understand:
+
+How much memory objects take
+How fast your methods run
+CPU usage
+Finding memory leaks
+
+In IntelliJ:
+
+Go to Run → Profile
+It launches profiling tools
+Shows charts of:
+
+Heap memory
+Garbage collection
+CPU usage
+Hot methods (slowest parts of code)
+
+This is advanced but very useful later.
+
+⭐ Final Summary (Beginner Friendly)
+
+Concept - Meaning
+Debugging - Finding bugs
+Breakpoint - Where program pauses
+Debugger - Tool to inspect code while running
+Step Over - Go to next line
+Step Into - Enter method
+Watches - Watch expressions while debugging
+Exception Breakpoints - Pause program when exception happens
+Thread Debugging - See all threads & their execution
+Profiling - Memory & performance analysis
+

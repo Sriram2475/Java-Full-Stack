@@ -1,0 +1,199 @@
+Functions and Scope 
+
+1. Function Basics
+
+A function is a reusable block of code that performs a task.
+
+A. Function Declaration
+function greet(name) {
+  return "Hello " + name;
+}
+
+console.log(greet("Sriram"));
+``
+
+B. Function Expression
+A function stored in a variable.
+const add = function(a, b) {
+  return a + b;
+};
+
+
+C. Arrow Functions
+Shorter syntax introduced in ES6.
+
+const multiply = (a, b) => a * b;
+
+When to use arrow functions?
+
+Best for callbacks
+Not good when you need this keyword (because arrow functions don’t have their own this)
+
+2. Scope in JavaScript
+
+Scope defines where variables are accessible.
+JavaScript has 3 main scopes:
+
+A. Global Scope
+Accessible anywhere in the program.
+
+var x = 10;   // global
+
+function test() {
+  console.log(x);  // 10
+}
+
+B. Function Scope
+Variables declared inside a function are accessible only inside that function.
+
+function sample() {
+  let a = 5;
+  console.log(a); // 5
+}
+
+console.log(a);   // ❌ Error
+
+C. Block Scope (let and const)
+
+{
+  let y = 20;
+  const z = 30;
+}
+
+console.log(y);  // ❌ Error
+console.log(z);  // ❌ Error
+
+let and const are block-scoped
+var is NOT block-scoped (it leaks out of blocks)
+
+3. Closures (Very Important for Interviews)
+A closure is when an inner function remembers variables from its outer function even after the outer function has finished executing.
+
+Example of Closure
+
+function outer() {
+  let count = 0; // outer variable
+
+  function inner() {
+    count++;
+    console.log(count);
+  }
+
+  return inner; // returning inner function
+}
+
+const counter = outer();  // outer() executed
+
+counter(); // 1
+counter(); // 2
+counter(); // 3
+``
+
+Why Closures Are Useful?
+
+Data privacy
+State management
+Implementing modules
+React hooks (like useState) internally use closures
+
+4. Higher-Order Functions (HOFs)
+
+A higher‑order function is a function that:
+✔ Takes another function as an argument OR
+✔ Returns a function
+These are used everywhere in modern JavaScript and React.
+
+Example 1: Passing a function as an argument
+
+function greet(name) {
+  return "Hello " + name;
+}
+
+function processUser(callback) {
+  console.log(callback("Sriram"));
+}
+
+processUser(greet);
+
+Example 2: Returning a function
+
+function multiplyBy(n) {
+  return function(x) {
+    return x * n;
+  };
+}
+
+const double = multiplyBy(2);
+console.log(double(5)); // 10
+
+Example 3: Array Higher-Order Methods
+
+map()
+let nums = [1, 2, 3];
+let doubled = nums.map(n => n * 2);
+console.log(doubled); // [2, 4, 6]
+``
+filter()
+let result = nums.filter(n => n > 1);
+console.log(result); // [2, 3]
+
+reduce()
+let sum = nums.reduce((acc, curr) => acc + curr, 0);
+console.log(sum); // 6
+
+
+✅ What is a Callback Function?
+A callback is:
+✔ A function you pass as an argument
+✔ To another function
+✔ To be executed later by that function
+Example — Callback
+function greet(name) {
+  console.log("Hello", name);
+}
+
+function processUser(callback) {
+  callback("Sriram");  // calling the passed function
+}
+
+processUser(greet);
+Here:
+
+greet is a callback
+It is passed into processUser
+processUser executes it
+
+✔ Callbacks are about passing a function TO another function
+✔ Often used for asynchronous code (setTimeout, promises, react events)
+
+✅ What is Returning a Function?
+A function can also return another function.
+This is not a callback.
+This is called a higher‑order function that produces another function.
+Example — Function Returning Function
+
+function outer() {
+  return function inner() {
+    console.log("Inner function executed");
+  };
+}
+
+const fn = outer(); // fn is now inner()
+fn();
+
+Here:
+
+outer() returns a function
+You store that returned function
+Then you call it later
+
+✔ Returning a function is used to build:
+
+Closures
+Factories
+React hooks (internally)
+Partially applied functions
+Configurable functions
+
+
+

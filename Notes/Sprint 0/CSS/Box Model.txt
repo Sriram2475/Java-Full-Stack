@@ -1,0 +1,113 @@
+🎁 CSS Box Model 
+
+Every element in CSS is considered a box. Understanding this is essential for layouts.
+The CSS Box Model consists of four layers:
+
++-------------------------------+
+|           Margin              |
+|   +-----------------------+   |
+|   |        Border         |   |
+|   |   +---------------+   |   |
+|   |   |   Padding     |   |   |
+|   |   | +-----------+ |   |   |
+|   |   | |  Content  | |   |   |
+|   |   | +-----------+ |   |   |
+|   |   +---------------+   |   |
+|   +-----------------------+   |
++-------------------------------+
+
+1️⃣ Content
+This is where text, images, or other elements appear.
+width: 200px;
+height: 100px;
+
+2️⃣ Padding
+Padding is the space inside the border, around the content.
+It increases the clickable area and spacing inside the element.
+padding: 20px;        /* all sides */
+padding: 10px 5px;    /* top/bottom | left/right */
+padding: 5px 10px 15px 20px; /* top | right | bottom | left */
+✔ Padding adds to total element size unless using box-sizing: border-box.
+
+3️⃣ Border
+Border surrounds the padding and content.
+border: 2px solid red;
+border-radius: 10px; /* rounded corners */
+Different styles:
+
+solid
+dashed
+dotted
+double
+groove, ridge, etc.
+
+4️⃣  Margin
+Margin is the space outside the border; it separates elements.
+margin: 20px;
+margin: 10px 15px;
+➡ Important: Margins can collapse (especially vertical margins).
+Example:
+margin-top of child + margin-top of parent 
+does not add — only the largest margin is applied.
+
+5️⃣ Outline
+Outline is like a border but:
+
+does not affect layout
+sits outside the border
+cannot have specific side-outlines
+outline: 3px dashed blue;
+outline-offset: 5px; /* space between border and outline */
+✔ Often used for focus highlighting (accessibility).
+
+6️⃣ Visibility vs Display
+🔍 visibility
+visibility: hidden;
+Element becomes invisible but still occupies space.
+🔍 display
+display: none;
+Element is removed entirely from the layout (no space taken).
+
+7️⃣ Multiple Columns (CSS Multi‑Column Layout)
+Used to split content (like newspaper style):
+.column-box {
+  column-count: 3;        /* number of columns */
+  column-gap: 20px;       /* space between columns */
+  column-rule: 1px solid #ccc; /* line between columns */
+}
+Other useful properties:
+
+column-width: ideal width per column
+break-before, break-after: force column breaks
+
+Example:
+p {
+  column-count: 2;
+  column-gap: 30px;
+  column-rule: 2px dashed gray;
+}
+
+📦 Putting it All Together – Example
+<div class="box">Hello Box Model!</div>
+.box {
+  width: 200px;
+  padding: 20px;
+  border: 5px solid black;
+  margin: 30px;
+  outline: 2px dotted red;
+}
+This creates:
+
+Content width: 200px
+Padding adds: +20 +20
+Border adds: +5 +5
+So final width = 200 + 40 + 10 = 250px
+(If you don't use box-sizing: border-box)
+
+
+⭐ Bonus Tip: box-sizing
+To avoid manual calculations:
+* {
+  box-sizing: border-box;
+}
+Now width includes padding + border.

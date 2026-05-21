@@ -1,0 +1,73 @@
+1. What is JavaScript? 
+
+JavaScript (JS) is a high‑level, interpreted programming language used primarily to create interactive and dynamic content on websites.
+JavaScript is a single-threaded language that executes one task at a time.
+It is an interpreted language which means it executes the code line by line.
+The data type of the variable is decided at run-time in JavaScript, which is why it is called dynamically typed.
+Object-Oriented
+Platform indepenent
+Update html using DOM
+Capable of handling exceptions
+Allows anonymous function
+
+Client Side and Server Side nature of JavaScript
+
+Client-Side:
+
+Involves controlling the browser and its DOM (Document Object Model).
+Handles user events like clicks and form inputs.
+Common libraries include AngularJS, ReactJS, and VueJS.
+
+Server-Side:
+
+Involves interacting with databases, manipulating files, and generating responses.
+Node.js and frameworks like Express.js are widely used for server-side JavaScript, enabling full-stack development.
+
+Programming Paradigms in JavaScript
+
+JavaScript supports both imperative and declarative programming styles:
+
+Imperative Programming: Focuses on how to perform tasks by controlling the flow of computation. This includes approaches like procedural and object-oriented programming, often using constructs like async/await to handle asynchronous actions.
+Declarative Programming: Focuses on what should be done rather than how it’s done. It emphasizes describing the desired result, such as with arrow functions, without detailing the steps to achieve it.
+
+Version- Year - Key Features
+ES5 - 2009 - strict mode, JSON, getters/setters
+ES6 - 2015 - let/const, classes, arrow functions
+ES7-ES13 - 2016-2022 - async/await, BigInt, optional chaining
+ES14 - 2023 - toSorted, findLast, static blocks
+
+2. Setting Up JavaScript Development Environment
+
+Even though JavaScript runs in the browser, we need Node.js to run JS code outside the browser (like on your terminal), and npm (Node Package Manager) to install JavaScript libraries.
+
+Step 1: Install Node.js:
+Go to the official site: https://nodejs.org/en
+Download the LTS (Recommended for Most Users) version.
+Step 2: Verify installation
+After installing Node.js, verify the installation by running the following commands:
+node -v
+npm -v
+
+Set Up a Code Editor
+We recommend Visual Studio Code (VS Code) a powerful, beginner-friendly editor.
+
+Recommended Extensions:
+
+ESLint (for spotting errors)
+Prettier (for code formatting)
+Live Server (for auto-refresh in browser)
+
+Create Your First Project
+Step 1: Set Up Your Project Folder
+
+Open your terminal (Command Prompt on Windows, Terminal on macOS/Linux).
+Navigate to the location where you want your project to live. For example, let's create a folder called my-js-app:
+mkdir my-js-app
+cd my-js-app
+Step 2: Create HTML and JavaScript Files
+Step 3: Run the Project in the Browser
+To see the result, press F12 (or Cmd + Option + I on macOS) to open the browser's Developer Tools, then go to the Console tab
+
+Running JavaScript Using Node.js
+node app.js
+

@@ -1,0 +1,208 @@
+Language-Specific Features - v17, v21, v25
+
+JAVA 17 FEATURES (LTS)
+Java 17 introduced major improvements that simplify code and increase safety.
+
+1️⃣  Sealed Classes and Interfaces
+✔ What it means:
+Sealed classes allow you to restrict which classes can extend a particular class or implement an interface.
+Why?
+More control, better security, better design.
+Example:
+public sealed class Shape permits Circle, Square {}
+
+final class Circle extends Shape {}
+final class Square extends Shape {}
+
+Only Circle and Square can extend Shape.
+
+2️⃣ Pattern Matching for instanceof
+Before Java 17:
+if (obj instanceof String) {
+    String s = (String) obj;  // extra cast
+}
+
+After Java 17:
+if (obj instanceof String s) {
+    System.out.println(s.toUpperCase());
+}
+
+✔ Cleaner
+✔ No need for casting
+✔ Less boilerplate
+
+3️⃣ Text Blocks
+Introduced earlier, but stable in Java 17.
+Allows multi-line strings:
+String json = """
+    {
+        "name": "Sriram",
+        "age": 22
+    }
+    """;
+
+✔ No need for \n
+✔ Preserves formatting
+✔ Best for SQL, JSON, XML
+
+4️⃣ Records (Immutable Data Classes)
+Java 17 makes records stable and widely adopted.
+Used to create data classes quickly.
+Example: 
+public record User(String name, int age) {}
+``
+Automatically generates:
+
+constructor
+getters
+equals()
+hashCode()
+toString()
+
+✔ Ideal for DTOs, responses, value objects
+
+5️⃣ Switch Expression Enhancements
+Switch becomes more powerful and safer.
+Example: 
+String s = switch (day) {
+    case 1 -> "Monday";
+    case 2 -> "Tuesday";
+    default -> "Invalid";
+};
+``
+✔ No fall-through
+✔ Clear syntax
+✔ Returns value
+
+6️⃣  Hidden Classes
+These are JVM-level classes not discoverable via reflection.
+Used by:
+
+Frameworks
+Dynamic proxies
+Bytecode libraries
+
+As a beginner, just know: helps frameworks generate code safely and efficiently.
+
+JAVA 21 FEATURES (LTS)
+Java 21 is another major LTS release with powerful new features.
+
+1️⃣ String Templates
+Java finally supports string interpolation.
+Example:
+
+String name = "Sriram";
+String msg = STR."Hello, \{name}!";
+``
+✔ Cleaner than "Hello " + name
+✔ Safer (avoids injections)
+
+2️⃣ Sequenced Collections
+New interfaces to access elements in first/last order.
+Applies to:
+
+List
+Set
+Map
+
+Example:
+SequencedCollection<String> sc = new ArrayList<>();
+sc.add("A");
+sc.add("B");
+System.out.println(sc.getFirst());
+System.out.println(sc.getLast());
+✔ Makes reversible operations easier
+✔ Replaces confusion around LinkedHashMap, etc.
+
+3️⃣ Pattern Matching for switch + Record Patterns
+Switch works with patterns:
+switch (obj) {
+    case String s -> System.out.println(s.toUpperCase());
+    case Integer i -> System.out.println(i*10);
+}
+
+Record patterns: 
+record Point(int x, int y) {}
+
+switch (p) {
+    case Point(int x, int y) -> System.out.println(x + ", " + y);
+}
+``
+✔ Cleaner matching
+✔ Deconstruct objects easily
+✔ Perfect for DTOs
+
+4️⃣ Virtual Threads (Project Loom)
+BIGGEST FEATURE in Java 21
+Virtual threads = lightweight threads created by JVM.
+✔ Why important?
+
+You can create millions of virtual threads
+They are extremely lightweight
+Solve scalability problems without complex async code
+Great for servers, I/O processing
+
+Example:
+ Thread.ofVirtual().start(() -> {
+    System.out.println("Hello Virtual Thread");
+});
+Virtual threads = 10x simpler + 1000x scalable.
+
+
+JAVA 25 FEATURES (Upcoming / Preview)
+Java 25 introduces major improvements in writing cleaner and more expressive code.
+
+1️⃣ Flexible Constructor Bodies
+Makes constructors simpler and more flexible:
+class User {
+    User(String name) {
+        if (name == null) name = "Unknown";
+        this.name = name;
+    }
+}
+``
+(Java 25 improves initialization rules.)
+
+2️⃣ Primitive Types in Patterns
+Pattern matching now supports primitives directly:
+switch (x) {
+    case int n when n > 0 -> ...
+    case double d -> ...
+}
+✔ More type-safe
+✔ Cleaner logic
+
+3️⃣  Compact Source Files & Instance Main Methods
+You can write a whole class in one line:
+Compact source:
+
+
+void main() { System.out.println("Hello"); }
+No class wrapper needed.
+Perfect for:
+
+quick scripts
+beginners
+testing
+
+4️⃣ Module Import Declarations
+Import modules in a simpler way.
+Improves module usability.
+
+5️⃣  Ahead-of-Time (AOT) Method Profiling
+JVM analyzes which methods are hot before running, improving startup performance.
+Useful for:
+
+cloud functions
+microservices
+CLI tools
+
+
+⭐ FINAL SUMMARY TABLE (Super Easy)
+
+Version - Key Features
+Java 17 - Sealed classes, records, text blocks, pattern matching, switch expressions, hidden classes
+Java 21 - String templates, sequenced collections, pattern matching for switch, record patterns, virtual threads
+Java 25 - Compact source files, primitive patterns, flexible constructors, module import improvements, AOT profiling
+
+

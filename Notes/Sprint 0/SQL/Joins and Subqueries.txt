@@ -1,0 +1,198 @@
+Joins and Subqueries
+
+Employee & Department System
+We will use two simple tables:
+
+📌 Table: employees
+
+emp_id - namedept_id - salary
+1 - John - 10 - 60000
+2 - Priya - 20 - 55000
+3 - Ahmed - 10 - 50000
+4 - Sara - NULL - 45000
+5 - David - 30 - 70000
+
+📌 Table: departments
+
+dept_id - dept_name
+10 - IT
+20 - HR
+30 - Finance
+40 - Marketing
+
+⭐ 1. INNER JOIN
+✔ Real‑World Meaning
+“Give me only employees who belong to an existing department.”
+✔ SQL
+SELECT e.name, d.dept_name
+FROM employees e
+INNER JOIN departments d
+ON e.dept_id = d.dept_id;
+
+✔ Result
+Employees with valid departments only.
+
+name - dept_name
+John - IT
+Priya - HR
+Ahmed - IT
+David - Finance
+
+Sara is excluded because she has no department.
+
+⭐ 2. LEFT JOIN
+✔ Real‑World Meaning
+“Give me all employees, even if some don’t have a department.”
+✔ SQL
+SELECT e.name, d.dept_name
+FROM employees e
+LEFT JOIN departments d
+ON e.dept_id = d.dept_id;
+
+✔ Result
+
+name - dept_name
+John - IT
+Priya - HR
+Ahmed - IT
+Sara - NULL
+David - Finance
+
+Sara is included with NULL dept.
+
+⭐ 3. RIGHT JOIN
+✔ Real‑World Meaning
+“Give me all departments, even if they have no employees.”
+✔ SQL
+SELECT e.name, d.dept_name
+FROM employees e
+RIGHT JOIN departments d
+ON e.dept_id = d.dept_id;
+``
+✔ Result
+name - dept_name
+John- IT
+Priya - HR
+Ahmed - IT
+David - Finance
+NULL - Marketing
+
+⭐ 4. FULL OUTER JOIN (Not in MySQL directly)
+✔ Real‑World Meaning
+“Give me all employees + all departments, even if unmatched.”
+(MySQL uses UNION of left + right join.)
+
+⭐ 5. SELF JOIN
+✔ Real‑World Scenario
+Find employees who share the same department (like teammates).
+✔ SQL
+SELECT e1.name AS employee, e2.name AS teammate
+FROM employees e1
+JOIN employees e2
+ON e1.dept_id = e2.dept_id
+WHERE e1.emp_id != e2.emp_id;
+
+✔ Result
+
+employee - teammate
+John - Ahmed
+Ahmed - John
+
+⭐ 6. CROSS JOIN
+✔ Real‑World Meaning
+“Make a combination of all employees with all departments.”
+Used for:
+
+Scheduling
+Assigning resources
+Creating all possible pairs
+
+✔ SQL
+SELECT e.name, d.dept_name
+FROM employees e
+CROSS JOIN departments d;
+
+✔ Result
+5 employees × 4 departments = 20 rows
+(Every employee paired with every department)
+
+
+⭐ 7. Subquery in WHERE
+✔ A subquery used to filter rows based on a computed value returned by another query.
+✔ Real‑World Meaning
+Find employees who earn above average salary.
+✔ SQL
+SELECT name, salary
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees);
+
+✔ Result
+
+name - salary
+John - 60000
+David - 70000
+
+⭐ 8. Subquery in SELECT
+
+✔ A subquery used to calculate a value for each row and display it as a column in the result.
+✔ Real‑World Meaning
+Show each employee + the average salary of their department.
+✔ SQL
+SELECT
+    name,
+    salary,
+    (SELECT AVG(salary)
+     FROM employees e2
+     WHERE e2.dept_id = e1.dept_id) AS dept_avg_salary
+FROM employees e1;
+
+⭐ 9. Subquery in FROM (Inline View)
+✔ A subquery treated as a temporary table that the main query selects from.
+✔ Real‑World Meaning
+Get the highest salary from each department.
+✔ SQL
+
+SELECT dept_id, max_salary
+FROM (
+    SELECT dept_id, MAX(salary) AS max_salary
+    FROM employees
+    GROUP BY dept_id
+) AS dept_max;
+
+⭐ 10. Correlated Subquery
+✔ A subquery that runs once per row of the outer query because it depends on values from that row.
+✔ Real‑World Meaning
+Find employees who earn more than the average salary of their department.
+This subquery depends on each row of the outer query.
+✔ SQL
+SELECT name, dept_id, salary
+FROM employees e1
+WHERE salary > (
+    SELECT AVG(salary)
+    FROM employees e2
+    WHERE e1.dept_id = e2.dept_id
+);
+For each employee e1, calculate the average salary of their department (using the inner query), and return the employee only if their salary is greater than that department’s average.
+
+
+✔ Result
+name - dept_id - salary
+John - 10- 60000
+David - 30 - 70000
+
+Nested Subquery
+✔ A subquery inside another subquery to perform multi‑level filtering or aggregation.
+
+SELECT name, salary
+FROM employees
+WHERE salary > (
+    SELECT AVG(salary)
+    FROM employees
+    WHERE dept_id IN (
+        SELECT dept_id
+        FROM departments
+        WHERE dept_name IN ('IT', 'Finance')
+    )
+);
+
+

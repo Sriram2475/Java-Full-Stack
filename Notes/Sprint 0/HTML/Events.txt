@@ -1,0 +1,124 @@
+🔹 1. onblur Event
+When does it occur?
+When an element loses focus.
+Commonly used with:
+
+Textboxes (<input>)
+Dropdowns (<select>)
+
+Example:
+<input type="text" onblur="alert('You moved out of the textbox!')">
+
+🔹 2. onchange Event
+When does it occur?
+When the value of an input changes and the element loses focus.
+Works with:
+
+Textboxes
+Dropdowns
+Checkboxes
+
+Example:
+<select onchange="alert('Option changed!')">
+  <option>Red</option>
+  <option>Blue</option>
+</select>
+
+🔹 3. onclick Event
+When does it occur?
+When the user clicks on an element.
+Used with: buttons, images, links, etc.
+Example:
+<button onclick="alert('Button clicked!')">Click Me</button>
+
+🔹 4. Form‑Related Events
+These events help in handling forms.
+✔ onsubmit
+Triggered when a form is submitted.
+✔ onreset
+Triggered when a form reset button is clicked.
+✔ onfocus
+Triggered when an input field gains focus.
+Example:
+<form onsubmit="alert('Form submitted!')">
+  <input type="text" onfocus="console.log('Focused')">
+  <button type="submit">Submit</button>
+</form>
+
+🔹 5. Load Events
+
+✔ onload
+Triggered when a page or image finishes loading.
+Example:
+<body onload="alert('Page loaded!')">
+
+✔ onbeforeunload
+Triggered before the user leaves or refreshes the page.
+Example:
+window.onbeforeunload = function() {
+  return "Are you sure you want to leave?";
+};
+
+🔹 6. Key Events
+These occur when the user uses the keyboard.
+✔ onkeydown
+Key is pressed down
+✔ onkeypress
+Key is pressed (character keys only)
+✔ onkeyup
+Key is released
+Example:
+<input type="text" onkeydown="console.log('Key pressed')">
+
+🔹 7. Mouse Events
+Events related to mouse actions.
+✔ onmousemove
+Mouse is moving over an element
+<div onmousemove="console.log('Mouse moving')">Hover here</div>
+✔ onmouseover
+Mouse enters an element
+✔ onmouseout
+Mouse leaves an element
+✔ onmousedown
+Mouse button pressed
+✔ onmouseup
+Mouse button released
+
+🔹 8. ondblclick Event
+Occurs when an element is double‑clicked.
+Example:
+<p ondblclick="alert('Double clicked!')">Double-click me</p>
+
+🔹 9. onbeforeunload Event
+Occurs just before the page unloads (refresh, closing tab, etc.).
+Used to warn users about unsaved work.
+Example:
+window.onbeforeunload = function() {
+  return "Unsaved changes!";
+};
+
+🔹 10. oncanplay Event
+This event occurs when a media element (audio/video) is ready to play but may need buffering.
+Used with:
+
+<audio>
+<video>
+
+Example:
+<video oncanplay="console.log('Video can start playing!')" controls>
+  movie.mp4
+</video>
+
+Summary
+
+Event - Triggered When
+onblur - Element loses focus
+onchange - Value changes + element loses focus
+onclick - Element clicked
+Form Events - Submit, reset, focus
+onload - Page or image fully loads
+onbeforeunload - User tries to leave page
+Key Events - Key down, press, up
+Mouse Events - Mouse actions (move, over, out, click)
+ondblclick - Double-clicked
+oncanplay - Media is ready to play

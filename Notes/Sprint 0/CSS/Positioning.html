@@ -1,0 +1,167 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <style>
+
+    .container {
+      width: 400px;
+      height: 300px;
+      border: 3px solid black;
+      position: relative; /* important for absolute */
+      margin-bottom: 50px;
+    }
+
+    .box {
+      width: 120px;
+      height: 120px;
+      color: white;
+      font-size: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .static {
+      background: gray;
+      position:static;
+    }
+
+    .relative {
+      background: blue;
+      position: relative;
+      top: 20px;
+      left: 30px;
+    }
+
+    .absolute {
+      background: green;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    .fixed {
+      background: red;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+    }
+
+    .sticky {
+      background: purple;
+      position: sticky;
+      top: 0;
+    }
+
+  </style>
+</head>
+<body>
+
+<h2>CSS Position Examples</h2>
+
+<p class="sticky">I am STICKY — I stick to the top when you scroll!</p>
+
+<div class="container">
+  <div class="box static">Static</div>
+  <div class="box relative">Relative</div>
+  <div class="box absolute">Absolute</div>
+</div>
+
+<p>Scroll down to see how FIXED works...</p>
+<br><br><br><br><br><br><br><br><br>
+
+<div class="box fixed">Fixed</div>
+
+<br><br><br><br><br><br><br><br><br>
+
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All CSS Positions Demo</title>
+
+  <style>
+
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    .box {
+      width: 180px;
+      height: 70px;
+      color: white;
+      font-size: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    /* 1. STATIC */
+    .static {
+      background: gray;
+      position: static; /* default */
+    }
+
+    /* 2. RELATIVE */
+    .relative {
+      background: blue;
+      position: relative;
+      top: 20px;     /* shifts down */
+      left: 40px;    /* shifts right */
+    }
+
+    /* 3. ABSOLUTE */
+    .absolute {
+      background: green;
+      position: absolute;
+      top: 200px;    /* positioned relative to the page */
+      left: 50px;
+    }
+
+    /* 4. FIXED */
+    .fixed {
+      background: red;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+    }
+
+    /* 5. STICKY */
+    .sticky {
+      background: purple;
+      padding: 10px;
+      position: sticky;
+      top: 0;        /* sticks at the top */
+      z-index: 10;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<h2>CSS Positioning Demonstration (All in One Page)</h2>
+
+<p class="sticky">I am STICKY — I stick to the top when you scroll!</p>
+
+<div class="box static">Static</div>
+
+<div class="box relative">Relative</div>
+
+<div class="box absolute">Absolute</div>
+
+<p style="margin-top:400px;">
+  Scroll below to see how FIXED position behaves.
+</p>
+
+<div class="box fixed">Fixed</div>
+
+<!-- Extra space for scrolling -->
+<div style="height: 1500px;"></div>
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+Functional Programming in Java
+
+
+1. Lambda Expressions
+
+✔ What is a Lambda Expression?
+A lambda expression is a short block of code that behaves like a function—but without a name.
+✔ Why lambdas?
+Before Java 8, you had to write long anonymous classes to pass behavior.
+Lambdas make code shorter, cleaner, and functional.
+✔ Syntax:
+(parameters) -> { body }
+
+✔ Before Java 8 (old way)
+interface Greeting {
+    void sayHello();
+}
+
+Greeting g = new Greeting() {
+    public void sayHello() {
+        System.out.println("Hello");
+    }
+};
+
+✔ With Java 8 (lambda)
+Greeting g = () -> System.out.println("Hello");
+
+ Where lambdas are used?
+✔ Functional interfaces
+✔ Stream API
+✔ Collections (sorting, filtering)
+
+⭐ Examples
+
+A) No parameter
+() -> System.out.println("Hello");
+
+B) One parameter
+name -> System.out.println("Hi " + name);
+
+C) Multiple parameters
+(a, b) -> a + b
+
+D) With a functional interface
+interface Calculator {
+    int add(int a, int b);
+}
+
+Calculator c = (a, b) -> a + b;
+System.out.println(c.add(10, 20));
+
+2. Functional Interfaces
+
+Interface Enhancements in Java 8
+Java 8 added 3 new things to interfaces:
+
+✔ 1) Default Methods
+
+Methods with body inside an interface.
+interface A {
+    default void show() {
+        System.out.println("Default Method");
+    }
+}
+Used to avoid breaking old code when adding new behaviors.
+
+✔ 2) Static Methods in Interfaces
+
+interface MathUtil {
+    static int add(int a, int b) {
+        return a + b;
+    }
+}
+
+Call using:
+MathUtil.add(10, 20);
+
+✔ 3) Functional Interfaces
+An interface with only one abstract method.
+
+A functional interface is an interface with exactly ONE abstract method.
+✔ Examples (Built‑in):
+
+Runnable → run()
+Callable → call()
+Comparator → compare() - compare(a,b)
+Predicate<T> → test() - returns true/false
+Function<T,R> → apply() - transforms T → R
+Consumer<T> → accept() - consumes value (no return)
+Supplier<T> → get() - provides value
+
+Examples:
+Predicate<Integer> isEven = n -> n % 2 == 0;
+Function<String, Integer> len = s -> s.length();
+Consumer<String> print = x -> System.out.println(x);
+Supplier<Double> random = () -> Math.random();
+
+✔ Why needed?
+Lambdas can only be assigned to functional interfaces.
+✔ Declaring your own functional interface
+
+@FunctionalInterface
+interface Greeting {
+    void sayHello();
+}
+
+Use with lambda:
+Greeting g = () -> System.out.println("Hello!");
+g.sayHello();
+
+✔ @FunctionalInterface
+Ensures compilation fails if more than one abstract method is added.
+
+A Functional Interface has exactly one abstract method.
+
+@FunctionalInterface
+interface Calculator {
+    int add(int a, int b);
+}
+
+Use lambda:
+Calculator c = (a, b) -> a + b;
+System.out.println(c.add(10, 20));
+
+Why @FunctionalInterface?
+
+Ensures only one abstract method exists
+If you add more, compiler error
+
+Put Everything Together: Big Example
+
+List<String> names = List.of("Sriram", "Kumar", "Arun", "Abi");
+
+names.stream()
+     .filter(n -> n.startsWith("A"))       // lambda
+     .map(String::toUpperCase)             // method reference
+     .sorted()
+     .forEach(System.out::println);
+
+Output:
+ABI
+ARUN
+
+
+3. Method References
+
+Method references are shortcuts for lambdas that call existing methods.
+shortcut for calling an existing method from a lambda.
+
+✔ Types of Method References
+
+Static method reference - ClassName::staticMethod
+Instance method reference - object::instanceMethod
+Constructor reference - ClassName::new
+
+Type - Syntax - Example
+Static method - Class::method - Math::max
+Instance method (object) - obj::method - str::toUpperCase
+Instance method (class) - Class::method - String::length
+Constructor reference - Class::new - ArrayList::new
+
+Example:
+Without method reference:
+list.forEach(s -> System.out.println(s));
+With method reference:
+list.forEach(System.out::println);
+Constructor reference:
+Supplier<List<String>> s = ArrayList::new;
+
+4. Optional Class
+✔ What is Optional?
+A container class used to represent a value that may or may not be present.
+✔ Why Optional?
+To avoid NullPointerException and provide safe alternatives to null checks.
+
+Creating Optional:
+Optional<String> name = Optional.of("Sriram");
+Optional<String> empty = Optional.empty();
+Optional<String> maybe = Optional.ofNullable(null);
+
+Accessing values:
+name.isPresent();    // true
+empty.isPresent();   // false
+
+Safe value handling:
+String value = maybe.orElse("Default");
+
+Using ifPresent:
+name.ifPresent(n -> System.out.println(n.toUpperCase()));
+
+Avoids:
+if (obj != null) {
+   ...
+}
+
+5. Streams
+Stream = a pipeline for processing data in functional style.
+✔ Streams DO NOT:
+
+store data
+modify original collection
+
+✔ Streams DO:
+
+filter data
+transform data
+reduce data
+aggregate results
+do parallel processing
+
+Stream operations
+A) Intermediate operations (return another stream)
+
+filter()
+map()
+sorted()
+distinct()
+limit(), skip()
+
+B) Terminal operations (end the stream)
+
+forEach()
+collect()
+reduce()
+count()
+max(), min()
+
+
+⭐ Example: Filter + Map + Collect
+
+List<Integer> nums = List.of(1,2,3,4,5,6);
+
+List<Integer> evens = nums.stream()
+    .filter(n -> n % 2 == 0)
+    .map(n -> n * n)
+    .toList();
+
+System.out.println(evens);  // [4, 16, 36]
+``
+
+Example: Grouping (GROUP BY in SQL)
+
+Map<String, Long> count =
+    names.stream().collect(
+        Collectors.groupingBy(s -> s, Collectors.counting()));
+
+6. Parallel Streams
+
+Parallel Streams split the data and process it in multiple threads internally.
+✔ How to use?
+list.parallelStream()
+    .map(n -> n * 2)
+    .forEach(System.out::println);
+
+✔ Benefits:
+
+Faster for large data sets (CPU cores utilized)
+
+✔ When to NOT use?
+
+Small collections
+When thread-safety is required
+When order must be preserved
+
+Example of unordered output:
+list.parallelStream().forEach(System.out::println);
+
+Final Summary (Cheat Sheet)
+
+Feature - Meaning - Why Important
+Lambda Expressions - Short form of functions - Enables FP, Streams
+Functional Interfaces - Interface with 1 abstract method - Required for lambdas
+Method References - Shortcut for lambdas - Clean & readable
+Optional Class - Avoids null pointer - Safe null handling
+Streams - Process data functionally - Fast, clean pipelines
+Parallel Streams - Multi-threaded streams - Faster for big data
+
+
+Feature - Meaning
+Lambda - Short function syntax
+Stream API - Pipeline for data processing
+Method Reference - Shortcut for lambdas calling existing methods
+Default Methods - Interfaces can have method bodies
+Static Methods - Interfaces can contain static utility methods
+Functional Interface - Interface with 1 abstract method
+@FunctionalInterface - Compiler safety for FI
+
+

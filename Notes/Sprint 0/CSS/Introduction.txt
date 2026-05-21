@@ -1,0 +1,119 @@
+⭐ Introduction to CSS
+
+CSS stands for Cascading Style Sheets.
+It is a stylesheet language used to control the look and layout of web pages.
+HTML is used to build the structure of a webpage, while CSS is used to style that structure.
+👉 Example:
+HTML creates headings, paragraphs, images.
+CSS controls their color, size, fonts, spacing, animations, etc.
+
+⭐ Need and Benefits of CSS
+
+✔ 1. Separates Style From Structure
+HTML handles content, CSS handles appearance.
+This makes websites easier to maintain.
+✔ 2. Saves Time
+A single CSS file can style an entire website.
+Change one file → the whole website updates.
+✔ 3. Consistent Look
+With external CSS, all pages follow the same styling rules.
+✔ 4. Improved Page Loading
+CSS eliminates repeated styling code in HTML → reduces file size → faster loading.
+✔ 5. Better Accessibility & Device Compatibility
+CSS allows responsive design using:
+
+media queries
+flexible layouts
+fluid grids
+
+So the same website works on mobiles, tablets, and desktops.
+✔ 6. More Design Power
+CSS3 adds:
+
+animations
+transitions
+shadows
+rounded corners
+gradients
+flexbox, grid layouts
+
+⭐ CSS Setup
+
+You can use CSS in 3 ways:
+
+Inline CSS
+Internal (Embedded) CSS
+External CSS
+
+To use CSS, you only need:
+
+an HTML file
+a CSS file (optional but recommended)
+a web browser
+
+No installation required.
+
+⭐ CSS Syntax
+
+Basic CSS syntax:
+selector {
+    property: value;
+}
+
+Breakdown:
+
+Selector → chooses the HTML element (h1, p, .class, #id)
+Property → what you want to change (color, width, font-size)
+Value → new value for the property
+
+👉 Example:
+p {
+    color: blue;
+    font-size: 18px;
+}
+
+
+⭐ CSS Comments
+
+Comments are ignored by browsers.
+They are used to explain the code.
+Syntax:
+/* This is a CSS comment */
+
+
+⭐ Including CSS in HTML Documents
+
+There are three ways to include CSS:
+
+🟩 1. Inline CSS
+Styling applied directly inside an HTML tag.
+Example:
+<p style="color:red; font-size:20px;">This is inline CSS.</p>
+
+🟦 2. Internal (Embedded) CSS
+CSS is written inside the <style> tag in the HTML <head> section.
+Example:
+<head>
+<style>
+    h1 {
+        color: green;
+        text-align: center;
+    }
+</style>
+</head>
+
+🟧 3. External CSS (Most Important Method)
+Styles are placed in a separate .css file, and linked using <link> tag.
+Example:
+HTML File:
+<head>
+styles.css
+</head>
+styles.css File:
+body {
+    background-color: #f0f0f0;
+}
+
+p {
+    font-size: 18px;
+}

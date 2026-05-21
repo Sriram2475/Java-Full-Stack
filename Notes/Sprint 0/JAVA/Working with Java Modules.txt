@@ -1,0 +1,435 @@
+Working with Java Modules
+
+1️⃣ Introduction to Modular Programming
+Before Java 9, Java applications used:
+
+Huge classpaths
+No boundaries between packages
+No control over what is visible
+Hard to understand dependencies
+Hard to scale big applications
+
+This caused:
+❌ Classpath conflicts
+❌ Difficulty maintaining large apps
+❌ Difficult code organization
+Java 9 introduced:
+⭐ JPMS – Java Platform Module System
+JPMS adds a new structure: modules.
+
+✔ What is a Module?
+A module is a group of related packages bundled together with:
+
+A name
+Explicit dependencies
+Explicit exports (what is visible to other modules)
+A module-info.java file
+
+Simple definition:
+
+A module is like a box that contains packages and controls what you expose to the outside world.
+
+
+✔ Why do we need modules?
+1️⃣ Better structure for large applications
+You can break your application into understandable pieces.
+2️⃣ Strong encapsulation
+Only exported packages are visible.
+Everything else is hidden.
+3️⃣ No classpath hell
+Modules replace classpath with a module-path, which understands dependencies.
+4️⃣ Security
+Only the APIs you expose are accessible.
+5️⃣ JDK itself is modular
+Java 17’s entire JDK is split into ~70 modules like:
+
+java.base
+java.sql
+java.xml
+java.net.http
+etc.
+
+2️⃣ Creating and Using Modules
+
+Let’s build a very simple modular application.
+
+⭐ Step 1: Create Module Folder Structure
+Example:
+myapp
+ └── src
+      ├── com.example.main
+      │     ├── module-info.java
+      │     └── com.example.main.Main.java
+      └── com.example.util
+            ├── module-info.java
+            └── com.example.util.Util.java
+
+We have two modules:
+
+com.example.util
+com.example.main
+
+
+⭐ Step 2: Write module-info.java for each module
+Module 1: Utility Module
+
+src/com.example.util/module-info.java
+
+module com.example.util {
+    exports com.example.util;
+}
+
+exports means other modules can use this package.
+
+src/com.example.util/com/example/util/Util.java
+
+package com.example.util;
+
+public class Util {
+    public static String greet() {
+        return "Hello from Util!";
+    }
+}
+
+Module 2: Main Module
+
+src/com.example.main/module-info.java
+
+module com.example.main {
+    requires com.example.util;
+}
+
+requires means this module depends on the Util module.
+
+src/com.example.main/com/example/main/Main.java
+
+package com.example.main;
+
+import com.example.util.Util;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(Util.greet());
+    }
+}
+
+⭐ Step 3: Compile Modules (using command line)
+
+Compile util module
+
+javac -d out/com.example.util src/com.example.util/module-info.java src/com.example.util/com/example/util/Util.java
+
+Compile main module
+
+javac --module-path out -d out/com.example.main \
+      src/com.example.main/module-info.java \
+      src/com.example.main/com/example/main/Main.java
+
+Run
+
+java --module-path out -m com.example.main/com.example.main.Main
+
+3️⃣ Modularity in Java 17
+Java 17 continues the module system introduced in Java 9.
+⭐ Key features in Java 17 Modules:
+
+✔ 1. Strong Encapsulation
+Before modules:
+
+ALL packages were accessible
+
+With modules:
+
+Only exported packages are visible
+
+Everything else is internally hidden.
+
+✔ 2. Readable Dependency Graph
+With modules, you can visually understand dependencies:
+com.example.main  ---> requires ---> com.example.util
+
+
+✔ 3. Smaller Runtime with jlink (Java 9–17)
+You can create a custom JDK containing only the modules you need.
+Example:
+jlink --add-modules java.base,com.example.main --output custom-jdk
+
+This creates a smaller Java runtime, useful for deployments.
+
+✔ 4. JDK is Modularized
+Java itself is split into modules like:
+
+java.base (always required)
+java.net.http
+java.sql
+java.logging
+java.xml
+jdk.unsupported
+
+Each module has its own:
+module-info.class
+
+
+✔ 5. Module Resolution at Runtime
+JVM checks:
+
+Missing modules
+Wrong dependencies
+Cyclic dependencies
+
+You get errors like:
+Error: Module com.example.main not found
+
+
+✔ 6. Open Modules and Opens Keyword
+Sometimes you want to allow reflection (e.g., JSON libraries like Gson).
+Use:
+open module com.example.main { }
+Or:
+module com.example.main {
+    opens com.example.main.model;
+}
+
+⭐ FINAL SUMMARY (Easy to Remember)
+
+Topic - Explanation
+Modular Programming - Breaking app into smaller modules
+module-info.java - Defines module name, what it exports, what it requires
+exports - Makes package visible to other modules
+requires - Declares dependency
+Java 17 Modularity - Strong encapsulation, modular JDK, jlink, reflection control
+
+
+
+
+
+
+What this command does
+
+java – runs the JVM.
+--module-path out – tells the JVM where to find compiled modules (the module path).
+Here, out/ is the directory where you compiled your modules (e.g., out/com.example.util, out/com.example.main).
+-m com.example.main/com.example.main.Main – tells the JVM to run the main method of class com.example.main.Main from the module com.example.main.
+
+So, it runs the main class from a named module instead of the old classpath way.
+
+
+What will it output?
+It will print whatever your main method prints.
+From the earlier example we discussed:
+
+com.example.util.Util.greet() returns "Hello from Util!"
+com.example.main.Main calls Util.greet() and prints it.
+
+So the output will be:
+Hello from Util!
+
+
+
+If your main method prints something else, you’ll see that output. The command itself doesn’t print anything special—it just executes your modular program.
+
+Where and when do we use this?
+Use this command when you are running a modular Java application (Java 9+ JPMS). Typical cases:
+
+
+During development (from compiled classes on disk)
+
+After you’ve compiled modules into out/:
+
+javac -d out/com.example.util src/com.example.util/module-info.java src/com.example.util/com/example/util/Util.java
+javac --module-path out -d out/com.example.main src/com.example.main/module-info.java src/com.example.main/com/example/main/Main.java
+java --module-path out -m com.example.main/com.example.main.Main
+
+Running from modular JARs
+If you package each module as a JAR inside mlib/:
+
+java --module-path mlib -m com.example.main/com.example.main.Main
+(Each JAR contains a module-info.class at root.)
+
+When integrating with tools/IDEs
+
+IntelliJ or Maven can generate and run with module path under the hood, but knowing this command helps when you run from terminal or CI.
+
+
+When building custom runtimes with jlink
+
+After building a runtime image, you might run:
+./bin/java -m com.example.main/com.example.main.Main
+
+(jlink bundles a minimized JRE + your modules.)
+
+Variants you should know
+1) If your JAR has a Main-Class manifest (or module-info main hint)
+If the modular JAR for com.example.main declares the main class in its manifest, you can omit the class name:
+java --module-path mlib -m com.example.main
+
+2) Running program arguments
+
+java --module-path out -m com.example.main/com.example.main.Main arg1 arg2
+``
+Inside main(String[] args), you’ll get ["arg1","arg2"].
+3) Multiple locations on module path
+Separate entries by your OS path separator (Linux/Mac :, Windows ;):
+
+
+java --module-path out:lib -m com.example.main/com.example.main.Main
+``
+
+Common errors (and fixes)
+
+
+Error: Module com.example.main not found
+
+The module isn’t on the --module-path.
+✅ Ensure out/com.example.main/module-info.class exists and out is on the module path.
+
+
+
+NoClassDefFoundError or java.lang.module.FindException for a required module
+
+You compiled with requires com.example.util but didn’t put that module on the module path.
+✅ Add all dependent modules/jars to --module-path.
+
+
+
+Wrong directory layout
+
+The module path directory should contain module roots, each with module-info.class and the compiled packages beneath. For example:
+out/
+  com.example.util/
+    module-info.class
+    com/example/util/Util.class
+  com.example.main/
+    module-info.class
+    com/example/main/Main.class
+
+
+
+Class not exported
+
+If com.example.main imports a package from com.example.util that isn’t exported:
+
+In com.example.util/module-info.java, add:
+
+
+module com.example.util {
+    exports com.example.util;
+}
+
+Confusing classpath vs module path
+
+Don’t mix -cp (classpath) and --module-path unless you know what you’re doing.
+In a modular application, prefer --module-path and -m.
+
+Quick comparison: classpath vs module path
+
+Aspect - Classpath (-cp) - Module path (--module-path)
+Structure - Flat bag of classes/jars - Named modules with module-info
+Visibility - Everything visible - Only exported packages visible
+Dependency checks - None (runtime surprises) - Checked & resolved by JVM
+Large apps - “Classpath hell” risk - Clear dependency graph
+
+
+What is a JAR?
+JAR = Java ARchive
+A JAR file is simply a ZIP file that contains:
+✔ Compiled .class files
+✔ Resources (images, config files, etc.)
+✔ META-INF folder
+✔ Optional manifest.mf file
+A JAR is used to package a Java application or library so it can be shared, run, or reused easily.
+
+
+Why do we use JAR files?
+✔ 1. To bundle multiple class files into one file
+Instead of giving 100 class files, you give one JAR.
+✔ 2. To distribute libraries
+Like:
+
+mysql-connector.jar
+spring-core.jar
+jackson.jar
+
+✔ 3. To run Java programs
+Some JARs are executable — they have a Main-Class entry in manifest.mf.
+You can run them using:
+
+java -jar myapp.jar
+
+✔ 4. To package modules (Java 9+)
+A JAR can also contain a module-info.class (for JPMS modules).
+
+⭐ Types of JAR Files
+🟦 1. Normal JAR
+Contains classes + resources.
+Not executable.
+🟩 2. Executable JAR
+Contains Main-Class in manifest file.
+Run:
+java -jar app.jar
+🟧 3. Modular JAR
+Contains:
+
+module-info.class
+Used in Java 9+ module system.
+
+Run:
+java --module-path mlib -m moduleName
+
+🟨 4. Fat JAR / Uber JAR
+Contains:
+
+Your classes
+Dependencies inside same JAR
+
+Common in Spring Boot:
+myapp-spring-boot.jar
+
+⭐ How to Create a JAR (Simple Example)
+Step 1: Compile
+
+javac Hello.java
+
+Step 2: Create JAR
+
+jar cf hello.jar Hello.class
+``
+c → create
+f → specify file name
+
+⭐ How to Create Executable JAR
+
+Create a manifest.txt
+
+Main-Class: Hello
+
+
+Run:
+jar cfm hello.jar manifest.txt Hello.class
+
+Run JAR:
+java -jar hello.jar
+
+⭐ What is Inside a JAR?
+A JAR typically contains:
+myapp.jar
+ ├── META-INF/
+ │    └── MANIFEST.MF
+ ├── com/
+ │    └── example/
+ │         ├── Main.class
+ │         └── Utils.class
+ └── application.properties
+
+
+⭐ Very Simple Explanation (1‑liner)
+
+A JAR is a zipped package of Java code (class files + resources), used to share or run Java programs.
+
+
+A Manifest file is a special metadata file inside a JAR that tells the JVM important information like the main class, version, and module or package details.
+
+
+
+
+

@@ -1,0 +1,113 @@
+⭐ 1. Navigation (Website Navigation)
+
+✔ Types of Navigation
+1.1. Global Navigation
+This is visible on all pages.
+Examples: Home | About | Services | Contact
+<nav>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+1.2. Local / Section Navigation
+Navigation inside a section only.
+Example in a product section:
+
+Overview
+Specifications
+Reviews
+FAQs
+
+1.3. Breadcrumb Navigation
+Shows the path taken by the user.
+Example:
+Home > Products > Mobile Phones > iPhone 14
+
+1.4. Footer Navigation
+Found at bottom of the webpage.
+Contains:
+
+Privacy Policy
+Terms
+Social links
+Contact info
+
+1.5. Sidebar Navigation
+Vertical navigation menu on the left or right.
+
+1.6. Internal Page Navigation
+Links to jump within the same page.
+Example:
+
+Jump to top
+Jump to section
+Table of contents
+
+⭐ 2. Navigation Tags
+
+✔ <nav> Tag
+The <nav> tag defines a block of navigation links.
+✔ Example of Navigation Tag
+<nav>
+  <ul>
+    <li>index.htmlHome</a></li>
+    <li>about.htmlAbout Us</a></li>
+    <li>products.htmlProducts</a></li>
+    <li>contact.htmlContact</a></li>
+  </ul>
+</nav>
+
+⭐ 3. Hyperlinks
+
+A hyperlink is a clickable link created using the anchor tag <a>.
+✔ Basic Structure
+<a href="URL">Clickable Text</a>
+
+✔ Types of Hyperlinks (Explained Fully)
+3.1. External Hyperlink
+Links to a different website.
+<a href="https://www.google.com">Visit Google</a>
+
+3.2. Internal Hyperlink
+Links to another page on the same website.
+<a href="about.html">About Us</a>
+
+3.3. Email Hyperlink
+Opens an email application.
+<a href="mailto:someone@example.com">Send Email</a>
+
+3.4. Phone Call Hyperlink
+Used on mobile devices.
+<a href="tel:+1234567890">Call Us</a>
+
+3.5. File Download Link
+Downloads a PDF or document.
+<a href="files/guide.pdf" download>Download Guide</a>
+<a href="files/guide.pdf" download="Product-Guide.pdf">Download Guide</a>
+
+3.6. Open Link in New Tab
+Using _blank
+<a href="https://example.com" target="_blank" rel="noopener noreferrer">Open in New Tab</a>
+
+
+⭐ 4. Reference to Intermediate Section (Internal Page Linking)
+This is also called:
+
+Anchor linking
+Jump linking
+In-page navigation
+Bookmark linking
+
+It helps users jump to a specific section within the same page.
+✔ How it Works
+This requires two things:
+
+Step 1: Create a section with an id
+<h2 id="services">Our Services</h2>
+
+Step 2: Create a hyperlink to that id
+<a href="#services">Go to Services</a>

@@ -1,0 +1,198 @@
+Basics of Java Programming
+
+1. Data Types in Java
+Java is strongly typed, meaning every variable must have a type.
+✔ Two Categories of Data Types:
+🔹 A. Primitive Data Types
+Built-in, simple values (8 types):
+
+Type - Size -  Example - Meaning
+byte - 1 byte - byte b = 10; - small integers
+short - 2 bytes - short s = 100; - medium integers
+int - 4 bytes - int x = 500; - most common for whole numbers
+long - 8 bytes - long l = 100000L; - large integers
+float - 4 bytes - float f = 5.5f; - decimal values
+double - 8 bytes - double d = 2.34; - large decimals
+char - 2 bytes - char c = 'A'; - single characters
+boolean - 1 bit( 0 or 1) - boolean flag = true; - true/false
+
+🔹 B. Non‑Primitive (Reference) Data Types
+Examples:
+
+String
+Arrays
+Classes
+Objects
+Interfaces
+
+Example:
+String name = "Sriram";
+
+ 2. Variables in Java
+A variable is a container that stores data.
+✔ Syntax:
+datatype variableName = value;
+
+Examples:
+int age = 22;
+double salary = 50000.75;
+String city = "Chennai";
+boolean isValid = true;
+
+✔ Types of Variables:
+
+Local variable – inside methods
+Instance variable – inside class, outside method
+Static variable – shared among all objects
+
+3. Operators in Java
+Operators perform actions on data.
+✔ Operator Categories:
+A. Arithmetic Operators
++  -  *  /  %
+B. Relational Operators
+(Returns true/false)
+==  !=  >  <  >=  <=
+C. Logical Operators
+Used with boolean values:
+&&   ||   !
+D. Assignment Operators
+=  +=  -=  *=  /=  %=
+E. Increment/Decrement
+++  --
+F. Conditional (Ternary) Operator
+condition ? value1 : value2
+
+ 4. Control Statements in Java
+Control statements decide the flow of the program.
+
+✔ A. Conditional Statements
+1. if Statement
+2. if–else
+3. else-if Ladder
+if (marks >= 90) {
+    grade = "A";
+} else if (marks >= 75) {
+    grade = "B";
+} else {
+    grade = "C";
+}
+4. switch Statement
+Useful for multiple conditions:
+
+switch (day) {
+    case 1: System.out.println("Monday"); break;
+    case 2: System.out.println("Tuesday"); break;
+    default: System.out.println("Invalid");
+}
+\✔ B. Looping Statements
+1. for Loop
+2. while Loop
+3. do‑while Loop
+Runs at least once:
+int i = 1;
+do {
+    System.out.println(i);
+    i++;
+} while (i <= 5);
+
+The for‑each loop (enhanced for loop) is used to iterate through arrays or collections without using an index.
+It is simpler, cleaner, and less error‑prone than a traditional for loop.
+Syntax
+for (datatype variable : arrayOrCollection) {
+    // code using variable
+}
+variable → each element in the array/collection
+arrayOrCollection → the list you are looping through
+
+Example with Array
+int[] numbers = {10, 20, 30, 40};
+
+for (int num : numbers) {
+    System.out.println(num);
+}
+
+Limitations of For‑Each Loop
+✘ Cannot get index
+✘ Cannot modify the array structure
+✘ Cannot iterate backwards
+✘ Not suitable when you need random access like:
+array[i+1] , array[i-1]
+
+
+✔ C. Jump Statements
+break
+Exits loop/switch.
+continue
+Skips current iteration.
+
+1. Value Type (Primitive Type)
+✔ Stored directly in memory
+The variable contains the actual value, not a reference.
+Example:
+int a = 10;
+int b = a;
+a = 20;
+System.out.println(b); // 10 (b is NOT affected)
+
+Here:
+
+a stores 20
+b stores 10
+Changing a does NOT change b.
+
+✔ Stored in stack memory
+✔ Fast
+Because small fixed-size data is easy to store.
+✔ Types:
+int, boolean, float, double, byte, short, long, char
+
+2. Reference Type (Objects)
+✔ Variable stores the address (reference) of the object, NOT the object itself.
+Example:
+Student s1 = new Student();
+Student s2 = s1;
+s1.name = "Sriram";
+System.out.println(s2.name); // Sriram
+
+Here:
+
+s1 and s2 point to the same object
+Changing one affects the other
+
+✔ Object stored in heap memory, reference stored in stack.
+✔ Slower
+Because objects are heavier.
+✔ Examples:
+
+String
+Arrays
+Class objects
+Collections
+Wrapper classes
+
+Visual Diagram
+
+Value Type (Primitive)                       Reference Type (Object)
+-------------------------                    -------------------------
+int x = 10;                                  Student s1 = new Student();
+
+Stack: x -> 10                               Stack: s1 -> address 0xA1
+                                              Heap: (0xA1)
+                                                    name = "John"
+
+
+
+Feature - Value Type (Primitive) - Reference Type (Object)
+Stores - Actual value - Address of object
+Memory - Stack - Stack (ref) + Heap (object)
+Size - Fixed - Varies
+Passing to methods - Pass-by-value (copy of value) - Pass-by-value (copy of reference)
+Change in copy affects original? - ❌ No - ✔ Yes (same object)
+Examples - int, char - String, arrays, classes
+
+
+
+
+
+

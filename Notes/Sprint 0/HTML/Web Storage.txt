@@ -1,0 +1,249 @@
+🌐 Web Storage 
+
+Web Storage is a feature provided by modern browsers that allows websites to store data on a user's browser. It is part of the Web Storage API, which includes two storage mechanisms:
+
+localStorage
+sessionStorage
+
+Both are more powerful and convenient than cookies because:
+
+They store more data (typically 5–10 MB vs. 4 KB for cookies)
+They don't get sent to the server with every request
+They are easy to work with using JavaScript
+
+🗂️ 1. localStorage
+
+✔ What is it?
+
+localStorage is a browser storage that persists even after the browser or computer is closed.
+It remains stored until the user clears it manually or the website deletes it via code.
+
+✔ Characteristics
+
+Feature - localStorage
+Lifetime - Permanent until deleted
+Scope - Domain specific
+Capacity - Usually 5–10 MB
+Shared between tabs? Yes (if same domain)
+
+✔ Use Cases
+
+Saving user preferences (dark mode, language selection)
+Saving cart items in e-commerce sites
+Caching API data for faster performance
+
+✔ Example (JavaScript)
+
+// Store data
+localStorage.setItem("name", "Sriram");
+
+// Read data
+let user = localStorage.getItem("name");
+
+// Remove specific item
+localStorage.removeItem("name");
+
+// Clear all localStorage
+localStorage.clear();
+
+
+🕓 2. sessionStorage
+
+✔ What is it?
+
+sessionStorage stores data only for the duration of the page session.
+Data is lost when:
+
+The browser tab is closed
+The session ends
+
+✔ Characteristics
+
+Feature - sessionStorage
+Lifetime - Until tab is closed
+Scope - Specific to each browser tab
+Capacity - Usually ~5 MB
+Shared between tabs? - ❌ No
+
+✔ Use Cases
+
+Storing temporary form data
+Maintaining state during a checkout process
+Temporary UI states like step progress, filters, etc.
+
+✔ Example (JavaScript)
+
+// Store data
+sessionStorage.setItem("token", "12345");
+
+// Read data
+let token = sessionStorage.getItem("token");
+
+// Remove item
+sessionStorage.removeItem("token");
+
+// Clear all session storage
+sessionStorage.clear();
+
+🗑️ 3. Deleting Web Storage
+
+You can delete Web Storage data in two ways:
+
+🔹 A. Using JavaScript
+
+Delete one item
+localStorage.removeItem("keyName");
+sessionStorage.removeItem("keyName");
+
+Delete all items
+localStorage.clear();
+sessionStorage.clear();
+
+🔹 B. Manually from the Browser
+
+In Chrome:
+Open Developer Tools (F12)
+Go to Application tab
+Choose Local Storage or Session Storage
+Right-click → Clear
+
+// Extra Contents
+
+🍪 What Are Cookies?
+
+Cookies are small pieces of data that websites store on a user's browser.
+They were created long before Web Storage and are used mainly for:
+
+Remembering users (login sessions)
+Tracking user behavior (analytics, advertising)
+Saving small preferences (language, theme)
+Storing session identifiers
+
+Cookies are automatically sent from the browser to the server with every HTTP request, making them very useful for authentication.
+
+✔ How Cookies Work
+
+A website asks the browser to store some information.
+The browser saves that information as a cookie.
+Every time the browser sends a request to the website, it includes the cookie.
+The server reads the cookie and uses it (e.g., to identify the logged‑in user).
+
+Example:
+When you log into a website, the server stores a session ID in a cookie so it knows who you are on each page.
+
+🔐 Types of Cookies
+
+1️⃣ Session Cookies
+
+No expiration date
+Deleted when the browser is closed
+Used for login sessions, temporary data
+
+2️⃣ Persistent Cookies
+
+Have an expiration date (e.g., 30 days)
+Stay on your system until expiration
+Used for “Remember me”, preferences
+
+3️⃣ Secure Cookies
+
+Only sent over HTTPS
+
+4️⃣ HttpOnly Cookies
+
+Cannot be accessed by JavaScript
+(helps prevent XSS attacks)
+
+5️⃣ Third-Party Cookies
+
+Set by domains other than the website you visit
+Mostly used for ads and tracking
+Being phased out in modern browsers
+
+🍪 Cookie Example (JavaScript)
+
+Set a cookie
+document.cookie = "username=Sriram; expires=Wed, 20 Feb 2026 12:00:00 UTC; path=/";
+Read cookies
+console.log(document.cookie);
+Delete a cookie
+document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+
+
+📝 When to Use What?
+
+✔ Use Cookies when:
+
+You need authentication (session ID, JWT in HttpOnly cookie)
+You need data sent to the server automatically
+You need cross-page tracking
+
+✔ Use localStorage when:
+
+You want long-term storage
+You don’t need data sent to the server
+(e.g., theme, preferences)
+
+✔ Use sessionStorage when:
+
+Data is temporary and only needed per browser tab
+(e.g., form data, temporary selections)
+
+⚡ CACHE — What It Is and How It Works
+
+Cache is a mechanism used by browsers (and sometimes servers) to store copies of files so websites load faster when you visit them again.
+It is a performance optimization system.
+Think of cache as a “quick-access offline copy”.
+
+🧩 Types of Cache
+
+1️⃣ Browser Cache
+Stored by the browser. Includes:
+
+Images
+Stylesheets
+JS files
+Fonts
+Web pages
+Service worker assets
+Used to speed up page loading.
+
+Example:
+Your browser caches the logo of YouTube so it doesn't download it every visit.
+
+2️⃣ HTTP Cache (Server-Controlled)
+The server decides how long a file stays cached using HTTP headers like:
+
+Cache-Control
+Expires
+ETag
+Last-Modified
+
+Example header:
+Cache-Control: max-age=31536000
+
+(Keep cached for 1 year)
+
+3️⃣  Service Worker Cache (Used in PWAs)
+Websites that work like apps (Progressive Web Apps) use a Service Worker to store essential files offline.
+
+Pages can load without internet
+App-like behavior
+Used by Gmail, Twitter Web, Instagram Web, etc.
+
+This storage is called Cache Storage.
+You can see it in Chrome:
+DevTools → Application → Cache Storage
+
+4️⃣ CDN Cache
+CDNs (Content Delivery Networks) like Cloudflare host cached copies of files on servers across the world.
+Results:
+
+Faster global performance
+Reduced load on main server
+
+Storage - Analogy
+Cache - Your phone gallery storing pictures locally so you don’t download them again (Speed performance)
+Cookies - Your ID card used to identify you everywhere (Authentication, tracking)
+localStorage - A notebook where you write permanent preferences (Long-term data)
+sessionStorage - A sticky note that works only until you close the tab (Temporary tab data)

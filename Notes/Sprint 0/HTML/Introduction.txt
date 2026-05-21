@@ -1,0 +1,475 @@
+1. Need and Benefits of HTML
+
+❓ Why HTML?
+
+HTML (HyperText Markup Language) is the foundation of every website.
+It provides the structure for web content (text, layout, images, forms, UI elements).
+Without HTML:
+
+Browsers would not know how to display content.
+React cannot render UI components (React compiles JSX → HTML).
+Java backend frameworks like Spring MVC and JSP cannot send content to users.
+
+⭐ Benefits of HTML
+
+Benefit - Explanation
+Platform independent - Runs on any OS/browser no installation.
+Simple and Easy - Human readable tags represent content meaningfully.
+Fast Rendering - HTML is parsed quickly for high performance.
+Search Engine Friendly - HTML semantics help SEO (like <header>,<article>).
+Integrates with CSS & JS - Enables styling and interactivity.
+Core for React - JSX directly translates into HTML elements.
+Core for Java - FSEJSP, Thymeleaf, and static resources generate HTML output.
+
+🛠 2. Setup
+
+✔ Required Tools:
+
+Text Editor / IDE
+Best: Visual Studio Code (VS Code)
+Browser (Chrome recommended)
+Live Server Extension
+Helps auto-refresh as you code.
+
+✔ Folder Structure Example
+
+project/
+   index.html
+   styles.css
+   app.js
+
+✔ VS Code Features to Use:
+
+Emmet shortcuts (div.container>ul>li*3)
+Auto-format (Shift + Alt + F)
+Live Server
+IntelliSense
+
+🌍 3. Browser
+
+A browser (Chrome, Firefox, Edge, Safari) contains:
+
+Rendering Engine (Blink / WebKit) → displays HTML/CSS
+JavaScript Engine (V8, SpiderMonkey) → runs JS
+Developer Tools → inspect, debug, test responsive UI
+Networking Module → loads resources from server
+Storage Module → cookies, localStorage, sessionStorage
+
+Browsers read HTML and convert it into:
+→ DOM (Document Object Model)
+
+🏛 4. BOM and DOM
+
+🔷 DOM – Document Object Model
+
+DOM is a tree-like representation of the HTML page.
+
+Example HTML:
+
+<html>
+  <body>
+    <h1>Hello</h1>
+  </body>
+</html>
+
+DOM Tree:
+
+Document
+ └── html
+      └── body
+           └── h1
+
+Why DOM matters:
+
+JavaScript manipulates DOM (document.getElementById()).
+React uses Virtual DOM, then updates actual DOM efficiently.
+
+🔶 BOM – Browser Object Model
+
+Represents browser window APIs.
+
+Important BOM objects:
+
+Object - Purpose
+
+1. window - Global object in browser
+The window object is the root of the BOM.
+It represents the browser window/tab.
+Everything in JavaScript running in a browser belongs to window.
+Examples:
+window.alert("Hello");
+window.location.href;
+window.navigator.userAgent;
+
+2. navigator - Browser info, used in Geolocation API
+navigator gives information about the browser and device.
+Examples:
+navigator.userAgent       // Browser details
+navigator.language        // Preferred language
+navigator.geolocation     // Geolocation API
+⭐ Geolocation Example:
+navigator.geolocation.getCurrentPosition((pos) => {
+  console.log(pos.coords.latitude, pos.coords.longitude);
+});
+
+3. location - Current URL (used for navigation)
+location contains the current URL information.
+Example:
+console.log(location.href);
+
+Useful Properties:
+
+Property - Meaning
+href - full URL
+hostname - domain name
+pathname - file path
+protocol - http/https
+search - query string (?id=10)
+
+4. history - Back/forward navigation
+This allows moving between pages in the session history.
+Basic usage:
+history.back();     // Go to previous page
+history.forward();  // Go to next page
+
+5. screen - Device screen info
+screen gives information about the user’s device screen.
+Examples:
+screen.width;        // total screen width
+screen.height;       // total screen height
+screen.availWidth;   
+screen.orientation; 
+
+6. alert(), prompt(), confirm() – Built-in Dialogs
+alert("This is an alert!");
+var name = prompt("Enter your name");
+var ok = confirm("Are you sure?");
+
+React rarely uses BOM directly, but JavaScript and HTML5 apps use it heavily.
+
+
+📄 5. DOCTYPE
+
+HTML<!DOCTYPE html>
+
+It tells the browser:
+Use HTML5 parsing rules, not legacy quirks mode.
+
+Why important?
+Without DOCTYPE:
+
+Browser may switch to quirks mode
+Layout and CSS may break
+React apps might behave inconsistently
+
+🔤 6. Character Encoding
+
+Defines how characters are displayed.
+Standard for all modern websites:
+HTML<meta charset="UTF-8" />
+
+Why UTF‑8?
+
+Supports all languages (English, Tamil, Japanese…)
+Prevents garbled text (  symbols)
+Required for internationalized apps
+
+🔌 7. <script> Tag
+Used to add or link JavaScript.
+
+External Script:
+<script src="script.js"></script>
+
+Inline Script:
+<script>
+  console.log("Hello");
+</script>
+
+Important Attributes:
+
+Attribute - Meaning
+src - points to JS file
+async - loads script while HTML continues parsing
+defer - loads script after HTML parsing (best for performance)
+
+🧵 8. <link> Tag
+
+Used to load external resources, mostly CSS
+<link rel="stylesheet" href="styles.css">
+
+📘 9. HTML5 Document Structure
+
+Basic template:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+</head>
+
+<body>
+  <h1>Hello World</h1>
+</body>
+</html>
+
+Key Sections:
+
+<html> – root element
+<head> – metadata, links, scripts
+<body> – visible content
+meta viewport – required for mobile responsiveness
+UTF‑8 charset
+
+💬 10. Comments
+
+HTML comments:
+<!-- This is a comment -->
+
+
+🌐 What is HTML Parsing?
+
+HTML parsing means:
+
+The browser takes your HTML text (tags, attributes, content) and converts it into a DOM Tree (Document Object Model), which it then uses to render the webpage.
+
+🧠 How HTML Parsing Works — Step by Step
+
+1. Browser receives HTML code
+When a page loads, the browser first receives raw HTML text from:
+
+your local file
+or a server (Java/Spring/Node backend)
+
+2. Tokenization
+The browser breaks HTML into tokens:
+
+start tags <div>
+end tags </div>
+attributes class="box"
+text nodes Hello
+
+3. Tree Construction
+From tokens, browser builds the DOM Tree.
+
+🎨 4. CSS Parsing
+CSS is also parsed into a CSSOM (CSS Object Model).
+DOM + CSSOM → Render Tree
+
+🖥 5. Layout & Painting
+Finally browser:
+
+Calculates element size and position
+Paints pixels on the screen
+
+This whole process is called Rendering Pipeline.
+
+💡 Why HTML Parsing is Important?
+✔ React needs it
+JSX converts to HTML → parsed into DOM.
+✔ JavaScript DOM manipulation depends on it
+document.querySelector() works because browser parsed DOM already.
+✔ Search engines rely on parsing
+Google extracts information from parsed HTML.
+✔ Wrong HTML disrupts parsing
+Missing closing tags can break UI.
+
+
+// Extra content
+
+🧠 1. Rendering Engine — How HTML/CSS becomes a visual webpage
+Common Rendering Engines:
+Blink → Chrome, Edge, Opera
+WebKit → Safari
+Gecko → Firefox
+
+What it does:
+A Rendering Engine turns your HTML + CSS into pixels on the screen.
+🌍 Steps involved:
+Step 1: Parse HTML → Create DOM Tree
+The browser reads HTML line by line and constructs a DOM (Document Object Model).
+Step 2: Parse CSS → Create CSSOM
+Styles (color, width, font, margin...) are converted into a CSS Object Model.
+Step 3: DOM + CSSOM → Render Tree
+A tree of visible elements is created (invisible things like <head> are ignored).
+Step 4: Layout
+Browser calculates:
+position (x, y)
+size (height, width)
+margins, borders, padding
+Step 5: Painting
+The Rendering Engine draws actual pixels on the screen.
+
+⚙ 2. JavaScript Engine — Executes JavaScript Code
+JavaScript engines run all JS logic.
+Common JavaScript Engines:
+V8 → Chrome, Edge
+SpiderMonkey → Firefox
+JavaScriptCore → Safari
+
+What it does:
+
+Reads JavaScript code
+Converts it into machine code
+Executes it
+
+How the JS Engine works internally:
+1. Parser
+Converts JS text → AST (Abstract Syntax Tree)
+2. Interpreter
+Executes quickly but not optimized.
+3. Just‑In‑Time (JIT) Compiler
+Optimizes frequently used code paths for speed.
+4. Garbage Collector
+Removes unused memory to avoid leaks.
+JS Engine + Rendering Engine interaction:
+
+JS can modify DOM (change text, add/remove elements)
+React creates a Virtual DOM and updates actual DOM via JS Engine
+
+
+🔧 3. Developer Tools — For Inspecting, Debugging, Auditing
+Every browser includes DevTools which help developers build webpages.
+Key Panels in DevTools:
+
+Elements Panel
+Inspect HTML structure
+Edit elements live
+Test CSS
+
+Console Panel
+Run JavaScript commands
+View logs, errors, warnings
+
+Network Panel
+Check API calls
+Measure load time
+Inspect request/response
+
+Performance Panel
+Analyze rendering performance
+Identify slow JS functions
+
+Application Pane
+View localStorage, sessionStorage, cookies
+Inspect indexedDB, service workers
+
+Responsive Mode
+Test mobile/tablet UI sizes
+
+React developers use DevTools constantly.
+
+🌐 4. Networking Module — How browser fetches files from the server
+When you type a URL like:
+https://example.com
+
+Steps done by Networking Module:
+1. DNS Lookup
+Find server IP address.
+2. Establish Connection
+Uses TCP/IP + TLS (HTTPS).
+3. Send HTTP GET request
+Browser requests:
+
+HTML file
+CSS files
+JS files
+Images
+Fonts
+API data (JSON)
+
+4. Handle response
+Receives data from backend (Java/Spring).
+5. Request prioritization
+CSS is higher priority (to render layout)
+JS is lower priority (because JS blocks parsing)
+6. Caching
+Stores resources so next load is faster.
+
+💾 5. Storage Module — Where browser stores data
+Storage is used by websites to save:
+
+login info (token)
+theme preference (dark/light)
+cart items
+last visited page
+session details
+
+Storage types:
+
+🟦 A. Cookies(4 KB, sent to server)
+Small data (max ~4 KB) sent to server on every request.
+Used for:
+
+authentication
+session tracking
+
+Example:
+Set-Cookie: token=xyz123; HttpOnly
+
+🟧 B. localStorage(5–10 MB, permanent)
+
+Permanent storage
+Does NOT expire unless manually deleted
+Max size 5–10 MB
+
+Example:
+localStorage.setItem("theme", "dark");
+
+🟩 C. sessionStorage(clears on tab close)
+
+Stores data only until tab closes
+Not shared across tabs
+
+Example:
+sessionStorage.setItem("temp", "123");
+
+🟥 D. IndexedDB(large offline storage)
+
+Browser's mini‑database
+Used for large offline apps (Gmail, Spotify Web)
+
+🟨 E. Cache Storage (Service Worker)
+Used for PWAs (Progressive Web Apps).
+Offline apps use this to store HTML/CSS/JS locally.
+
+🎯 Putting It All Together — What Happens When You Load a Page?
+
+Networking Module downloads HTML.
+Rendering Engine starts parsing HTML → creates DOM.
+While parsing, if it finds <link> → fetch CSS.
+
+CSS parsed → CSSOM created.
+Parse CSS → Build CSSOM Tree
+CSS example:
+h1 { color: red; }
+p { font-size: 16px; }
+CSSOM Tree:
+* 
+ ├── h1 {color:red}
+ └── p {font-size:16px}
+
+Find <script> → JavaScript engine executes JS.
+
+DOM + CSSOM → Render Tree.
+The browser merges DOM + CSSOM and produces a list of elements that need to be rendered.
+Invisible elements are skipped:
+❌ <head>
+❌ <meta>
+❌ <script>
+❌ display:none elements
+Visible elements are included:
+✔ <h1>
+✔ <p>
+✔ <div>
+Render Tree might look like:
+RenderRoot
+ ├── h1 (color: red, font-size:32px, position:…)
+ └── p (font-size:16px, position:…)
+
+Layout & Paint → UI appears.
+Storage Module loads & saves required data.
+DevTools can inspect every step.
+
+

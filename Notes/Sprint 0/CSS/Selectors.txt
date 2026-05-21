@@ -1,0 +1,180 @@
+🌟 CSS3 Selectors 
+
+CSS Selectors are patterns used to select HTML elements so you can apply styles to them. Each selector has a specific purpose and different use cases.
+
+1️⃣ Universal Selector (*)
+
+✔ What it does
+Selects every element on the entire webpage.
+✔ Why it's used
+
+Resetting default styles
+Applying a common rule to all elements
+Debugging layouts
+
+✔ Example
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+2️⃣ Element Type Selector (Tag Selector)
+✔ What it does
+Selects HTML elements by their tag name (e.g., p, h1, div, ul, etc.)
+✔ Why it's used
+
+To give uniform styling to all elements of a type
+Simple and direct way to style common tags
+
+✔ Example
+p {
+  color: blue;
+  font-size: 16px;
+}
+
+3️⃣ ID Selector (#idName)
+✔ What it does
+Selects a single unique element using its id attribute.
+✔ Rules to remember
+
+IDs must be unique in a page
+Used for specific, one-off elements
+ID selectors have high specificity
+
+✔ Example (HTML)
+<div id="header">Welcome</div>
+
+✔ Example (CSS)
+#header {
+  background-color: black;
+  color: white;
+  padding: 20px;
+}
+
+4️⃣ Class Selector (.className)
+✔ What it does
+Selects one or more elements that share the same class.
+✔ Why it's used
+
+Reusable styles
+Common formatting for similar elements
+More flexible than IDs
+
+✔ Example (HTML)
+<p class="info">This is info text</p>
+<p class="info">Another info text</p>
+
+✔ Example (CSS)
+.info {
+  color: green;
+  font-weight: bold;
+}
+
+5️⃣ Grouping Selector (selector1, selector2, ...)
+✔ What it does
+Applies the same CSS rules to multiple selectors at once.
+✔ Why it's used
+
+Avoids repeating identical CSS
+Keeps code clean and efficient
+
+✔ Example
+h1, h2, h3, p {
+  font-family: Arial, sans-serif;
+}
+
+🌟 CSS Pseudo Selectors (Pseudo-classes & Pseudo-elements)
+
+CSS pseudo selectors allow you to style:
+
+Special states of an element → pseudo-classes
+Specific parts of an element → pseudo-elements
+
+A. CSS Pseudo-Classes (:)
+A pseudo-class targets an element in a specific state (hover, focus, active, visited, etc.).
+
+✔ Common Pseudo-Classes
+1. :hover
+Triggered when the mouse is over an element.
+button:hover {
+  background-color: blue;
+  color: white;
+}
+
+2. :active
+Styles when the user clicks the element.
+a:active {
+  color: red;
+}
+
+3. :focus
+Used for form inputs.
+input:focus {
+  border-color: green;
+}
+
+4. :visited
+For visited links.
+a:visited {
+  color: purple;
+}
+
+5. :first-child
+Selects the first child of a parent.
+p:first-child {
+  font-weight: bold;
+}
+
+6. :last-child
+li:last-child {
+  color: red;
+}
+``
+7. :nth-child(n)
+Selects elements based on position.
+tr:nth-child(odd) { background: #eee; }
+tr:nth-child(even) { background: #ddd; }
+
+8. :not()
+Selects everything except something.
+p:not(.special) {
+  color: gray;
+}
+``
+
+B. CSS Pseudo-Elements (::)
+Pseudo-elements style parts of an element, not the whole element.
+
+✔ Common Pseudo-Elements
+1. ::before
+Adds content before an element.
+h1::before {
+  content: "🔥 ";
+}
+
+2. ::after
+Adds content after an element.
+h1::after {
+  content: " 🚀";
+}
+
+3. ::first-letter
+p::first-letter {
+  font-size: 40px;
+  color: red;
+}
+
+4. ::first-line
+p::first-line {
+  font-weight: bold;
+}
+
+5. ::selection
+Styles text when selected.
+::selection {
+  background: yellow;
+  color: black;
+}
+
+``

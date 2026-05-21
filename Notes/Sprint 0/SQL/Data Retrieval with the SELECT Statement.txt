@@ -1,0 +1,82 @@
+Data Retrieval with the SELECT Statement
+
+✅ 1. Basic SELECT Syntax
+
+The SELECT statement is the most fundamental SQL command.
+It is used to retrieve data from one or more tables.
+
+Basic SQL Structure
+
+SELECT column1, column2, ...
+FROM table_name;
+``
+Example
+SELECT *
+FROM employees;
+
+* retrieves all columns of the table.
+
+✅ 2. Retrieving Specific Columns
+
+Instead of selecting everything, you can retrieve only the columns you need.
+Example
+SELECT first_name, last_name, salary
+FROM employees;
+
+Why retrieve specific columns?
+
+Better performance
+Cleaner results
+Good practice for real-world applications
+
+
+✅ 3. Filtering Data with the WHERE Clause
+
+WHERE helps you filter rows based on conditions.
+Syntax
+
+SELECT column1, column2
+FROM table_name
+WHERE condition;
+
+Common Operators
+
+Operator - Meaning
+= - Equal
+!= or <> - Not equal
+> , < - Greater than, Less than
+>=, <= - Greater/Equal, Less/Equal
+BETWEEN - Range of values
+LIKE - Pattern matching
+IN - Match from a list
+
+Examples
+Get employees with salary greater than 50000
+SELECT first_name, salary
+FROM employees
+WHERE salary > 50000;
+
+Get employees from specific departments
+SELECT first_name, department
+FROM employees
+WHERE department IN ('IT', 'HR');
+
+Search using pattern
+SELECT first_name
+FROM employees
+WHERE first_name LIKE 'A%';   -- names starting with A
+
+✅ 4. Sorting Results with ORDER BY
+ORDER BY sorts your result set in ascending (ASC) or descending (DESC) order.
+Syntax
+SELECT column1, column2
+FROM table_name
+ORDER BY column1 ASC | DESC;
+
+Sort by multiple columns
+SELECT first_name, department, salary
+FROM employees
+ORDER BY department ASC, salary DESC;
+First sorts by department → then by salary inside each department.
+
+

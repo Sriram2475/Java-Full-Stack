@@ -1,0 +1,720 @@
+Asynchronous JavaScript
+
+🌟 1. Understanding Asynchronous Programming
+
+JavaScript is single‑threaded — it can run only one line of code at a time.
+But the browser has background systems (Web APIs) that allow JS to do tasks without blocking.
+Asynchronous programming lets JavaScript start a slow operation and keep going without waiting for it to finish. When the result is ready later, your code gets notified (via a callback, promise, or async/await), and you continue from there.
+
+Why it matters
+
+Browsers must stay responsive (don’t freeze the UI) while:
+
+Fetching data over the network
+Waiting for timers
+Reading files
+Responding to user events
+Node.js must handle many requests efficiently with non‑blocking I/O.
+
+Single-threaded, but non-blocking
+JavaScript runs on one main thread (one thing at a time).
+But the runtime (Browser or Node) provides background helpers to do slow tasks off the main thread.
+Mental model:
+
+JS registers an async task (e.g., setTimeout, fetch).
+The Browser/Node does the work elsewhere.
+When done, it queues a callback/microtask.
+The event loop delivers that work back to your code when the call stack is free.
+
+
+Synchronous (Blocking)
+console.log("Task 1");
+console.log("Task 2");
+console.log("Task 3");
+Runs line by line.
+
+Asynchronous (Non-blocking)
+Used for slow operations:
+
+Network calls (fetch)
+Reading files
+Timers (setTimeout)
+Database operations
+Waiting for user events
+
+Example:
+console.log("Start");
+
+setTimeout(() => {
+  console.log("Inside timeout");
+}, 2000);
+
+console.log("End");
+
+Output:
+Start
+End
+Inside timeout  (after 2 seconds) (runs after current stack + microtasks)
+Because setTimeout runs asynchronously, so it does NOT block the code.
+Even with 0 ms, the callback waits in the task queue until the stack & microtasks are done.
+
+
+ The Event Loop (simple visual)
+
+         ┌───────────────────────┐
+         │   Your JS Code        │
+         │   (Call Stack)        │ 
+         └─────────▲─────────────┘
+                   │
+                   │ when stack is empty
+                   │
+        ┌──────────┴───────────┐
+        │      Event Loop      │
+        └──────────▲───────────┘
+                   │
+         ┌─────────┴───────────┐
+         │  Queues (Tasks)     │  e.g., setTimeout callbacks, DOM events
+         └─────────▲───────────┘
+                   │
+         ┌─────────┴───────────┐
+         │ Microtask Queue     │  e.g., Promise .then/.catch, queueMicrotask
+         └─────────────────────┘
+
+Key rule:
+
+✔ YES — all normal synchronous code runs first.
+This includes:
+
+variable declarations
+console.log
+function calls
+loops
+math
+DOM operations
+if/else
+class definitions
+regular assignments
+
+🚫 But NO — Promises and setTimeout do NOT run immediately.
+❌ They do NOT execute their callback immediately.
+Instead:
+
+Promises (.then/.catch) → go to Microtask Queue
+setTimeout / setInterval / events → go to Task Queue
+
+Those run later, after the call stack is empty.
+
+These all run immediately in the Call Stack.
+
+Microtasks (Promises) run before regular tasks (timers, events) after the current stack finishes.
+
+Call Stack (Your JavaScript Code)
+This is where JS executes your code line by line.
+Example:
+console.log("A");
+console.log("B");
+It runs directly in the Call Stack.
+When the stack is empty → event loop picks next task.
+
+Web APIs (Browser helpers doing async work)
+(Not shown in your diagram, but very important)
+Examples:
+
+setTimeout
+fetch
+DOM events
+Timers, Network requests
+
+These run outside the JS thread.
+Example:
+setTimeout(() => console.log("Hello"), 1000);
+The timer runs in Web API, NOT the JS thread.
+When done → callback goes to Task Queue.
+
+Task Queue (a.k.a. Callback Queue)
+This is where setTimeout, setInterval, DOM events, fetch callbacks (old) go.
+Example:
+setTimeout(() => console.log("Task"), 0);
+The callback goes to Task Queue AFTER 0ms
+
+
+Microtask Queue (Promises Queue)
+This stores:
+
+.then()
+.catch()
+.finally()
+queueMicrotask()
+Mutations (MutationObserver)
+
+Example:
+Promise.resolve().then(() => console.log("Microtask"));
+The .then() goes into the Microtask Queue.
+
+Event Loop (the traffic controller)
+The event loop checks:
+1️⃣ Is the Call Stack empty?
+If NO → wait.
+If YES → next step.
+2️⃣ Is the Microtask Queue non‑empty?
+If YES → run all microtasks first.
+3️⃣ If microtasks are empty → take the next item from Task Queue.
+
+console.log("A");
+
+setTimeout(() => console.log("B"), 0);
+
+Promise.resolve().then(() => console.log("C"));
+
+console.log("D");
+
+Order:
+A
+D
+C  ← microtask
+B  ← task
+
+Common async sources in JavaScript
+
+Timers: setTimeout, setInterval
+Network: fetch, XMLHttpRequest (old), WebSocket events
+User events: click, input, etc.
+Observers: MutationObserver, IntersectionObserver
+Promises / Async functions: then/catch/finally, async/await
+Node.js APIs: fs.readFile, database clients, HTTP requests
+
+Microtasks vs Tasks (important for ordering)
+
+console.log("1");
+
+setTimeout(() => console.log("task (timeout)"), 0);
+
+Promise.resolve().then(() => console.log("microtask (promise)"));
+
+console.log("2");
+
+/*
+Order:
+1
+2
+microtask (promise)
+task (timeout)
+*/
+
+Promise handlers are microtasks → run before setTimeout callbacks.
+
+Real-Life Explanation (Easy to Remember)
+Think of a restaurant:
+Call Stack = Chef cooking now
+Event Loop = Manager deciding what chef cooks next
+Task Queue = Normal orders
+Microtask Queue = VIP instant orders (Promises)
+Manager rule:
+
+If chef is free → SERVE ALL VIP orders first
+THEN serve normal orders
+
+That’s it! That's how JS event loop works.
+
+
+🌟 2. Callbacks & Callback Hell
+
+✔ What is a Callback?
+
+A function passed as an argument to another function, to be executed later.A callback is a function you pass as an argument to another function so it can be called later (often when an async task finishes).
+
+
+Example 1 — Using setTimeout (Browser JS)
+function sayHello() {
+  console.log("Hello after 2 seconds!");
+}
+
+setTimeout(sayHello, 2000);
+
+Step-by-step explanation:
+
+sayHello is a function — but we are NOT calling it yet.
+We pass sayHello as a callback to setTimeout.
+The browser waits 2 seconds, then calls the callback.
+Output appears later.
+
+That is a callback.
+
+Callback with Event Listeners (Browser JS)
+document.getElementById("btn").addEventListener("click", function () {
+  console.log("Button clicked!");
+});
+
+Explanation:
+
+The function inside addEventListener(...) is a callback.
+It runs only when the event happens.
+Browser controls when the callback runs
+
+Example:
+function greeting(name) {
+  console.log("Hello " + name);
+}
+
+function processUser(callback) {
+  callback("Sriram");
+}
+
+processUser(greeting);
+
+Simple example (timer):
+setTimeout(function onDone() {
+  console.log("Runs later");
+}, 1000);  // callback is onDone
+
+Event example (browser):
+button.addEventListener("click", function handleClick(event) {
+  console.log("Button clicked", event.target);
+});
+
+Array helper callback:
+[1, 2, 3].map(function double(n) {
+  return n * 2;
+}); // [2, 4, 6]
+
+Where do callbacks appear?
+
+Browser APIs: addEventListener, setTimeout, requestAnimationFrame, older XMLHttpRequest
+Node.js: file system (fs.readFile), database clients, HTTP requests (classic style)
+Array methods: map, filter, reduce, forEach (synchronous callbacks)
+
+Callback patterns
+
+A) Plain callback
+
+function doLater(cb) {
+  setTimeout(() => cb("done"), 500);
+}
+
+doLater((msg) => console.log(msg));
+
+✔ Callback Hell (Pyramid of Doom)
+When we have many nested callbacks, especially in async operations.
+Example:
+setTimeout(() => {
+  setTimeout(() => {
+    setTimeout(() => {
+      console.log("Done");
+    }, 1000);
+  }, 1000);
+}, 1000);
+
+This becomes:
+→ hard to read
+→ hard to debug
+→ deeply nested
+
+Promise Version ✔
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+wait(1000)
+  .then(() => wait(1000))
+  .then(() => wait(1000))
+  .then(() => console.log("Done"));
+
+Async/Await Version ✔✔ (cleanest)
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function run() {
+  await wait(1000);
+  await wait(1000);
+  await wait(1000);
+  console.log("Done");
+}
+
+run();
+
+
+This is called Callback Hell.
+
+Quick before/after (same logic, three styles)
+Callback hell
+a((err, A) => {
+  if (err) return cb(err);
+  b(A, (err, B) => {
+    if (err) return cb(err);
+    c(B, (err, C) => {
+      if (err) return cb(err);
+      cb(null, C);
+    });
+  });
+});
+
+Promise chaining
+aP()
+  .then((A) => bP(A))
+  .then((B) => cP(B))
+  .then((C) => console.log(C))
+  .catch(console.error);
+
+Async/await
+try {
+  const A = await aP();
+  const B = await bP(A);
+  const C = await cP(B);
+  console.log(C);
+} catch (e) {
+  console.error(e);
+}
+
+
+🌟 3. Promises (Solution to Callback Hell)
+
+JavaScript Promises make handling asynchronous operations like API calls, file loading, or time delays easier. Think of a Promise as a placeholder for a value that will be available in the future.
+A Promise represents a value that will be available now, later, or never.
+Promise has 3 states:
+
+pending → not finished yet
+fulfilled → finished successfully (via resolve)
+rejected → failed (via reject)
+
+ou create a promise with new Promise(...) and consume it with .then() (success), .catch() (error), and .finally() (always).
+
+Syntax
+
+let promise = new Promise((resolve, reject) => {
+    // Perform async operation
+    if (operationSuccessful) {
+        resolve("Task successful");
+    } else {
+        reject("Task failed");
+    }
+});
+
+
+Basic Example:
+const p = new Promise((resolve, reject) => {
+  // Do async work here (timer, fetch, etc.)
+  const ok = true;
+
+  if (ok) {
+    resolve("Success value");         // moves promise → fulfilled
+  } else {
+    reject(new Error("Something failed")); // moves promise → rejected
+  }
+});
+``
+p
+  .then(result => {
+    console.log("THEN received:", result);
+  })
+  .catch(err => {
+    console.log("CATCH received:", err.message);
+  })
+  .finally(() => {
+    console.log("FINALLY always runs");
+  });
+
+resolve(value) → marks success and passes value to the next .then.
+reject(error) → marks failure and sends error to .catch.
+
+✔ Using promises for async tasks
+A simple real promise (with setTimeout)
+function wait(ms) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(`Done in ${ms} ms`), ms);
+  });
+}
+wait(1000).then(msg => console.log(msg)); // prints after ~1s
+Explanation:
+
+We return a Promise.
+After ms, we call resolve(...).
+The .then(...) runs with the value.
+
+
+✔ Solves callback hell
+With Promise chaining:
+task1()
+  .then(task2)
+  .then(task3)
+  .catch(err => console.log(err));
+Cleaner and easier than nesting.
+
+
+Promise = object for a future result.
+Create: new Promise((resolve, reject) => { ... })
+Succeed with resolve(value), fail with reject(error).
+Use: .then() (success), .catch() (error), .finally() (always).
+Chain by returning values/promises in .then().
+Parallel with Promise.all (fail fast) or allSettled (always report).
+Promise callbacks run before setTimeout because of the microtask priority.
+
+
+
+🌟 4. Async / Await (Modern & Simplest Syntax)
+
+1) What is async / await?
+
+async: Put this before a function to make it return a Promise automatically.
+await: Use this inside an async function to pause until a Promise settles, then get its value (or throw the error).
+
+Think of await as: “stop here, get the promise result, then continue”—without blocking the browser UI.
+
+Async/await is syntax sugar over Promises.
+Makes asynchronous code look like synchronous code.
+
+✔ Example with async/await
+
+async function fetchData() {
+  let result = await new Promise(resolve => {
+    setTimeout(() => resolve("Data loaded"), 2000);
+  });
+
+  console.log(result);
+}
+
+fetchData();
+
+Output:
+Data loaded (after 2 sec)
+
+// A helper that returns a Promise that resolves after ms
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Async function: automatically returns a Promise
+async function run() {
+  console.log("Start");
+  await wait(1000);            // pauses inside this function for 1s
+  console.log("After 1 second");
+  return "Done";               // resolves the Promise returned by run()
+}
+
+// Consuming the async function's result
+run().then(result => console.log(result)); // "Done"
+
+
+Key points:
+
+run() returns a Promise.
+await wait(1000) waits for the promise to resolve, then continues.
+return "Done" inside async resolves the outer Promise with "Done".
+
+Error handling (try/catch)
+When a awaited promise rejects, the await expression throws. Use try/catch.
+
+function maybeFail() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      Math.random() > 0.5 ? resolve("OK") : reject(new Error("Oops"));
+    }, 400);
+  });
+}
+
+async function run() {
+  try {
+    const result = await maybeFail();  // if rejected, jumps to catch
+    console.log("Result:", result);
+  } catch (e) {
+    console.error("Handled error:", e.message);
+  } finally {
+    console.log("Cleanup (always runs)");
+  }
+}
+
+run();
+
+Sequential vs Parallel
+
+❌ Sequential (slower when tasks are independent)
+
+async function sequential() {
+  const a = await wait(500);          // 500ms
+  const b = await wait(500);          // another 500ms
+  console.log("Sequential done");     // ~1000ms total
+}
+
+✅ Parallel (start both, then await both)
+
+async function parallel() {
+  const p1 = wait(500);               // start immediately
+  const p2 = wait(500);               // start immediately
+  await Promise.all([p1, p2]);        // wait for both together
+  console.log("Parallel done");       // ~500ms total
+}
+``
+Rule: If two awaits don’t depend on each other, start the promises first, then await them together with Promise.all.
+
+
+async function f(){} → returns a Promise.
+await expr → waits for a Promise; gets its value (or throws if rejected).
+Use try/catch for errors; finally for cleanup.
+Sequential = await one by one.
+Parallel = start promises first, then await Promise.all([...]).
+
+async function demo() {
+  console.log("1) START demo");
+
+  // -----------------------------
+  // A) async function returns a Promise
+  // -----------------------------
+  // Calling an async function returns a Promise immediately:
+  const promiseFromDemo = Promise.resolve("This line shows demo() itself also returns a Promise");
+  // (We’ll return something at the end; just remember: any async function returns a Promise.)
+
+  // -----------------------------
+  // B) await waits for a Promise (sequential flow)
+  // -----------------------------
+  console.time("Sequential total");
+
+  // Sequential: one after another (total time ≈ sum of waits)
+  const s1 = await delay(500, "seq-1");   // waits ~500ms
+  console.log("Sequential result 1:", s1);
+
+  const s2 = await delay(600, "seq-2");   // starts after seq-1 finishes; waits ~600ms
+  console.log("Sequential result 2:", s2);
+
+  console.timeEnd("Sequential total");     // ≈ 1100ms
+
+  // -----------------------------
+  // C) Parallel with Promise.all (start first, then await together)
+  // -----------------------------
+  console.time("Parallel total");
+
+  // Kick off both promises without waiting immediately:
+  const p1 = delay(700, "par-1");          // starts now
+  const p2 = delay(700, "par-2");          // starts now
+
+  // Wait for both in parallel (total time ≈ max of the two, not sum)
+  const [r1, r2] = await Promise.all([p1, p2]);
+  console.log("Parallel results:", r1, "|", r2);
+
+  console.timeEnd("Parallel total");        // ≈ 700ms
+
+  // -----------------------------
+  // D) Error handling with try/catch + finally
+  // -----------------------------
+  try {
+    console.log("Trying a failing promise...");
+    const bad = await delay(300, "will-fail", true); // will reject
+    console.log("This won't print:", bad);
+  } catch (err) {
+    console.log("Caught error via try/catch:", err.message);
+  } finally {
+    console.log("Finally: cleanup runs whether success or failure");
+  }
+
+  // -----------------------------
+  // E) Return value from async function (resolves the Promise returned by demo)
+  // -----------------------------
+  return "demo() finished successfully";
+}
+
+// Consuming the async function's returned Promise:
+demo()
+  .then((finalValue) => {
+    console.log("2) demo() resolved with:", finalValue);
+  })
+  .catch((e) => {
+    console.log("2) demo() rejected with:", e.message);
+  });
+
+
+What each bullet means—shown in this example
+1) async function f() {} → returns a Promise
+
+In the demo, demo() is async. When you call demo(), it immediately returns a Promise.
+At the end of demo, we return "demo() finished successfully". That resolves the Promise with that string.
+If we had throw new Error(...) inside demo, the returned Promise would reject.
+
+2) await expr → waits for a Promise; gets its value (or throws if rejected)
+
+const s1 = await delay(500, "seq-1"); → waits ~500ms and sets s1 to the resolved string.
+When we do await delay(..., shouldFail=true), the await throws an error that’s caught in catch.
+
+3) Use try/catch for errors; finally for cleanup
+
+In the Error handling section:
+
+The await delay(..., true) causes a rejection → await throws → we land in catch.
+finally runs regardless (hide loader, release resources, etc.).
+
+4) Sequential = await one by one
+
+We await delay(500) and after it finishes, we await delay(600).
+Total time ≈ 500 + 600 = 1100ms (you’ll see it in console.time).
+
+5) Parallel = start promises first, then await Promise.all([...])
+
+We start p1 and p2 without awaiting immediately.
+Then await Promise.all([p1, p2]) waits for both.
+Total time ≈ the maximum of their durations (≈ 700ms), not the sum.
+
+
+Async/Await in JavaScript allows you to write asynchronous code in a clean, synchronous-like manner, making it easier to read, understand, and maintain while working with promises.
+
+✅ Why do we want async code to look synchronous?
+Because synchronous code is naturally simpler:
+
+It runs top to bottom
+No callbacks
+Easy to debug
+Easy to reason about the order of execution
+
+Example synchronous flow:
+const data = getData();
+const processed = process(data);
+save(processed);
+
+Easy, right?
+But JavaScript is single‑threaded.
+If we really wrote synchronous code like this for slow tasks (network, file I/O, database, timers):
+❌ the entire browser would freeze
+❌ UI would be blocked
+❌ Node.js server would stop serving all other requests
+So we must run these tasks asynchronously.
+
+
+✅ Async/Await = asynchronous under the hood, synchronous look on the surface
+With async/await:
+async function run() {
+  const user = await getUser(id);
+  const posts = await getPosts(user.id);
+  await save(posts);
+  console.log("Done");
+}
+This looks synchronous — but it does not block the event loop.
+It is still asynchronous; it just reads like synchronous code.
+
+
+🧠 Why do developers prefer async/await?
+✔ 1. Cleaner code flow
+You read from top to bottom.
+✔ 2. Better error handling
+Use try/catch instead of nested callbacks.
+try {
+  const data = await fetchData();
+} catch (err) {
+  console.error(err);
+}
+
+✔ 3. No callback hell
+Async code becomes flat, not nested.
+✔ 4. Easier debugging
+Breakpoints work like normal synchronous code.
+✔ 5. Still non‑blocking
+Your UI/server remains responsive.
+
+🔑 The real answer in one simple line:
+
+We make async code look synchronous because synchronous code is easier to write and understand, but we still need the non‑blocking behavior of async code.
+
+So async/await gives us the best of both worlds:
+
+The simplicity of synchronous code
+The performance of asynchronous code
+
+

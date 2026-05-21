@@ -1,0 +1,643 @@
+Java I/O and File Handling
+
+1) Java I/O Streams (java.io)
+
+What is a Stream?
+A unidirectional flow of data between a source and a destination.
+Two main families:
+
+Byte streams → handle raw bytes (binary): InputStream / OutputStream
+Character streams → handle characters with encoding: Reader / Writer
+
+
+When to use:
+
+Byte streams: images, PDFs, zip files, any binary.
+Character streams: text files, CSV, JSON, XML (human-readable).
+
+
+Core Stream Classes
+Byte Streams
+
+FileInputStream, FileOutputStream - reads/writes raw bytes from/to a file.
+BufferedInputStream, BufferedOutputStream (for faster performance)
+DataInputStream, DataOutputStream (read/write primitives in binary)
+ObjectInputStream, ObjectOutputStream (for serialization)
+ByteArrayInputStream, ByteArrayOutputStream (in-memory) - writes data into a byte array, which grows automatically.
+
+Character Streams
+
+The two main abstract classes for character streams are:
+
+Reader: Base class for all character-based input streams (reading).
+Writer: Base class for all character-based output streams (writing).
+
+FileReader, FileWriter - reads/writes characters from a file. write(), close()
+BufferedReader, BufferedWriter - reads text efficiently using buffering; also provides readLine() for reading lines.
+InputStreamReader / OutputStreamWriter (bridge between byte streams & characters)
+CharArrayReader, CharArrayWriter
+PrintWriter (convenient formatted text output)
+StringReader: reads characters from a string.
+StringWriter: writes characters into a string buffer.
+
+Try-with-resources (Auto-close)
+Always prefer try-with-resources to automatically close streams.
+
+
+import java.io.*;
+
+public class CopyTextIo {
+    public static void main(String[] args) {
+        File source = new File("input.txt");
+        File target = new File("output.txt");
+
+		// Creating File
+          	if (source.createNewFile()) {
+                System.out.println("File created: " + Obj.getName());
+            }
+            else {
+                System.out.println("File already exists.");
+            }
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(source));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(target))) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                bw.write(line);
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// Reading from a file
+
+We will use the Scanner class in order to read contents from a file.
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner; 
+
+public class ReadFile 
+{
+    public static void main(String[] args)
+    {
+        // Reading File
+        try {
+            File Obj = new File("myfile.txt");
+            Scanner Reader = new Scanner(Obj);
+          
+            // Traversing File Data
+          	while (Reader.hasNextLine()) {
+                String data = Reader.nextLine();
+                System.out.println(data);
+            }
+          
+            Reader.close();
+        }
+        
+        // Exception Cases
+        catch (FileNotFoundException e) {
+            System.out.println("An error has occurred.");
+            e.printStackTrace();
+        }
+    }
+}
+
+Delete a File
+
+We use the delete() method in order to delete a file.
+Obj.delete()
+
+Reading/Writing Binary with Buffering
+
+import java.io.*;
+
+public class CopyBinaryIo {
+    public static void main(String[] args) {
+        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream("in.jpg"));
+             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream("out.jpg"))) {
+
+            byte[] buf = new byte[8192]; // 8 KB buffer
+            int n;
+            while ((n = in.read(buf)) != -1) {
+                out.write(buf, 0, n);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+Data Streams (Primitives in binary)
+
+
+import java.io.*;
+
+public class DataStreamDemo {
+    public static void main(String[] args) throws IOException {
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream("data.bin"))) {
+            dos.writeInt(42);
+            dos.writeDouble(12.5);
+            dos.writeUTF("Hello");
+        }
+        try (DataInputStream dis = new DataInputStream(new FileInputStream("data.bin"))) {
+            System.out.println(dis.readInt());     // 42
+            System.out.println(dis.readDouble());  // 12.5
+            System.out.println(dis.readUTF());     // Hello
+        }
+    }
+}
+
+Best practices (java.io):
+
+Wrap file streams with buffered streams for performance.
+Prefer try-with-resources to avoid leaks.
+Use character streams with explicit charset when dealing with text (new InputStreamReader(in, StandardCharsets.UTF_8)).
+
+2) File Handling with java.nio.file (NIO.2)
+Java 7+ introduced NIO.2 which is more powerful, modern, and file‑system aware.
+
+Path Abstraction: Represents file and directory paths using the Path interface.
+File Operations: Perform read, write, copy, move, and delete operations easily with the Files class.
+File Monitoring: Watch directories for creation, delet
+
+
+Key Types
+
+Path (replaces many File use cases)
+Path is an interface that represents a file or directory path in the file system. It's the modern alternative to java.io.File.
+
+Syntax:
+
+Path path = Paths.get("example.txt");
+
+so many methods for Path Interface -  check other resources
+getFileName(), getParent(), getRoot(), ....
+
+Files (utility class with static methods)
+
+Paths.get(...) (factory for Path)
+The Paths class in java.nio.file is a final utility class that provides static factory methods to create Path objects. It acts as a bridge between string or URI representations and the Path interface.
+
+Path path = Paths.get("C:", "Users", "vishnu", "Documents", "file.txt");
+
+StandardOpenOption (open flags)
+FileAttribute, BasicFileAttributes, PosixFilePermissions
+Directory Traversal - Using DirectoryStream, Using FileVisitor
+DirectoryStream, FileVisitor, FileSystem, WatchService (watch folder events)
+
+
+Create Files and Directories
+Path path = Paths.get("data.txt");
+Files.createFile(path); // This line is used to creates a new file
+
+Path dirPath = Paths.get("myfolder");
+Files.createDirectory(dirPath); // Creates a new directory
+
+Copy Files
+Files.copy(Paths.get("data1.txt"), Paths.get("data2.txt"), StandardCopyOption.REPLACE_EXISTING);
+
+Delete Files
+Files.delete(Paths.get("copy.txt"));               // Throws exception if file doesn't exist
+Files.deleteIfExists(Paths.get("copy.txt"));       // Safe delete
+
+Write to a File
+Files.writeString(Paths.get("data.txt"), "Hello, NIO!");
+
+
+Basic Operations (create, read, write, delete)
+
+import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import java.util.List;
+
+public class NioBasics {
+    public static void main(String[] args) throws IOException {
+        Path p = Paths.get("notes", "todo.txt");
+        Files.createDirectories(p.getParent());
+
+        // Write (create or overwrite)
+        Files.writeString(p, "Learn Streams\nLearn NIO.2\n", StandardCharsets.UTF_8);
+
+        // Append
+        Files.writeString(p, "Learn WatchService\n", StandardCharsets.UTF_8,
+                StandardOpenOption.APPEND);
+
+        // Read all lines
+        List<String> lines = Files.readAllLines(p, StandardCharsets.UTF_8);
+        lines.forEach(System.out::println);
+
+        // Copy, Move, Delete
+        Files.copy(p, Paths.get("notes", "todo_backup.txt"), StandardCopyOption.REPLACE_EXISTING);
+        Files.move(p, Paths.get("notes", "todo_renamed.txt"), StandardCopyOption.REPLACE_EXISTING);
+        Files.deleteIfExists(Paths.get("notes", "todo_backup.txt"));
+    }
+}
+
+Walk a directory tree (Files.walk) and filter
+
+
+import java.nio.file.*;
+import java.io.IOException;
+
+public class WalkDemo {
+    public static void main(String[] args) throws IOException {
+        Path root = Paths.get(".");
+        try (var stream = Files.walk(root)) {
+            stream.filter(p -> p.toString().endsWith(".java"))
+                  .forEach(System.out::println);
+        }
+    }
+}
+``
+Read/Write using Buffered Readers with NIO
+
+import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
+import java.io.*;
+
+public class NioBuffered {
+    public static void main(String[] args) throws IOException {
+        Path p = Paths.get("input.txt");
+        try (BufferedReader br = Files.newBufferedReader(p, StandardCharsets.UTF_8);
+             BufferedWriter bw = Files.newBufferedWriter(Paths.get("out.txt"), StandardCharsets.UTF_8)) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                bw.write(line.toUpperCase());
+                bw.newLine();
+            }
+        }
+    }
+}
+
+
+File metadata & attributes
+
+import java.nio.file.*;
+import java.nio.file.attribute.*;
+import java.io.IOException;
+
+public class AttrDemo {
+    public static void main(String[] args) throws IOException {
+        Path p = Paths.get("out.txt");
+        BasicFileAttributes attr = Files.readAttributes(p, BasicFileAttributes.class);
+        System.out.println("Size: " + attr.size());
+        System.out.println("Created: " + attr.creationTime());
+        System.out.println("Is directory? " + attr.isDirectory());
+    }
+}
+
+WatchService (monitor file changes in a directory)
+
+import java.nio.file.*;
+import static java.nio.file.StandardWatchEventKinds.*;
+
+public class WatchDemo {
+    public static void main(String[] args) throws Exception {
+        Path dir = Paths.get("notes");
+        try (WatchService ws = FileSystems.getDefault().newWatchService()) {
+            dir.register(ws, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
+            System.out.println("Watching " + dir.toAbsolutePath());
+            while (true) {
+                WatchKey key = ws.take(); // blocks until event
+                for (WatchEvent<?> e : key.pollEvents()) {
+                    System.out.println("Event: " + e.kind() + " -> " + e.context());
+                }
+                if (!key.reset()) break;
+            }
+        }
+    }
+}
+
+
+
+Channels & ByteBuffer (high-performance I/O)
+
+For large/binary or advanced I/O, use SeekableByteChannel, FileChannel, ByteBuffer.
+
+
+import java.nio.file.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.SeekableByteChannel;
+import java.io.IOException;
+
+public class ChannelCopy {
+    public static void main(String[] args) throws IOException {
+        Path src = Paths.get("in.bin");
+        Path dst = Paths.get("out.bin");
+
+        try (SeekableByteChannel in = Files.newByteChannel(src);
+             SeekableByteChannel out = Files.newByteChannel(
+                     dst, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)) {
+
+            ByteBuffer buf = ByteBuffer.allocateDirect(16 * 1024);
+            while (in.read(buf) != -1) {
+                buf.flip();
+                out.write(buf);
+                buf.clear();
+            }
+        }
+    }
+}
+
+
+Best practices (NIO.2):
+
+Prefer Path + Files over File (more features & consistent).
+Always specify charset for text.
+Use Files.walk for recursive traversal, avoid manual recursion.
+Use channels/ByteBuffer for large binary I/O or when you need random access.
+Use WatchService for folder change events (lightweight watchers).
+
+3) Serialization & Deserialization
+
+Serialization → convert an object to bytes (to save to disk or send over network). - object to bytestream
+Deserialization → reconstruct the object from bytes. - bytestream to object
+
+Basic Serialization (implements Serializable)
+
+
+import java.io.*;
+import java.util.Objects;
+
+class User implements Serializable {
+    private static final long serialVersionUID = 1L; // version control
+    private String name;
+    private transient String password; // transient = do not serialize
+
+    public User(String name, String password) {
+        this.name = name; this.password = password;
+    }
+
+    @Override public String toString() { return "User{name='%s', password='%s'}".formatted(name, password); }
+}
+
+public class SerDemo {
+    public static void main(String[] args) throws Exception {
+        User u = new User("Sriram", "secret");
+
+        // Serialize
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("user.ser"))) {
+            oos.writeObject(u);
+        }
+
+        // Deserialize
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("user.ser"))) {
+            User read = (User) ois.readObject();
+            System.out.println(read); // password will be null due to transient
+        }
+    }
+}
+
+
+Customizing serialization (writeObject/readObject)
+Allows encrypting fields, validating invariants, etc.
+
+private void writeObject(ObjectOutputStream out) throws IOException {
+    out.defaultWriteObject();
+    // custom extra data if needed
+}
+
+private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    // reinitialize transient fields, validation, etc.
+}
+
+
+
+Externalizable (full control)
+Implements writeExternal / readExternal manually. Use only when you must control the exact serialized form.
+
+serialVersionUID
+Controls compatibility across versions.
+Change in class structure without compatible serialVersionUID → InvalidClassException.
+
+Collections + Serialization
+Most collection implementations are serializable (e.g., ArrayList, HashMap), but their elements must also be serializable, otherwise serialization fails.
+
+Security & Best Practices
+
+Avoid serializing secrets; mark as transient or encrypt.
+Validate input during deserialization (defense against gadget chains).
+Consider alternatives (JSON via Jackson, ProtoBuf, Kryo) for inter-service communication.
+Keep serialVersionUID explicit and stable to avoid breaking older data.
+
+
+Choosing Between java.io and NIO.2
+
+Use case - Prefer
+Simple, small text files - Files.readString / Files.writeString (NIO.2)Copy/move/delete/check existenceFiles.* (NIO.2)
+Recursive traversal - Files.walk (NIO.2) 
+Watch directory for changes - WatchService (NIO.2)
+High-performance binary I/O - Channels + ByteBuffer (NIO.2)
+Quick binary/text stream with buffering - java.io + Buffered*
+Serialize objects - ObjectOutputStream/ObjectInputStream
+
+Common Interview Q&A (quick)
+
+Difference between File, Path, and Files?
+File is legacy; Path represents file path; Files provides static utility operations.
+
+Byte vs Character streams?
+Byte streams are raw bytes (binary). Character streams handle characters with a charset.
+
+How to prevent resource leaks?
+Use try-with-resources.
+
+Why transient?
+To skip sensitive or non-serializable fields during serialization.
+
+How to monitor file changes?
+WatchService with ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE.
+
+
+Serialization & Deserialization (save/load objects)
+Serialization = turn an object into bytes (save to file or send over network).
+Deserialization = build the object back from bytes.
+A) Make your class serializable
+import java.io.*;
+
+class User implements Serializable {
+    private static final long serialVersionUID = 1L; // keep version stable
+    private String name;
+    private transient String password; // 'transient' = do not save this field
+
+    User(String name, String password) {
+        this.name = name; this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{name='%s', password='%s'}".formatted(name, password);
+    }
+}
+
+B) Save (serialize) and load (deserialize)
+import java.io.*;
+
+public class SerDemo {
+    public static void main(String[] args) throws Exception {
+        User u = new User("Sriram", "secret");
+
+        // Save to file
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("user.ser"))) {
+            out.writeObject(u);
+        }
+
+        // Load from file
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("user.ser"))) {
+            User read = (User) in.readObject();
+            System.out.println(read); // password will print 'null' (transient not saved)
+        }
+    }
+}
+
+📝 Remember:
+
+Add implements Serializable.
+Mark sensitive/non‑serializable fields transient.
+Keep serialVersionUID constant to avoid compatibility issues.
+
+🧭 Quick “What should I use?” guide
+
+Read/write small text files → Files.readString / Files.writeString
+Copy/move/delete files/folders → Files.copy/move/delete
+Read/write big text → BufferedReader/BufferedWriter or NIO newBufferedReader/newBufferedWriter
+Binary (images, PDFs) → BufferedInputStream / BufferedOutputStream
+List / search files → Files.walk
+Watch folder changes → WatchService
+Save/load Java objects → ObjectOutputStream / ObjectInputStream
+
+
+Example: Serialization and Deserialization of a Java Object.
+
+import java.io.*;
+
+class Demo implements Serializable {
+    public int a;
+    public String b;
+
+    public Demo(int a, String b) {
+        this.a = a;
+        this.b = b;
+    }
+}
+
+public class Geeks {
+    public static void main(String[] args) {
+        Demo object = new Demo(1, "geeksforgeeks");
+        String filename = "file.ser";
+
+        // Serialization
+        try {
+            FileOutputStream file = new FileOutputStream(filename);
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(object);
+            out.close();
+            file.close();
+            System.out.println("Object has been serialized");
+
+        } catch (IOException ex) {
+            System.out.println("IOException is caught");
+        }
+
+        Demo object1 = null;
+
+        // Deserialization
+        try {
+            FileInputStream file = new FileInputStream(filename);
+            ObjectInputStream in = new ObjectInputStream(file);
+            object1 = (Demo) in.readObject();
+            in.close();
+            file.close();
+            System.out.println("Object has been deserialized");
+            System.out.println("a = " + object1.a);
+            System.out.println("b = " + object1.b);
+
+        } catch (IOException ex) {
+            System.out.println("IOException is caught");
+        } catch (ClassNotFoundException ex) {
+            System.out.println("ClassNotFoundException is caught");
+        }
+    }
+}
+
+Example: Serialization with Transient and Static Fields.
+
+import java.io.*;
+
+class Emp implements Serializable {
+    private static final long serialVersionUID = 129348938L;
+    transient int a;
+    static int b;
+    String name;
+    int age;
+
+    public Emp(String name, int age, int a, int b) {
+        this.name = name;
+        this.age = age;
+        this.a = a;
+        this.b = b;
+    }
+}
+
+public class Geeks{
+    public static void printData(Emp object1) {
+        System.out.println("name = " + object1.name);
+        System.out.println("age = " + object1.age);
+        System.out.println("a = " + object1.a);
+        System.out.println("b = " + object1.b);
+    }
+
+    public static void main(String[] args) {
+        Emp object = new Emp("ab", 20, 2, 1000);
+        String filename = "shubham.txt";
+
+        // Serialization
+        try {
+            // Saving of object in a file
+            FileOutputStream file = new FileOutputStream(filename);
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(object);
+            out.close();
+            file.close();
+            System.out.println("Object has been serialized\nData before Deserialization.");
+            printData(object);
+
+            // Change static variable b
+            object.b = 2000;
+
+        } catch (IOException ex) {
+            System.out.println("IOException is caught");
+        }
+
+        object = null;
+
+        // Deserialization
+        try {
+            // Reading the object from a file
+            FileInputStream file = new FileInputStream(filename);
+            ObjectInputStream in = new ObjectInputStream(file);
+            object = (Emp) in.readObject();
+            in.close();
+            file.close();
+            System.out.println("Object has been deserialized\nData after Deserialization.");
+            printData(object);
+
+        } catch (IOException ex) {
+            System.out.println("IOException is caught");
+        } catch (ClassNotFoundException ex) {
+            System.out.println("ClassNotFoundException is caught");
+        }
+    }
+}
+
+
+
+
+

@@ -1,0 +1,242 @@
+JavaScript ES6+ Features
+
+1) let and const
+What they are
+
+let: block‑scoped, can be reassigned.
+const: block‑scoped, cannot be reassigned (but objects/arrays can still be mutated).
+
+Why use them
+
+Avoids var’s pitfalls (function scope, hoisting quirks).
+Encourages safer defaults with const.
+
+Examples
+
+// Block scope
+if (true) {
+  let x = 10;     // only inside this block
+  const y = 20;   // only inside this block
+}
+// console.log(x, y); // ❌ ReferenceError
+
+// Reassignment
+let a = 1;
+a = 2;            // ✅ allowed
+
+const b = 1;
+// b = 2;         // ❌ TypeError (reassignment not allowed)
+
+// Mutation with const (allowed)
+const arr = [1,2];
+arr.push(3);      // ✅ allowed (same array reference)
+
+Rule of thumb: Use const by default; switch to let only when you must reassign.
+
+
+2) Template Literals (Backticks ``   `)
+What it is
+String literals with embedded expressions, multi‑line support.
+Why use it
+Cleaner string building, readable interpolation.
+Examples
+const name = "Sriram";
+const count = 3;
+
+// Interpolation
+const msg = `Hello, ${name}. You have ${count} new messages.`;
+
+// Multi-line
+const html = `
+  <div>
+    <h3>User: ${name}</h3>
+    <p>Count: ${count}</p>
+  </div>
+`;
+
+console.log(msg);
+console.log(html);
+
+const name = "Sriram";
+const count = 3;
+
+// Interpolation
+const msg = `Hello, ${name}. You have ${count} new messages.`;
+
+// Multi-line
+const html = `
+  <div>
+    <h3>User: ${name}</h3>
+    <p>Count: ${count}</p>
+  </div>
+`;
+
+console.log(msg);
+console.log(html);
+
+3) Destructuring (Objects & Arrays)
+What it is
+Extract values from arrays/objects into variables by pattern.
+Why use it
+Less boilerplate, clearer intent.
+
+Object destructuring
+
+const user = { id: 1, name: "Sriram", city: "Chennai" };
+
+const { name, city } = user;          // property names must match
+const { name: fullName } = user;      // rename variable
+const { country = "India" } = user;   // default value if missing
+
+console.log(fullName, city, country);
+
+Array destructuring
+
+const coords = [10, 20, 30];
+const [x, y] = coords;        // take first 2
+const [first, , third] = coords; // skip with commas
+console.log(x, y, first, third); // 10 20 10 30
+
+In function parameters
+
+function printUser({ name, city }) {
+  console.log(`${name} from ${city}`);
+}
+printUser(user);
+
+4) Rest ... and Spread ... Operators
+
+Spread/rest is shallow—deeply nested data will still share references.
+
+The same ... token has two roles:
+A) Rest — “gather the rest” (build arrays/objects)
+
+// Rest in arrays
+const [head, ...tail] = [1,2,3,4]; // head=1, tail=[2,3,4]
+
+// Rest in function parameters
+function sum(...nums) {             // gather all arguments into an array
+  return nums.reduce((a,b) => a + b, 0);
+}
+console.log(sum(1,2,3)); // 6
+
+// Rest in objects
+const person = { id:1, name:"Sriram", role:"Intern" };
+const { name: n, ...rest } = person; // rest = { id:1, role:"Intern" }
+
+B) Spread — “spread out” (expand arrays/objects)
+// Copy/merge arrays
+const a1 = [1,2];
+const a2 = [3,4];
+const merged = [...a1, ...a2];             // [1,2,3,4]
+const copied = [...a1];                     // shallow copy
+
+// Copy/merge objects (last wins)
+const base = { id: 1, name: "Sriram" };
+const extra = { role: "Intern", name: "Sri" };
+const user2 = { ...base, ...extra };       // {id:1, name:"Sri", role:"Intern"}
+
+Note: Spread/rest are shallow—nested objects/arrays keep references.
+
+5) Modules (import / export) — Browser ES Modules
+
+Use in HTML:
+main.js</script>
+
+Exporting (in utils.js)
+
+A) Named exports
+
+You can export many things from one file.
+Must import with matching names (can rename on import).
+// math.js
+export const PI = 3.14159;
+export function add(a, b) { return a + b; }
+export function mul(a, b) { return a * b; }
+
+// main.js
+import { PI, add, mul as multiply } from './math.js';
+console.log(PI, add(2, 3), multiply(2, 4));
+
+B) Default export
+
+At most one per module.
+Importer can choose any name.
+No { } when importing the default export.
+You can name it anything: import total from './math.js' works too.
+
+// greet.js
+export default function greet(name) {
+  return `Hello, ${name}!`;
+}
+
+// main.js
+import greetUser from './greet.js';
+console.log(greetUser('Sriram'));
+
+You can mix both in the same module:
+
+// Named exports
+export function add(a, b) { return a + b; }
+export const PI = 3.14;
+
+// Default export (one per module)
+export default function greet(name) {
+  console.log(`Hello, ${name}`);
+}
+
+Importing (in main.js)
+import greet, { add, PI } from './utils.js';
+
+greet('Sriram');           // default import
+console.log(add(2, 3), PI);
+
+Named export ↔ must import with the same name in { }.
+Default export ↔ you choose the import name.
+Paths in browsers must be relative (./utils.js) or absolute.
+
+What does type="module" mean in the browser?
+When you add:
+<script type="module" src="./main.js"></script>
+
+the browser treats main.js (and everything it imports) as ES Modules instead of classic scripts. That gives you:
+
+✅ import / export syntax enabled
+✅ Module scope (top‑level variables aren’t globals)
+✅ Strict mode automatically ("use strict" is implied)
+✅ Deferred loading (like defer): runs after HTML is parsed
+✅ Single evaluation & caching: a module executes once and is shared
+✅ Top‑level await allowed (in modern browsers)
+⚠️ CORS rules: modules must be loaded with proper origins/HTTP server (file URLs can be blocked)
+
+Tip: Use a local server (e.g., VS Code’s Live Server) when testing modules. Opening index.html as a file:// may cause CORS errors.
+
+Strict mode helps catch mistakes:
+
+Disallows accidental global variable creation
+Throws on duplicate parameter names
+Makes this at top level undefined (not window)
+Generally enforces safer, predictable JS
+
+6) Default Parameters
+What it is
+Provide default values for function parameters when they’re undefined.
+Examples
+function greet(name = "Guest", prefix = "Mr./Ms.") {
+  console.log(`Hello, ${prefix} ${name}`);
+}
+
+greet();                    // "Hello, Mr./Ms. Guest"
+greet("Sriram");            // "Hello, Mr./Ms. Sriram"
+greet(undefined, "Dr.");    // "Hello, Dr. Guest" (default for name only)
+
+
+Default parameters evaluate at call time:
+let counter = 0;
+function nextId(id = ++counter) {
+  return id;
+}
+console.log(nextId()); // 1
+console.log(nextId()); // 2
+
+

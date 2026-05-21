@@ -1,0 +1,76 @@
+Creating and Modifying Tables
+
+⭐ 1. CREATE TABLE — Creating New Tables
+✔ Purpose
+To create a new table with columns, data types, and optional constraints.
+
+✔ Syntax
+⭐ 1. CREATE TABLE — Creating New Tables
+✔ Purpose
+To create a new table with columns, data types, and optional constraints.
+
+✔ Syntax
+CREATE TABLE table_name (
+    column1 datatype constraint,
+    column2 datatype constraint,
+    ...
+);
+
+✔ Real Example: Create an employees table
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    dept_id INT,
+    salary DECIMAL(10,2),
+    hire_date DATE
+);
+
+Explanation:
+
+emp_id → integer + primary key
+name → cannot be null
+salary → decimal type
+hire_date → date type
+
+⭐ 2. ALTER TABLE — Modifying Existing Table Structure
+✔ Purpose
+To change structure of an already created table.
+You can:
+
+add column
+modify column
+rename column
+drop column
+add constraint
+drop constraint
+
+⭐ A. Add a new column
+ALTER TABLE employees
+ADD email VARCHAR(100);
+
+⭐ B. Modify column datatype
+ALTER TABLE employees
+MODIFY salary DECIMAL(12,2);
+
+⭐ C. Rename a column
+(MySQL)
+ALTER TABLE employees
+CHANGE name full_name VARCHAR(50);
+
+⭐ D. Drop (remove) a column
+ALTER TABLE employees
+DROP COLUMN email;
+
+⭐ E. Add a foreign key
+ALTER TABLE employees
+ADD CONSTRAINT fk_dept
+FOREIGN KEY (dept_id)
+REFERENCES departments(dept_id);
+
+⭐ 3. DROP TABLE — Deleting Entire Table
+✔ Purpose
+Deletes the whole table, including all data and structure.
+
+✔ Syntax
+DROP TABLE table_name;
+

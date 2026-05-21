@@ -1,0 +1,307 @@
+JDBC (Java Database Connectivity)
+
+🟦 1. WHAT IS JDBC?
+JDBC is a Java API that allows Java programs to interact with databases.
+It allows you to:
+✔ Connect to a database
+✔ Send SQL queries
+✔ Retrieve results
+✔ Insert / Update / Delete data
+✔ Manage transactions
+Databases you can use with JDBC:
+
+MySQL
+PostgreSQL
+Oracle
+SQL Server
+SQLite
+H2, Derby
+
+🟦 2. JDBC DRIVERS (VERY IMPORTANT)
+A JDBC driver is a small JAR file that allows Java to speak to a database.
+Examples:
+
+Database - JDBC Driver JAR
+MySQL - mysql‑connector‑j.jar
+PostgreSQL - postgresql.jar
+Oracle - ojdbc8.jar
+SQLite - sqlite-jdbc.jar
+
+You must add this JAR to your project to use that database.
+
+🟦 3. CONNECTING TO A DATABASE
+⭐ JDBC Connection process:
+1️⃣ Load the driver (Java 6 and below)
+2️⃣ Use DriverManager to connect
+3️⃣ Get a Connection object
+4️⃣ Use connection to create statements
+
+⭐ Database URL Format
+MySQL Example:
+jdbc:mysql://localhost:3306/mydb
+
+PostgreSQL:
+jdbc:postgresql://localhost:5432/mydb
+
+
+⭐ Example Code for JDBC Connection
+String url = "jdbc:mysql://localhost:3306/mydb";
+String username = "root";
+String password = "password";
+
+Connection con = DriverManager.getConnection(url, username, password);
+
+System.out.println("Connected!");
+
+🟩 4. EXECUTING SQL QUERIES
+Java provides 3 main interfaces:
+1️⃣ Statement (Not recommended)
+Used for static queries (no inputs).
+
+Statement stmt = con.createStatement();
+ResultSet rs = stmt.executeQuery("SELECT * FROM users");
+
+Disadvantages:
+❌ Vulnerable to SQL Injection
+❌ Slow for repeated queries
+❌ Not good for user input
+
+2️⃣ ⭐ PreparedStatement (Recommended)
+Used for dynamic queries with parameters.
+PreparedStatement ps = con.prepareStatement(
+    "SELECT * FROM users WHERE id = ?"
+);
+
+ps.setInt(1, 101);
+ResultSet rs = ps.executeQuery();
+
+✔ Advantages:
+
+Prevents SQL Injection
+Faster (compiled only once)
+Safe for user inputs
+Easy to reuse
+
+3️⃣ CallableStatement (Stored Procedures)
+Used to call database stored procedures.
+CallableStatement cs = con.prepareCall("{call getUser(?)}");
+cs.setInt(1, 101);
+ResultSet rs = cs.executeQuery();
+
+🟧 5. RESULTSET HANDLING (Fetching Data)
+ResultSet holds the data returned by SELECT queries.
+⭐ How to read data:
+while (rs.next()) {
+    int id = rs.getInt("id");
+    String name = rs.getString("name");
+    System.out.println(id + " " + name);
+}
+
+Important ResultSet methods:
+
+Method - Meaning
+next() - Move to next row
+getInt(col) - Read integer
+getString(col) - Read string
+getDate(col) - Read date
+close() - Close result
+
+
+🟨 6. COMPLETE JDBC WORKFLOW (SIMPLE DIAGRAM)
++-------------------+
+| Load JDBC Driver  |
++-------------------+
+         |
+         v
++------------------------+
+| Get Connection         |
+| DriverManager.get...   |
++------------------------+
+         |
+         v
++-----------------------+
+| Create Statement      |
+| or PreparedStatement  |
++-----------------------+
+         |
+         v
++-----------------------+
+| Execute SQL Query     |
+| executeQuery/Update   |
++-----------------------+
+         |
+         v
++-----------------------+
+| Process ResultSet     |
+| rs.next(), getString  |
++-----------------------+
+         |
+         v
++-----------------------+
+| Close Connection      |
++-----------------------+
+
+
+
+🟦 7. FULL JDBC EXAMPLE (in-depth but easy) 
+
+import java.sql.*;
+
+public class JdbcExample {
+    public static void main(String[] args) throws Exception {
+
+        String url = "jdbc:mysql://localhost:3306/mydb";
+        String user = "root";
+        String pass = "password";
+
+        // 1. Get connection
+        Connection con = DriverManager.getConnection(url, user, pass);
+
+        // 2. Create PreparedStatement
+        String query = "SELECT id, name, email FROM users WHERE id = ?";
+        PreparedStatement ps = con.prepareStatement(query);
+        ps.setInt(1, 101);
+
+        // 3. Execute query
+        ResultSet rs = ps.executeQuery();
+
+        // 4. Process results
+        while (rs.next()) {
+            System.out.println(
+                rs.getInt("id") + " " +
+                rs.getString("name") + " " +
+                rs.getString("email")
+            );
+        }
+
+        // 5. Close resources
+        rs.close();
+        ps.close();
+        con.close();
+    }
+}
+
+🟧 8. EXTRA IMPORTANT JDBC CONCEPTS
+✔ Auto-Commit Mode
+JDBC automatically commits every query.
+To use transactions:
+con.setAutoCommit(false);
+// execute queries
+con.commit();
+
+✔ Batch Processing
+Send multiple queries at once.
+
+⭐ FINAL SUMMARY (EASY TO LEARN)
+
+Concept - Meaning
+JDBC - Java API for databases
+Driver - JAR that connects Java to DB
+Connection - Link between Java and DB
+Statement - Executes simple SQL
+PreparedStatement - Executes parameterized SQL (safe)
+CallableStatement - Executes stored procedures
+ResultSet - Holds returned data
+
+JDBC Methods and SQL Types (Simple Table)
+
+Method - Used For - SQL Category
+execute() - ANY SQL command - DDL(Recommended), DML, DQL
+executeUpdate() - Insert, update, delete - DML 
+executeQuery() - SELECT queries - DQL
+
+
+⭐ 1. execute() — used for DDL (and sometimes DML & DQL)
+✔ Meaning:
+Executes ANY type of SQL command.
+✔ Returns:
+
+true → if the result is a ResultSet (SELECT)
+false → if the result is update count (INSERT, UPDATE, DELETE, CREATE, ALTER, DROP)
+
+✔ Used for:
+
+DDL (Data Definition Language)
+
+CREATE TABLE
+ALTER TABLE
+DROP DATABASE
+TRUNCATE TABLE
+
+
+✔ Example (DDL):
+
+Statement stmt = con.createStatement();
+boolean result = stmt.execute("CREATE TABLE student(id INT, name VARCHAR(30))");
+
+✔ Why execute() for DDL?
+Because DDL does not return rows.
+It only informs whether execution succeeded.
+
+⭐ 2. executeUpdate() — used for DML (Insert/Update/Delete)
+✔ Meaning:
+Executes SQL statements that modify data.
+✔ Returns:
+
+Number of rows affected (int)
+
+✔ Used for:
+
+DML (Data Manipulation Language)
+
+INSERT
+UPDATE
+DELETE
+MERGE
+
+✔ Example:
+
+PreparedStatement ps = con.prepareStatement("INSERT INTO users(name) VALUES(?)");
+ps.setString(1, "Sriram");
+int rows = ps.executeUpdate();
+System.out.println("Rows inserted: " + rows);
+
+✔ Why executeUpdate() for DML?
+Because DML queries modify table content and should return number of rows affected.
+
+⭐ 3. executeQuery() — used for DQL (SELECT)
+✔ Meaning:
+Executes SELECT queries that return rows.
+✔ Returns:
+
+ResultSet → holds rows returned by SELECT
+
+✔ Used for:
+
+DQL (Data Query Language)
+
+SELECT
+
+✔ Example:
+PreparedStatement ps = con.prepareStatement("SELECT * FROM users");
+ResultSet rs = ps.executeQuery();
+
+while (rs.next()) {
+    System.out.println(rs.getString("name"));
+}
+
+✔ Why executeQuery() for SELECT?
+Because SELECT always returns a ResultSet.
+
+⭐ FINAL VIEW (Easy to Remember)
+execute()        → ANY SQL (DDL | DML | DQL)
+executeUpdate()  → DML (INSERT/UPDATE/DELETE)
+executeQuery()   → DQL (SELECT)
+
+
+⭐ EXTRAS (Important Interview Points)
+✔ Why NOT use executeQuery() for INSERT?
+Because executeQuery() expects a ResultSet → INSERT does not return rows → error.
+✔ Why NOT use executeUpdate() for SELECT?
+Because SELECT expects rows → executeUpdate() returns only row count → error.
+✔ Which one should you use MOST of the time?
+
+SELECT → executeQuery()
+INSERT/UPDATE/DELETE → executeUpdate()
+CREATE/ALTER/DROP → execute()
+
